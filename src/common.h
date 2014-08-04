@@ -65,17 +65,17 @@ static inline uint32_t lltl(uint32_t x)
     return x;
 }
 
-#define ERROR(x,st) { if (!(x)) \
+#define ERROR(x, st) { if (!(x)) \
    { printf("Error on line %d of %s : %s\n", \
-     __LINE__,__FILE__,st); exit(1); } }
+     __LINE__, __FILE__, st); exit(1); } }
 
 // These macros should be removed for the non-debugging version
-#ifdef NO_CHECK
-#   define CONDITION(x,st)
-#   define CHECK(x)
+#if HAVE_DEBUG
+#   define CONDITION(x, st) ERROR(x, st)
+#   define CHECK(x) CONDITION(x, "Check stop");
 #else
-#   define CONDITION(x,st) ERROR(x,st)
-#   define CHECK(x) CONDITION(x,"Check stop");
+#   define CONDITION(x, st)
+#   define CHECK(x)
 #endif
 
 #endif // __COMMON_H__

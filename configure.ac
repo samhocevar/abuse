@@ -1,7 +1,8 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(abuse, 0.8)
 AC_CONFIG_AUX_DIR(.auto)
-AM_INIT_AUTOMAKE
+AC_CANONICAL_SYSTEM
+AM_INIT_AUTOMAKE([subdir-objects no-define tar-ustar silent-rules])
 AM_CONFIG_HEADER(config.h)
 
 dnl Checks for programs.

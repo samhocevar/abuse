@@ -15,7 +15,6 @@ libsdlport_a_SOURCES = \
     $(NULL)
 libsdlport_a_LIBADD =
 
-INCLUDES = -I$(srcdir)/../ -I$(srcdir)/../imlib $(SDL_CFLAGS)
-
-CPPFLAGS = @CPPFLAGS@ -DNO_CHECK -DASSETDIR=\"$(assetdir)\"
+CPPFLAGS = @CPPFLAGS@ -DASSETDIR=\"$(assetdir)\" \
+           -I$(srcdir)/../ -I$(srcdir)/../imlib $(SDL_CFLAGS)
 

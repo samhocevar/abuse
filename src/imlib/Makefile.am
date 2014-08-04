@@ -29,6 +29,5 @@ libimlib_a_SOURCES = \
     timing.h jdir.h visobj.h \
     $(NULL)
 
-INCLUDES = -I$(srcdir) -I$(srcdir)/.. $(SDL_CFLAGS)
+CPPFLAGS = @CPPFLAGS@ -I$(srcdir) -I$(srcdir)/.. $(SDL_CFLAGS)
 
-CPPFLAGS = @CPPFLAGS@ -DNO_CHECK
