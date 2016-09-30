@@ -109,113 +109,113 @@ pmenu::~pmenu()
 
 psub_menu::~psub_menu()
 {
-  if (win)
-    wm->close_window(win);
+    if (m_win)
+        wm->close_window(m_win);
 
-  while (first)
-  {
-    pmenu_item *tmp=first;
-    first=first->next;
-    delete tmp;
-  }
+    while (m_first)
+    {
+        pmenu_item *tmp = m_first;
+        m_first = m_first->next;
+        delete tmp;
+    }
 }
 
 pmenu_item *psub_menu::find_id(int search_id)
 {
-  for (pmenu_item *f=first; f; f=f->next)
-  {
-    pmenu_item *ret=f->find_id(search_id);
-    if (ret) return ret;
-  }
-  return NULL;
+    for (pmenu_item *f = m_first; f; f = f->next)
+        if (pmenu_item *ret = f->find_id(search_id))
+            return ret;
+
+    return nullptr;
 }
 
 pmenu_item *psub_menu::find_key(int key)
 {
-  for (pmenu_item *f=first; f; f=f->next)
-  {
-    pmenu_item *ret=f->find_key(key);
-    if (ret) return ret;
-  }
-  return NULL;
-}
+    for (pmenu_item *f = m_first; f; f = f->next)
+        if (pmenu_item *ret = f->find_key(key))
+            return ret;
 
+    return nullptr;
+}
 
 void psub_menu::hide(AWindow *parent, int x, int y)
 {
-  int w,h;
-  calc_size(w,h);
-  ivec2 caa, cbb;
-  main_screen->GetClip(caa, cbb);
-  // FIXME: is this correct? it looks like it used to be incorrect
-  // before the GetClip refactoring...
-  if (w+x>cbb.x-1)
-    x=cbb.x-1-w;
+    ivec2 caa, cbb, size = calc_size();
+    main_screen->GetClip(caa, cbb);
 
-  if (win)
-  {
-    if (active!=-1)
+    // FIXME: is this correct? it looks like it used to be incorrect
+    // before the GetClip refactoring...
+    if (size.x + x > cbb.x - 1)
+        x = cbb.x - 1 - size.x;
+
+    if (m_win)
     {
-      int w,h;
-      calc_size(w,h);
-      item_num(active)->draw(win,x+3,y+3+active*(wm->font()->Size().y+1),w-6,0,0);
+        if (m_active != -1)
+        {
+            ivec2 newsize = calc_size();
+            item_num(m_active)->draw(m_win, x + 3, y + 3 + m_active * (wm->font()->Size().y + 1), newsize.x - 6, 0, 0);
+        }
+        wm->close_window(m_win);
+        m_win = nullptr;
     }
-    wm->close_window(win);
-    win=NULL;
-  }
 }
 
-void psub_menu::calc_size(int &w, int &h)
+ivec2 psub_menu::calc_size() const
 {
     ivec2 ts = wm->font()->Size();
-  w=h=0;
-  for (pmenu_item *p=first; p; p=p->next)
-  {
-    if (p->name())
+    ivec2 ret(0);
+    for (pmenu_item *p = m_first; p; p = p->next)
     {
-      int l=strlen(p->name())*ts.x+8;
-      if (p->on_off) l+=ts.x*4;
-      if (l>w) w=l;
+        if (p->name())
+        {
+            int l = strlen(p->name()) * ts.x + 8;
+            if (p->on_off)
+                l += ts.x * 4;
+            if (l > ret.x)
+                ret.x = l;
+        }
+        ret.y++;
     }
-    h++;
-  }
-  h=h*(ts.y+1)+8;
+    ret.y = ret.y * (ts.y + 1) + 8;
+    return ret;
 }
 
 void psub_menu::draw(AWindow *parent, int x, int y)
 {
-  if (win) wm->close_window(win);
+    if (m_win)
+        wm->close_window(m_win);
 
-  int w,h,i=0;
-  calc_size(w,h);
-  ivec2 caa, cbb;
-  main_screen->GetClip(caa, cbb);
-  if (parent->m_pos.x + w + x >= cbb.x)
-    x=cbb.x-1-w-parent->m_pos.x;
-  if (h+y+parent->m_pos.y>=cbb.y)
-  {
-    if (parent->m_pos.y+parent->m_size.y+wm->font()->Size().y>=cbb.y)
-      y=-h;
-    else y=y-h+wm->font()->Size().y+5;
-  }
+    ivec2 caa, cbb, size = calc_size();
+    int i = 0;
+    main_screen->GetClip(caa, cbb);
+    if (parent->m_pos.x + size.x + x >= cbb.x)
+        x = cbb.x - 1 - size.x - parent->m_pos.x;
+    if (size.y + y + parent->m_pos.y >= cbb.y)
+    {
+        if (parent->m_pos.y + parent->m_size.y + wm->font()->Size().y >= cbb.y)
+            y = -size.y;
+        else
+            y = y - size.y + wm->font()->Size().y + 5;
+    }
 
+    m_win = wm->CreateWindow(parent->m_pos + ivec2(x, y),
+             size - ivec2(AWindow::left_border() - AWindow::right_border(),
+                          AWindow::top_border() - AWindow::bottom_border()));
+    m_win->freeze();
+    m_win->m_surf->WidgetBar(ivec2(0, 0), size - ivec2(1, 1),
+                             wm->bright_color(), wm->medium_color(),
+                             wm->dark_color());
 
-  win=wm->CreateWindow(parent->m_pos + ivec2(x, y),
-             ivec2(w - AWindow::left_border() - AWindow::right_border(),
-                   h - AWindow::top_border() - AWindow::bottom_border()));
-  win->freeze();
-  win->m_surf->WidgetBar(ivec2(0, 0), ivec2(w - 1, h - 1),
-                         wm->bright_color(), wm->medium_color(),
-                         wm->dark_color());
+    int has_flags = 0;
+    pmenu_item *p = m_first;
+    for (; p; p = p->next)
+        if (p->on_off)
+            has_flags = 1;
+    x = has_flags ? 3 + wm->font()->Size().x : 3;
+    y = 3;
 
-  int has_flags=0;
-  pmenu_item *p=first;
-  for (; p; p=p->next) if (p->on_off) has_flags=1;
-  x = has_flags ? 3 + wm->font()->Size().x : 3;
-  y = 3;
-
-  for (p=first; p; p=p->next,i++,y+=wm->font()->Size().y+1)
-    p->draw(win,x,y,w-6,0,i==active);
+    for (p = m_first; p; p = p->next, i++, y += wm->font()->Size().y + 1)
+        p->draw(m_win, x, y, size.x - 6, 0, i == m_active);
 
 }
 
@@ -318,41 +318,51 @@ void pmenu::draw(AImage *screen, int top_only)
 
 int psub_menu::handle_event(AWindow *parent, int x, int y, Event &ev)
 {
-  int w,h;
-  calc_size(w,h);
+    ivec2 size = calc_size();
 
-  x=win->m_pos.x;
-  y=win->m_pos.y;
-
-  int has_flags=0,dx=3;
-  for (pmenu_item *p=first; p; p=p->next) if (p->on_off) has_flags=1;
-  if (has_flags) dx+=wm->font()->Size().x;
-
-  int th=wm->font()->Size().y;
-  if (ev.mouse_move.x>=x && ev.mouse_move.y>=y && ev.mouse_move.x<x+w && ev.mouse_move.y<y+h)
-  {
-    int new_active=(ev.mouse_move.y-y-3)/(th+1);
-    if (item_num(new_active)==NULL) new_active=-1;
-
-    if (new_active!=active)
+    if (m_win)
     {
-      if (active!=-1)
-        item_num(active)->draw(win,dx,3+active*(th+1),w-6,0,0);
-      active=new_active;
-      if (active!=-1)
-        item_num(active)->draw(win,dx,3+active*(th+1),w-6,0,1);
+        x = m_win->m_pos.x;
+        y = m_win->m_pos.y;
     }
-    if (ev.type==EV_MOUSE_BUTTON)
+
+    int has_flags = 0, dx = 3;
+    for (pmenu_item *p = m_first; p; p = p->next)
+        if (p->on_off)
+            has_flags = 1;
+    if (has_flags)
+        dx += wm->font()->Size().x;
+
+    int th = wm->font()->Size().y;
+    if (ev.mouse_move.x >= x && ev.mouse_move.y >= y
+         && ev.mouse_move.x < x + size.x && ev.mouse_move.y < y + size.y)
     {
-      if (active!=-1)
-        return item_num(active)->handle_event(win,dx,3+active*(th+1),w-6,0,ev);
-      else return 0;
-    } else return 1;
-  } else if (active!=-1)
-    return item_num(active)->handle_event(win,win->m_pos.x+dx,win->m_pos.y+3+active*(th+1),w-6,0,ev);
-  else return 0;
+        int new_active = (ev.mouse_move.y - y - 3) / (th + 1);
+        if (item_num(new_active) == nullptr)
+            new_active = -1;
 
+        if (new_active != m_active)
+        {
+            if (m_active != -1)
+                item_num(m_active)->draw(m_win, dx, 3 + m_active * (th + 1), size.x - 6, 0, 0);
+            m_active = new_active;
+            if (m_active != -1)
+                item_num(m_active)->draw(m_win, dx, 3 + m_active * (th + 1), size.x - 6, 0, 1);
+        }
+        if (ev.type == EV_MOUSE_BUTTON)
+        {
+            if (m_active != -1)
+                return item_num(m_active)->handle_event(m_win, dx, 3 + m_active * (th + 1), size.x - 6, 0, ev);
+            return 0;
+        }
+        return 1;
+    }
+    else if (m_active != -1)
+    {
+        return item_num(m_active)->handle_event(m_win, m_win->m_pos.x + dx, m_win->m_pos.y + 3 + m_active * (th + 1), size.x - 6, 0, ev);
+    }
 
+    return 0;
 }
 
 int pmenu_item::handle_event(AWindow *parent, int x, int y, int w, int top,
@@ -396,11 +406,12 @@ pmenu_item *pmenu::inarea(int mx, int my, AImage *screen)
 
 int psub_menu::own_event(Event &ev)
 {
-  if (win && ev.window==win) return 1; else
-    for (pmenu_item *p=first; p; p=p->next)
-      if (p->own_event(ev))
+    if (m_win && ev.window == m_win)
         return 1;
-  return 0;
+    for (pmenu_item *p = m_first; p; p = p->next)
+        if (p->own_event(ev))
+            return 1;
+    return 0;
 }
 
 int pmenu_item::own_event(Event &ev)

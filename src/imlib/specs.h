@@ -127,8 +127,6 @@ class bFILE     // base file type which other files should be derived from (jFIL
 
 class jFILE : public bFILE     // this file type will use virtual opens inside of a spe
 {
-  char *fname;
-  char *tmp_write_name;
   int access;
   int fd,flags;
   long start_offset,file_length;    // offset of file from actual file begining
