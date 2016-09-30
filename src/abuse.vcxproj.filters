@@ -1,0 +1,389 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="lisp\lisp.cpp">
+      <Filter>lisp</Filter>
+    </ClCompile>
+    <ClCompile Include="lisp\lisp_gc.cpp">
+      <Filter>lisp</Filter>
+    </ClCompile>
+    <ClCompile Include="lisp\lisp_opt.cpp">
+      <Filter>lisp</Filter>
+    </ClCompile>
+    <ClCompile Include="lisp\trig.cpp">
+      <Filter>lisp</Filter>
+    </ClCompile>
+    <ClCompile Include="net\engine.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\fileman.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\gclient.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\gserver.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\netdrv.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\netfile.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\sock.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\tcpip.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="net\undrv.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\dprint.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\event.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\filesel.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\filter.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\fonts.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\guistat.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\image.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\include.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\input.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\keys.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\palette.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\pcxread.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\pmenu.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\scroller.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\specs.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\sprite.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\status.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\supmorph.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\tools.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\transimage.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\video.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\window.cpp">
+      <Filter>imlib</Filter>
+    </ClCompile>
+    <ClCompile Include="imlib\event.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\hmi.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\jdir.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\joystick.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\setup.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\sound.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="sdlport\video.cpp">
+      <Filter>sdlport</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\volumewindow.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <clCompile Include="ability.cpp" />
+    <clCompile Include="ant.cpp" />
+    <clCompile Include="automap.cpp" />
+    <clCompile Include="cache.cpp" />
+    <clCompile Include="chars.cpp" />
+    <clCompile Include="chat.cpp" />
+    <clCompile Include="clisp.cpp" />
+    <clCompile Include="collide.cpp" />
+    <clCompile Include="compiled.cpp" />
+    <clCompile Include="configuration.cpp" />
+    <clCompile Include="console.cpp" />
+    <clCompile Include="control.cpp" />
+    <clCompile Include="cop.cpp" />
+    <clCompile Include="crc.cpp" />
+    <clCompile Include="demo.cpp" />
+    <clCompile Include="dev.cpp" />
+    <clCompile Include="devsel.cpp" />
+    <clCompile Include="director.cpp" />
+    <clCompile Include="endgame.cpp" />
+    <clCompile Include="extend.cpp" />
+    <clCompile Include="fnt6x13.cpp" />
+    <clCompile Include="game.cpp" />
+    <clCompile Include="gamma.cpp" />
+    <clCompile Include="go.cpp" />
+    <clCompile Include="gui.cpp" />
+    <clCompile Include="help.cpp" />
+    <clCompile Include="innet.cpp" />
+    <clCompile Include="intsect.cpp" />
+    <clCompile Include="items.cpp" />
+    <clCompile Include="lcache.cpp" />
+    <clCompile Include="level.cpp" />
+    <clCompile Include="light.cpp" />
+    <clCompile Include="loader2.cpp" />
+    <clCompile Include="loadgame.cpp" />
+    <clCompile Include="menu.cpp" />
+    <clCompile Include="morpher.cpp" />
+    <clCompile Include="netcfg.cpp" />
+    <clCompile Include="nfclient.cpp" />
+    <clCompile Include="objects.cpp" />
+    <clCompile Include="old.nfclient.cpp" />
+    <clCompile Include="old.nfserver.cpp" />
+    <clCompile Include="old_server.cpp" />
+    <clCompile Include="particle.cpp" />
+    <clCompile Include="points.cpp" />
+    <clCompile Include="profile.cpp" />
+    <clCompile Include="property.cpp" />
+    <clCompile Include="sensor.cpp" />
+    <clCompile Include="seq.cpp" />
+    <clCompile Include="server2.cpp" />
+    <clCompile Include="smallfnt.cpp" />
+    <clCompile Include="specache.cpp" />
+    <clCompile Include="statbar.cpp" />
+    <clCompile Include="transp.cpp" />
+    <clCompile Include="unixnfc.cpp" />
+    <clCompile Include="view.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="lisp\lisp_opt.h">
+      <Filter>lisp</Filter>
+    </ClInclude>
+    <ClInclude Include="lisp\lisp.h">
+      <Filter>lisp</Filter>
+    </ClInclude>
+    <ClInclude Include="lisp\lisp_gc.h">
+      <Filter>lisp</Filter>
+    </ClInclude>
+    <ClInclude Include="lisp\symbols.h">
+      <Filter>lisp</Filter>
+    </ClInclude>
+    <ClInclude Include="lisp\stack.h">
+      <Filter>lisp</Filter>
+    </ClInclude>
+    <ClInclude Include="net\engine.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\fileman.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\gclient.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\ghandler.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\gserver.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\netdrv.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\netfile.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\sock.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\tcpip.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="net\undrv.h">
+      <Filter>net</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\dprint.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\event.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\filesel.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\filter.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\guistat.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\fonts.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\image.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\include.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\input.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\jdir.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\keys.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\palette.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\pcxread.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\pmenu.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\scroller.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\specs.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\sprite.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\status.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\supmorph.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\tools.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\transimage.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\video.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\visobj.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="imlib\window.h">
+      <Filter>imlib</Filter>
+    </ClInclude>
+    <ClInclude Include="sdlport\hmi.h">
+      <Filter>sdlport</Filter>
+    </ClInclude>
+    <ClInclude Include="sdlport\joy.h">
+      <Filter>sdlport</Filter>
+    </ClInclude>
+    <ClInclude Include="sdlport\setup.h">
+      <Filter>sdlport</Filter>
+    </ClInclude>
+    <ClInclude Include="sdlport\sound.h">
+      <Filter>sdlport</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\volumewindow.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ability.h" />
+    <ClInclude Include="ant.h" />
+    <ClInclude Include="automap.h" />
+    <ClInclude Include="cache.h" />
+    <ClInclude Include="chars.h" />
+    <ClInclude Include="chat.h" />
+    <ClInclude Include="clisp.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="compiled.h" />
+    <ClInclude Include="configuration.h" />
+    <ClInclude Include="console.h" />
+    <ClInclude Include="control.h" />
+    <ClInclude Include="cop.h" />
+    <ClInclude Include="crc.h" />
+    <ClInclude Include="demo.h" />
+    <ClInclude Include="dev.h" />
+    <ClInclude Include="devsel.h" />
+    <ClInclude Include="director.h" />
+    <ClInclude Include="extend.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="gamma.h" />
+    <ClInclude Include="go.h" />
+    <ClInclude Include="gui.h" />
+    <ClInclude Include="help.h" />
+    <ClInclude Include="id.h" />
+    <ClInclude Include="intsect.h" />
+    <ClInclude Include="items.h" />
+    <ClInclude Include="lcache.h" />
+    <ClInclude Include="level.h" />
+    <ClInclude Include="light.h" />
+    <ClInclude Include="loader2.h" />
+    <ClInclude Include="loadgame.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="morpher.h" />
+    <ClInclude Include="netcfg.h" />
+    <ClInclude Include="netface.h" />
+    <ClInclude Include="nfclient.h" />
+    <ClInclude Include="nfserver.h" />
+    <ClInclude Include="objects.h" />
+    <ClInclude Include="particle.h" />
+    <ClInclude Include="points.h" />
+    <ClInclude Include="profile.h" />
+    <ClInclude Include="property.h" />
+    <ClInclude Include="seq.h" />
+    <ClInclude Include="server2.h" />
+    <ClInclude Include="specache.h" />
+    <ClInclude Include="statbar.h" />
+    <ClInclude Include="transp.h" />
+    <ClInclude Include="view.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="lisp">
+      <UniqueIdentifier>{75c9b970-7873-493a-af81-9c2b5f0766e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="net">
+      <UniqueIdentifier>{2a4ffe81-9731-451a-be0c-05e09934a0b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sdlport">
+      <UniqueIdentifier>{0e56ecf6-f1ae-4267-abfa-380149fcb0f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imlib">
+      <UniqueIdentifier>{e321d3b9-59f3-4fc3-8a95-2d82c6baa0d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{86df6d8d-4640-4849-8407-ad1914d082f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -494,10 +494,11 @@ net_address *tcpip_protocol::find_address(int port, char *name)
         }
   }
 
-  if (servers.empty())
-    return 0;
+    if (servers.empty())
+        return nullptr;
 
-  servers.move_next(servers.begin_prev(), returned.begin_prev());
+#if 0 // FIXME: code disabled because list class has changed and I don’t understand this code
+    servers.move_next(servers.rbegin(), returned.rbegin());
     ip_address *ret = (ip_address*)(*returned.begin())->addr->copy();
     strcpy(name,(*returned.begin())->name);
 
@@ -506,7 +507,10 @@ net_address *tcpip_protocol::find_address(int port, char *name)
     fprintf(stderr,"Found [%s]\n",s);
 #endif
 
-  return ret;
+    return ret;
+#else
+    return nullptr;
+#endif
 }
 //}}}///////////////////////////////////
 
@@ -520,8 +524,8 @@ void tcpip_protocol::reset_find_list()
     for (p=returned.begin(); p!=returned.end(); ++p)
         delete (*p)->addr;
 
-  servers.erase_all();
-  returned.erase_all();
+  servers.clear();
+  returned.clear();
 }
 //}}}///////////////////////////////////
 
@@ -574,7 +578,7 @@ int tcpip_protocol::handle_responder()
                     RequestItem *r = new RequestItem;
                     r->addr = addr;
                     strcpy(r->name,buf+5);                    // ack hard coded numbers for now
-            servers.insert(r);
+                    servers.push_back(r);
 #ifdef TCPIP_DEBUG
                     addr->store_string(s,256);
                     fprintf(stderr,"accepted %s",s);

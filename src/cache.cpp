@@ -795,13 +795,13 @@ int CacheList::reg(char const *filename, char const *name, int type, int rm_dups
             if (memcmp(buf, "RIFF", 4))
             {
                 printf("File %s is not a WAV file\n", filename);
-                exit(0);
+                lol::DebugAbort();
             }
         }
         else if (sound_avail)
         {
             printf("Unable to open file '%s' for reading\n", filename);
-            exit(0);
+            lol::DebugAbort();
         }
         delete check;
     }
@@ -813,7 +813,7 @@ int CacheList::reg(char const *filename, char const *name, int type, int rm_dups
         if (!sd)
         {
             printf("Unable to open file %s for item %s\n", filename, name);
-            exit(0);
+            lol::DebugAbort();
         }
 
         SpecEntry *se = NULL;
@@ -824,7 +824,7 @@ int CacheList::reg(char const *filename, char const *name, int type, int rm_dups
         if (!se)
         {
             printf("No such item %s in file %s\n", name, filename);
-            exit(0);
+            lol::DebugAbort();
         }
 
         if (type >= 0 && type != se->type &&
@@ -833,7 +833,7 @@ int CacheList::reg(char const *filename, char const *name, int type, int rm_dups
         {
             printf("Item %s of file %s should be type %s\n",
                    name, filename, spec_types[type]);
-            exit(0);
+            lol::DebugAbort();
         }
 
         type = se->type;

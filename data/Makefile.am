@@ -1,5 +1,5 @@
 
-include $(top_srcdir)/build/autotools/common.am
+include $(top_srcdir)/lol/build/autotools/common.am
 
 EXTRA_DIST += \
     $(demos) $(music) $(lisp) $(extra) $(art) $(levels) $(doc) $(sound)

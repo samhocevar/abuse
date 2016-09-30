@@ -295,7 +295,7 @@ file_manager::remote_file::remote_file(net_socket *sock, char const *filename, c
   next=Next;
   open_local=0;
 
-  uint8_t sizes[3]={ CLIENT_NFS,strlen(filename)+1,strlen(mode)+1};
+  uint8_t sizes[3]={ CLIENT_NFS,uint8_t(strlen(filename)+1),uint8_t(strlen(mode)+1)};
   if (sock->write(sizes,3)!=3) { r_close("could not send open info"); return ; }
   if (sock->write(filename,sizes[1])!=sizes[1]) { r_close("could not send filename"); return ; }
   if (sock->write(mode,sizes[2])!=sizes[2]) { r_close("could not send mode"); return ; }

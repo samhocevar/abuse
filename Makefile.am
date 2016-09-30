@@ -1,9 +1,13 @@
 
-include $(top_srcdir)/build/autotools/common.am
+include $(top_srcdir)/lol/build/autotools/common.am
 
-SUBDIRS = src data doc
-
+ACLOCAL_AMFLAGS = -I lol/build/autotools/m4
 EXTRA_DIST += COPYING.GPL COPYING.WTFPL PACKAGERS bootstrap
+
+SUBDIRS = lol src
+DIST_SUBDIRS = $(SUBDIRS) data doc
+
+test: check
 
 dist-hook:
 	@echo ""

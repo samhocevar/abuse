@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="LolMacros">
+    <LolDir Condition="Exists('$(SolutionDir)\lol')">$(SolutionDir)\lol</LolDir>
+    <LolDir Condition="!Exists('$(SolutionDir)\lol')">$(SolutionDir)\..</LolDir>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|ORBIS">
+      <Configuration>Debug</Configuration>
+      <Platform>ORBIS</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ORBIS">
+      <Configuration>Release</Configuration>
+      <Platform>ORBIS</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ability.h" />
+    <ClInclude Include="ant.h" />
+    <ClInclude Include="automap.h" />
+    <ClInclude Include="cache.h" />
+    <ClInclude Include="chars.h" />
+    <ClInclude Include="chat.h" />
+    <ClInclude Include="clisp.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="compiled.h" />
+    <ClInclude Include="configuration.h" />
+    <ClInclude Include="console.h" />
+    <ClInclude Include="control.h" />
+    <ClInclude Include="cop.h" />
+    <ClInclude Include="crc.h" />
+    <ClInclude Include="demo.h" />
+    <ClInclude Include="dev.h" />
+    <ClInclude Include="devsel.h" />
+    <ClInclude Include="director.h" />
+    <ClInclude Include="extend.h" />
+    <ClInclude Include="game.h" />
+    <ClInclude Include="gamma.h" />
+    <ClInclude Include="go.h" />
+    <ClInclude Include="gui.h" />
+    <ClInclude Include="help.h" />
+    <ClInclude Include="id.h" />
+    <ClInclude Include="intsect.h" />
+    <ClInclude Include="items.h" />
+    <ClInclude Include="lcache.h" />
+    <ClInclude Include="level.h" />
+    <ClInclude Include="light.h" />
+    <ClInclude Include="loader2.h" />
+    <ClInclude Include="loadgame.h" />
+    <ClInclude Include="menu.h" />
+    <ClInclude Include="morpher.h" />
+    <ClInclude Include="netcfg.h" />
+    <ClInclude Include="netface.h" />
+    <ClInclude Include="nfclient.h" />
+    <ClInclude Include="nfserver.h" />
+    <ClInclude Include="objects.h" />
+    <ClInclude Include="particle.h" />
+    <ClInclude Include="points.h" />
+    <ClInclude Include="profile.h" />
+    <ClInclude Include="property.h" />
+    <ClInclude Include="seq.h" />
+    <ClInclude Include="server2.h" />
+    <ClInclude Include="specache.h" />
+    <ClInclude Include="statbar.h" />
+    <ClInclude Include="transp.h" />
+    <ClInclude Include="view.h" />
+    <ClInclude Include="imlib/dprint.h" />
+    <ClInclude Include="imlib/event.h" />
+    <ClInclude Include="imlib/filesel.h" />
+    <ClInclude Include="imlib/filter.h" />
+    <ClInclude Include="imlib/fonts.h" />
+    <ClInclude Include="imlib/guistat.h" />
+    <ClInclude Include="imlib/image.h" />
+    <ClInclude Include="imlib/include.h" />
+    <ClInclude Include="imlib/input.h" />
+    <ClInclude Include="imlib/jdir.h" />
+    <ClInclude Include="imlib/keys.h" />
+    <ClInclude Include="imlib/palette.h" />
+    <ClInclude Include="imlib/pcxread.h" />
+    <ClInclude Include="imlib/pmenu.h" />
+    <ClInclude Include="imlib/scroller.h" />
+    <ClInclude Include="imlib/specs.h" />
+    <ClInclude Include="imlib/sprite.h" />
+    <ClInclude Include="imlib/status.h" />
+    <ClInclude Include="imlib/supmorph.h" />
+    <ClInclude Include="imlib/tools.h" />
+    <ClInclude Include="imlib/transimage.h" />
+    <ClInclude Include="imlib/video.h" />
+    <ClInclude Include="imlib/visobj.h" />
+    <ClInclude Include="imlib/window.h" />
+    <ClInclude Include="lisp/lisp.h" />
+    <ClInclude Include="lisp/lisp_gc.h" />
+    <ClInclude Include="lisp/lisp_opt.h" />
+    <ClInclude Include="lisp/stack.h" />
+    <ClInclude Include="lisp/symbols.h" />
+    <ClInclude Include="net/engine.h" />
+    <ClInclude Include="net/fileman.h" />
+    <ClInclude Include="net/gclient.h" />
+    <ClInclude Include="net/ghandler.h" />
+    <ClInclude Include="net/gserver.h" />
+    <ClInclude Include="net/netdrv.h" />
+    <ClInclude Include="net/netfile.h" />
+    <ClInclude Include="net/sock.h" />
+    <ClInclude Include="net/tcpip.h" />
+    <ClInclude Include="net/undrv.h" />
+    <ClInclude Include="sdlport/hmi.h" />
+    <ClInclude Include="sdlport/joy.h" />
+    <ClInclude Include="sdlport/setup.h" />
+    <ClInclude Include="sdlport/sound.h" />
+    <ClInclude Include="ui/volumewindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <clCompile Include="ability.cpp" />
+    <clCompile Include="ant.cpp" />
+    <clCompile Include="automap.cpp" />
+    <clCompile Include="cache.cpp" />
+    <clCompile Include="chars.cpp" />
+    <clCompile Include="chat.cpp" />
+    <clCompile Include="clisp.cpp" />
+    <clCompile Include="collide.cpp" />
+    <clCompile Include="compiled.cpp" />
+    <clCompile Include="configuration.cpp" />
+    <clCompile Include="console.cpp" />
+    <clCompile Include="control.cpp" />
+    <clCompile Include="cop.cpp" />
+    <clCompile Include="crc.cpp" />
+    <clCompile Include="demo.cpp" />
+    <clCompile Include="dev.cpp" />
+    <clCompile Include="devsel.cpp" />
+    <clCompile Include="director.cpp" />
+    <clCompile Include="endgame.cpp" />
+    <clCompile Include="extend.cpp" />
+    <clCompile Include="fnt6x13.cpp" />
+    <clCompile Include="game.cpp" />
+    <clCompile Include="gamma.cpp" />
+    <clCompile Include="go.cpp" />
+    <clCompile Include="gui.cpp" />
+    <clCompile Include="help.cpp" />
+    <clCompile Include="innet.cpp" />
+    <clCompile Include="intsect.cpp" />
+    <clCompile Include="items.cpp" />
+    <clCompile Include="lcache.cpp" />
+    <clCompile Include="level.cpp" />
+    <clCompile Include="light.cpp" />
+    <clCompile Include="loader2.cpp" />
+    <clCompile Include="loadgame.cpp" />
+    <clCompile Include="menu.cpp" />
+    <clCompile Include="morpher.cpp" />
+    <clCompile Include="netcfg.cpp" />
+    <clCompile Include="nfclient.cpp" />
+    <clCompile Include="objects.cpp" />
+    <clCompile Include="old.nfclient.cpp" />
+    <clCompile Include="old.nfserver.cpp" />
+    <clCompile Include="old_server.cpp" />
+    <clCompile Include="particle.cpp" />
+    <clCompile Include="points.cpp" />
+    <clCompile Include="profile.cpp" />
+    <clCompile Include="property.cpp" />
+    <clCompile Include="sensor.cpp" />
+    <clCompile Include="seq.cpp" />
+    <clCompile Include="server2.cpp" />
+    <clCompile Include="smallfnt.cpp" />
+    <clCompile Include="specache.cpp" />
+    <clCompile Include="statbar.cpp" />
+    <clCompile Include="transp.cpp" />
+    <clCompile Include="unixnfc.cpp" />
+    <clCompile Include="view.cpp" />
+    <ClCompile Include="imlib/dprint.cpp" />
+    <ClCompile Include="imlib/event.cpp" />
+    <ClCompile Include="imlib/filesel.cpp" />
+    <ClCompile Include="imlib/filter.cpp" />
+    <ClCompile Include="imlib/fonts.cpp" />
+    <ClCompile Include="imlib/guistat.cpp" />
+    <ClCompile Include="imlib/image.cpp" />
+    <ClCompile Include="imlib/include.cpp" />
+    <ClCompile Include="imlib/input.cpp" />
+    <ClCompile Include="imlib/keys.cpp" />
+    <ClCompile Include="imlib/palette.cpp" />
+    <ClCompile Include="imlib/pcxread.cpp" />
+    <ClCompile Include="imlib/pmenu.cpp" />
+    <ClCompile Include="imlib/scroller.cpp" />
+    <ClCompile Include="imlib/specs.cpp" />
+    <ClCompile Include="imlib/sprite.cpp" />
+    <ClCompile Include="imlib/status.cpp" />
+    <ClCompile Include="imlib/supmorph.cpp" />
+    <ClCompile Include="imlib/tools.cpp" />
+    <ClCompile Include="imlib/transimage.cpp" />
+    <ClCompile Include="imlib/video.cpp" />
+    <ClCompile Include="imlib/window.cpp" />
+    <ClCompile Include="lisp/lisp.cpp" />
+    <ClCompile Include="lisp/lisp_gc.cpp" />
+    <ClCompile Include="lisp/lisp_opt.cpp" />
+    <ClCompile Include="lisp/trig.cpp" />
+    <ClCompile Include="net/engine.cpp" />
+    <ClCompile Include="net/fileman.cpp" />
+    <ClCompile Include="net/gclient.cpp" />
+    <ClCompile Include="net/gserver.cpp" />
+    <ClCompile Include="net/netdrv.cpp" />
+    <ClCompile Include="net/netfile.cpp" />
+    <ClCompile Include="net/sock.cpp" />
+    <ClCompile Include="net/tcpip.cpp" />
+    <ClCompile Include="net/undrv.cpp" />
+    <ClCompile Include="sdlport/event.cpp" />
+    <ClCompile Include="sdlport/hmi.cpp" />
+    <ClCompile Include="sdlport/jdir.cpp" />
+    <ClCompile Include="sdlport/joystick.cpp" />
+    <ClCompile Include="sdlport/setup.cpp" />
+    <ClCompile Include="sdlport/sound.cpp" />
+    <ClCompile Include="sdlport/video.cpp" />
+    <ClCompile Include="ui/volumewindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(LolDir)\src\lol-core.vcxproj">
+      <Project>{9e62f2fe-3408-4eae-8238-fd84238ceeda}</Project>
+    </ProjectReference>
+    <ProjectReference Include="$(LolDir)\src\3rdparty\lol-bullet.vcxproj">
+      <Project>{83d3b207-c601-4025-8f41-01dedc354661}</Project>
+    </ProjectReference>
+    <ProjectReference Include="$(LolDir)\src\3rdparty\lol-lua.vcxproj">
+      <Project>{d84021ca-b233-4e0f-8a52-071b83bbccc4}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{b8368675-be39-4738-87e2-170312dba806}</ProjectGuid>
+    <ConfigurationType>Application</ConfigurationType>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(LolDir)\build\msbuild\lol.config.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(LolDir)\build\msbuild\lolfx.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(LolDir)\build\msbuild\lol.vars.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <Import Project="$(LolDir)\build\msbuild\lol.rules.props" />
+  <ItemDefinitionGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(LolDir)\build\msbuild\lolfx.targets" />
+  </ImportGroup>
+</Project>

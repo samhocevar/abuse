@@ -1,5 +1,5 @@
 
-include $(top_srcdir)/build/autotools/common.am
+include $(top_srcdir)/lol/build/autotools/common.am
 
 man_MANS = abuse.6 abuse-tool.6
 

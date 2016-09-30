@@ -87,7 +87,7 @@ extern uint8_t chatting_enabled;
 
 // Enable TCP/IP driver
 #if HAVE_NETWORK
-#include "tcpip.h"
+#   include "net/tcpip.h"
 tcpip_protocol tcpip;
 #endif
 
@@ -2513,7 +2513,7 @@ private:
 int main(int argc, char *argv[])
 {
     /* Initialise Lol Engine */
-    System::Init(argc, argv);
+    sys::init(argc, argv);
 
     Application app("Abuse", ivec2(800, 600), 60.0f);
     new DebugFps(5, 5);

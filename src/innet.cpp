@@ -29,7 +29,7 @@
 #include "game.h"
 #include "dev.h"
 #if HAVE_NETWORK
-#   include "fileman.h"
+#   include "net/fileman.h"
 #endif
 #include "netface.h"
 #include "netcfg.h"
