@@ -91,11 +91,20 @@ public:
         SysWarpMouse(m_pos);
     }
 
+    // To enable/disable game controller
+    // enables switching between mouse and gamepad when entering certain screens
+    // Added for SDL2 game controller support
+    void enable_controller(bool enabled)
+    {
+        controller_enabled = enabled;
+    }
+
 private:
     queue<Event, 256> m_events;
     int m_pending, last_key;
 
     AImage *m_screen;
+    bool controller_enabled;
 
 protected:
     /* Mouse information */
