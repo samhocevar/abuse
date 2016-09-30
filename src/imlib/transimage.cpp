@@ -20,8 +20,9 @@
 #include "imlib/transimage.h"
 
 TransImage::TransImage(AImage *im, char const *name)
+  : m_name(name),
+    m_size(im->Size())
 {
-    m_size = im->Size();
 
     // First find out how much data to allocate
     size_t bytes = 0;

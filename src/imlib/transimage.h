@@ -64,6 +64,7 @@ private:
                          int nframes, uint8_t *tint,
                          ColorFilter *f, Palette *pal);
 
+    String m_name;
     ivec2 m_size;
     uint8_t *m_data;
 };
