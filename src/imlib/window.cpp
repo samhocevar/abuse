@@ -108,15 +108,16 @@ void WindowManager::get_event(Event &ev)
 {
     Get(ev);
 
-    if (ev.type == EV_KEY)
-        key_state[ev.key] = 1;
-    else if (ev.type == EV_KEYRELEASE)
-        key_state[ev.key] = 0;
+    if (ev.type == EV_KEY || ev.type == EV_KEYRELEASE)
+    {
+        if (ev.key >= 0 && ev.key < m_key_state.count())
+            m_key_state[ev.key] = ev.type == EV_KEY ? 1 : 0;
+    }
 
     if (state == inputing)
     {
-        AWindow *j;
-        for (ev.window = NULL, j = m_first; j; j = j->next)
+        ev.window = nullptr;
+        for (AWindow *j = m_first; j; j = j->next)
             if (!j->is_hidden() && ev.mouse_move >= j->m_pos
                                 && ev.mouse_move < j->m_pos + j->m_size)
                 ev.window = j;
@@ -251,7 +252,7 @@ WindowManager::WindowManager(AImage *screen, Palette *pal, int Hi,
     hi = Hi; low = Low; med = Med; m_first = NULL; m_pal = pal; m_grab = NULL;
     bk = pal->FindClosest(u8vec3::zero);
     state = inputing; fnt = Font;  wframe_fnt = Font;
-    memset(key_state, 0, sizeof(key_state));
+    m_key_state.resize(512);
     frame_suppress = 0;
 }
 

@@ -105,7 +105,7 @@ public:
     AWindow(ivec2 pos, ivec2 size,
             String const &name = "",
             AWidgetList const &widgets = AWidgetList());
-    ~AWindow();
+    virtual ~AWindow();
 
     virtual void redraw();
     void Resize(ivec2 size);
@@ -159,7 +159,7 @@ public:
     AWindow *m_first, *m_grab;
     AImage *mouse_pic, *mouse_save;
     int hi, med, low, bk; // bright, medium, dark and black colors
-    int key_state[512];
+    array<int> m_key_state;
     enum { inputing, dragging } state;
     int drag_mousex, drag_mousey, frame_suppress;
     AWindow *drag_window;
@@ -182,7 +182,7 @@ public:
     void set_colors(int Hi, int Med, int Low) { hi=Hi; med=Med; low=Low; }
     JCFont *font() { return fnt; }
 
-    int key_pressed(int x) { return key_state[x]; }
+    int key_pressed(int x) { return m_key_state[x]; }
     void hide_windows();
     void show_windows();
     void hide_window(AWindow *j);
