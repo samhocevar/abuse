@@ -66,7 +66,7 @@ int defun_pseq(void *args)
   LSymbol *sym=(LSymbol *)lcar(args);
   if (item_type(sym)!=L_SYMBOL)
   {
-    ((LObject *)args)->Print();
+    lisp::print((LObject *)args);
     printf("expecting first arg to def-particle to be a symbol!\n");
     exit(0);
   }
@@ -91,7 +91,7 @@ part_sequence::part_sequence(void *args)
   if (fp->open_failure())
   {
     delete fp;
-    ((LObject *)args)->Print();
+    lisp::print((LObject *)args);
     fprintf(stderr,"\nparticle sequence : Unable to open %s for reading\n",fn);
     fprintf(stderr,"total files open=%d\n",total_files_open);
 

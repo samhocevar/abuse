@@ -61,7 +61,7 @@ void l1print(void *block)
 {
     if(!block || item_type(block) != L_CONS_CELL)
     {
-        ((LObject *)block)->Print();
+        lisp::print((LObject *)block);
         return;
     }
 
@@ -72,12 +72,12 @@ void l1print(void *block)
         if(item_type(a) == L_CONS_CELL)
             dprintf("[...]");
         else
-            ((LObject *)a)->Print();
+            lisp::print((LObject *)a);
     }
     if (block)
     {
         dprintf(" . ");
-        ((LObject *)block)->Print();
+        lisp::print((LObject *)block);
     }
     dprintf(")");
 }
@@ -93,7 +93,7 @@ void where_print(int max_lev = -1)
     for (int i = 0; i < max_lev; i++)
     {
         dprintf("%d> ", i);
-        ((LObject *)*PtrRef::stack.sdata[i])->Print();
+        lisp::print((LObject *)*PtrRef::stack.sdata[i]);
     }
 }
 
@@ -148,7 +148,7 @@ void lbreak(char const *format, ...)
         PtrRef r1(prog);
         while (*s==' ' || *s=='\t' || *s=='\r' || *s=='\n')
             s++;
-        prog->Eval()->Print();
+        lisp::print(prog->Eval());
       } while (*s);
     }
 
@@ -245,7 +245,7 @@ LArray *LArray::Create(size_t len, void *rest)
             {
                 if (!x)
                 {
-                    ((LObject *)rest)->Print();
+                    lisp::print((LObject *)rest);
                     lbreak("(make-array) incorrect list length\n");
                     exit(0);
                 }
@@ -253,7 +253,7 @@ LArray *LArray::Create(size_t len, void *rest)
             }
             if (x)
             {
-                ((LObject *)rest)->Print();
+                lisp::print((LObject *)rest);
                 lbreak("(make-array) incorrect list length\n");
                 exit(0);
             }
@@ -267,7 +267,7 @@ LArray *LArray::Create(size_t len, void *rest)
         }
         else
         {
-            ((LObject *)x)->Print();
+            lisp::print((LObject *)x);
             lbreak("Bad option argument to make-array\n");
             exit(0);
         }
@@ -472,7 +472,7 @@ void *lpointer_value(void *lpointer)
 #ifdef TYPE_CHECKING
   else if (item_type(lpointer)!=L_POINTER)
   {
-    ((LObject *)lpointer)->Print();
+    lisp::print((LObject *)lpointer);
     lbreak(" is not a pointer\n");
     exit(0);
   }
@@ -493,7 +493,7 @@ int32_t lnumber_value(void *lnumber)
     case L_CHARACTER:
         return ((LChar *)lnumber)->m_ch;
     default:
-        ((LObject *)lnumber)->Print();
+        lisp::print((LObject *)lnumber);
         lbreak(" is not a number\n");
         exit(0);
     }
@@ -505,7 +505,7 @@ char *LString::GetString()
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_STRING)
     {
-        Print();
+        lisp::print(this);
         lbreak(" is not a string\n");
         exit(0);
     }
@@ -542,7 +542,7 @@ uint16_t LChar::GetValue()
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_CHARACTER)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a character\n");
         exit(0);
     }
@@ -560,7 +560,7 @@ long lfixed_point_value(void *c)
       return (((LFixedPoint *)c)->m_fixed); break;
     default :
     {
-      ((LObject *)c)->Print();
+      lisp::print((LObject *)c);
       lbreak(" is not a number\n");
       exit(0);
     }
@@ -598,7 +598,7 @@ LObject *LArray::Get(int x)
 #ifdef TYPE_CHECKING
     if (m_type != L_1D_ARRAY)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not an array\n");
         exit(0);
     }
@@ -864,9 +864,9 @@ size_t LList::GetLength()
     size_t ret = 0;
 
 #ifdef TYPE_CHECKING
-    if (this && item_type(this) != (ltype)L_CONS_CELL)
+    if (item_type(this) != (ltype)L_CONS_CELL)
     {
-        Print();
+        lisp::print(this);
         lbreak(" is not a sequence\n");
         exit(0);
     }
@@ -888,8 +888,8 @@ void *pairlis(void *list1, void *list2, void *list3)
 
   if (l1!=l2)
   {
-    ((LObject *)list1)->Print();
-    ((LObject *)list2)->Print();
+    lisp::print((LObject *)list1);
+    lisp::print((LObject *)list2);
     lbreak("... are not the same length (pairlis)\n");
     exit(0);
   }
@@ -1263,35 +1263,35 @@ static void lprint_string(char const *st)
     dprintf(st);
 }
 
-void LObject::Print()
+void lisp::print(LObject *o)
 {
     char buf[32];
 
     print_level++;
 
-    switch (item_type(this))
+    switch (item_type(o))
     {
     case L_CONS_CELL:
-        if (!this)
+        if (!o)
         {
             lprint_string("nil");
         }
         else
         {
-            LList *cs = (LList *)this;
+            LList *cs = (LList *)o;
             lprint_string("(");
             for (; cs; cs = (LList *)lcdr(cs))
             {
                 if (item_type(cs) == (ltype)L_CONS_CELL)
                 {
-                    cs->m_car->Print();
+                    print(cs->m_car);
                     if (cs->m_cdr)
                         lprint_string(" ");
                 }
                 else
                 {
                     lprint_string(". ");
-                    cs->Print();
+                    print(cs);
                     cs = NULL;
                 }
             }
@@ -1299,11 +1299,11 @@ void LObject::Print()
         }
         break;
     case L_NUMBER:
-        sprintf(buf, "%ld", ((LNumber *)this)->m_num);
+        sprintf(buf, "%ld", ((LNumber *)o)->m_num);
         lprint_string(buf);
         break;
     case L_SYMBOL:
-        lprint_string(((LSymbol *)this)->m_name->GetString());
+        lprint_string(((LSymbol *)o)->m_name->GetString());
         break;
     case L_USER_FUNCTION:
     case L_SYS_FUNCTION:
@@ -1320,28 +1320,28 @@ void LObject::Print()
         break;
     case L_STRING:
         if (current_print_file)
-            lprint_string(lstring_value(this));
+            lprint_string(lstring_value(o));
         else
-            dprintf("\"%s\"", lstring_value(this));
+            dprintf("\"%s\"", lstring_value(o));
         break;
     case L_POINTER:
-        sprintf(buf, "%p", lpointer_value(this));
+        sprintf(buf, "%p", lpointer_value(o));
         lprint_string(buf);
         break;
     case L_FIXED_POINT:
-        sprintf(buf, "%g", (lfixed_point_value(this) >> 16) +
-                ((lfixed_point_value(this) & 0xffff)) / (double)0x10000);
+        sprintf(buf, "%g", (lfixed_point_value(o) >> 16) +
+                ((lfixed_point_value(o) & 0xffff)) / (double)0x10000);
         lprint_string(buf);
         break;
     case L_CHARACTER:
         if (current_print_file)
         {
-            uint8_t ch = ((LChar *)this)->m_ch;
+            uint8_t ch = ((LChar *)o)->m_ch;
             current_print_file->write(&ch, 1);
         }
         else
         {
-            uint16_t ch = ((LChar *)this)->m_ch;
+            uint16_t ch = ((LChar *)o)->m_ch;
             dprintf("#\\");
             switch (ch)
             {
@@ -1355,16 +1355,16 @@ void LObject::Print()
         }
         break;
     case L_OBJECT_VAR:
-        l_obj_print(((LObjectVar *)this)->m_index);
+        l_obj_print(((LObjectVar *)o)->m_index);
         break;
     case L_1D_ARRAY:
         {
-            LArray *a = (LArray *)this;
+            LArray *a = (LArray *)o;
             LObject **data = a->GetData();
             dprintf("#(");
             for (size_t j = 0; j < a->m_len; j++)
             {
-                data[j]->Print();
+                lisp::print(data[j]);
                 if (j != a->m_len - 1)
                     dprintf(" ");
             }
@@ -1373,7 +1373,7 @@ void LObject::Print()
         break;
     case L_COLLECTED_OBJECT:
         lprint_string("GC_reference->");
-        ((LRedirect *)this)->m_ref->Print();
+        lisp::print(((LRedirect *)o)->m_ref);
         break;
     default:
         dprintf("Shouldn't happen\n");
@@ -1391,7 +1391,7 @@ LObject *LSymbol::EvalFunction(void *arg_list)
     int args, req_min, req_max;
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("EVAL: is not a function name (not symbol either)");
         exit(0);
     }
@@ -1417,7 +1417,7 @@ LObject *LSymbol::EvalFunction(void *arg_list)
     case L_USER_FUNCTION:
         return EvalUserFunction((LList *)arg_list);
     default:
-        Print();
+        lisp::print(this);
         lbreak(" is not a function name");
         exit(0);
         break;
@@ -1431,15 +1431,15 @@ LObject *LSymbol::EvalFunction(void *arg_list)
 
         if (args < req_min)
         {
-            ((LObject *)arg_list)->Print();
-            m_name->Print();
+            lisp::print((LObject *)arg_list);
+            lisp::print(m_name);
             lbreak("\nToo few parameters to function\n");
             exit(0);
         }
         else if (req_max != -1 && args > req_max)
         {
-            ((LObject *)arg_list)->Print();
-            m_name->Print();
+            lisp::print((LObject *)arg_list);
+            lisp::print(m_name);
             lbreak("\nToo many parameters to function\n");
             exit(0);
         }
@@ -1534,7 +1534,7 @@ void *mapcar(void *arg_list)
       break;
     default:
     {
-      sym->Print();
+      lisp::print(sym);
       lbreak(" is not a function\n");
       exit(0);
     }
@@ -1638,7 +1638,7 @@ void *concatenate(void *prog_list)
             len++;
           else
           {
-        ((LObject *)str_eval[i])->Print();
+        lisp::print((LObject *)str_eval[i]);
         lbreak(" is not a character\n");
         exit(0);
           }
@@ -1647,7 +1647,7 @@ void *concatenate(void *prog_list)
       } break;
       case L_STRING : len+=strlen(lstring_value(str_eval[i])); break;
       default :
-        ((LObject *)prog_list)->Print();
+        lisp::print((LObject *)prog_list);
         lbreak("type not supported\n");
         exit(0);
       break;
@@ -1688,7 +1688,7 @@ void *concatenate(void *prog_list)
   }
   else
   {
-    ((LObject *)prog_list)->Print();
+    lisp::print((LObject *)prog_list);
     lbreak("concat operation not supported, try 'string\n");
     exit(0);
   }
@@ -1757,7 +1757,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         {
             ret = CAR(arg_list)->Eval();
             arg_list = (LList *)CDR(arg_list);
-            ret->Print();
+            lisp::print(ret);
         }
         break;
     case SYS_FUNC_CAR:
@@ -1778,7 +1778,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             ret = LNumber::Create(((LList *)v)->GetLength());
             break;
         default:
-            v->Print();
+            lisp::print(v);
             lbreak("length : type not supported\n");
             break;
         }
@@ -1877,7 +1877,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             LObject *i = CAR(arg_list)->Eval();
             if (item_type(i) != L_NUMBER)
             {
-                i->Print();
+                lisp::print(i);
                 lbreak("/ only defined for numbers, cannot divide ");
                 exit(0);
             }
@@ -1953,7 +1953,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                 car = CAR(CDR(i))->Eval();
                 if (!car || item_type(car) != L_CONS_CELL)
                 {
-                    car->Print();
+                    lisp::print(car);
                     lbreak("setq car : evaled object is not a cons cell\n");
                     exit(0);
                 }
@@ -1964,7 +1964,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                 car = CAR(CDR(i))->Eval();
                 if (!car || item_type(car) != L_CONS_CELL)
                 {
-                    car->Print();
+                    lisp::print(car);
                     lbreak("setq cdr : evaled object is not a cons cell\n");
                     exit(0);
                 }
@@ -1983,7 +1983,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
                 if (item_type(a) != L_1D_ARRAY)
                 {
-                    a->Print();
+                    lisp::print(a);
                     lbreak("is not an array (aref)\n");
                     exit(0);
                 }
@@ -2004,7 +2004,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             break;
         }
         default:
-            i->Print();
+            lisp::print(i);
             lbreak("setq/setf only defined for symbols and arrays now..\n");
             exit(0);
             break;
@@ -2068,7 +2068,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
             if (item_type(var_name) != L_SYMBOL)
             {
-                var_name->Print();
+                lisp::print(var_name);
                 lbreak("should be a symbol (let)\n");
                 exit(0);
             }
@@ -2106,14 +2106,14 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
         if (item_type(symbol) != L_SYMBOL)
         {
-            symbol->Print();
+            lisp::print(symbol);
             lbreak(" is not a symbol! (DEFUN)\n");
             exit(0);
         }
 
         if (item_type(arg_list) != L_CONS_CELL)
         {
-            arg_list->Print();
+            lisp::print(arg_list);
             lbreak("is not a lambda list (DEFUN)\n");
             exit(0);
         }
@@ -2182,7 +2182,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             ret = LNumber::Create(*lstring_value(i));
             break;
         default:
-            i->Print();
+            lisp::print(i);
             lbreak(" is not character type\n");
             exit(0);
             break;
@@ -2195,7 +2195,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         PtrRef r1(i);
         if (item_type(i) != L_NUMBER)
         {
-            i->Print();
+            lisp::print(i);
             lbreak(" is not number type\n");
             exit(0);
         }
@@ -2293,7 +2293,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
         if (item_type(symb) != L_SYMBOL)
         {
-            symb->Print();
+            lisp::print(symb);
             lbreak(" is not a symbol (symbol-name)\n");
             exit(0);
         }
@@ -2435,7 +2435,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         ret = (LObject *)backquote_eval(CAR(arg_list));
         break;
     case SYS_FUNC_COMMA:
-        arg_list->Print();
+        lisp::print(arg_list);
         lbreak("comma is illegal outside of backquote\n");
         exit(0);
         break;
@@ -2488,7 +2488,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
                 if (item_type(s) != L_SYMBOL)
                 {
-                    arg_list->Print();
+                    lisp::print(arg_list);
                     lbreak("expecting (symbol value) for enum\n");
                     exit(0);
                 }
@@ -2499,7 +2499,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                 break;
             }
             default:
-                arg_list->Print();
+                lisp::print(arg_list);
                 lbreak("expecting symbol or (symbol value) in enum\n");
                 exit(0);
             }
@@ -2847,7 +2847,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 
         if (item_type(l1) != L_CONS_CELL)
         {
-            l1->Print();
+            lisp::print(l1);
             lbreak("first arg should be a list\n");
         }
 
@@ -2958,7 +2958,7 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("EVAL : is not a function name (not symbol either)");
         exit(0);
     }
@@ -2972,7 +2972,7 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
 #ifdef TYPE_CHECKING
     if (item_type(fun) != L_USER_FUNCTION)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a user defined function\n");
     }
 #endif
@@ -3004,7 +3004,7 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
         {
             if (!arg_list)
             {
-                Print();
+                lisp::print(this);
                 lbreak("too few parameter to function\n");
                 exit(0);
             }
@@ -3021,7 +3021,7 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
 
     if (f_arg)
     {
-        Print();
+        lisp::print(this);
         lbreak("too many parameter to function\n");
         exit(0);
     }
@@ -3062,7 +3062,7 @@ LObject *LObject::Eval()
             dprintf("%d (%d, %d, %d) TRACE : ", trace_level,
                     LSpace::Perm.GetFree(), LSpace::Tmp.GetFree(),
                     PtrRef::stack.m_size);
-            Print();
+            lisp::print(this);
             dprintf("\n");
         }
         trace_level++;
@@ -3111,7 +3111,7 @@ LObject *LObject::Eval()
             dprintf("%d (%d, %d, %d) TRACE ==> ", trace_level,
                     LSpace::Perm.GetFree(), LSpace::Tmp.GetFree(),
                     PtrRef::stack.m_size);
-        ret->Print();
+        lisp::print(ret);
         dprintf("\n");
     }
 
@@ -3171,7 +3171,7 @@ LString *LSymbol::GetName()
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a symbol\n");
         exit(0);
     }
@@ -3184,7 +3184,7 @@ void LSymbol::SetNumber(long num)
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a symbol\n");
         exit(0);
     }
@@ -3200,7 +3200,7 @@ void LSymbol::SetValue(LObject *val)
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a symbol\n");
         exit(0);
     }
@@ -3213,7 +3213,7 @@ LObject *LSymbol::GetFunction()
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a symbol\n");
         exit(0);
     }
@@ -3226,7 +3226,7 @@ LObject *LSymbol::GetValue()
 #ifdef TYPE_CHECKING
     if (item_type(this) != L_SYMBOL)
     {
-        Print();
+        lisp::print(this);
         lbreak("is not a symbol\n");
         exit(0);
     }

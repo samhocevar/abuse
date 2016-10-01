@@ -87,7 +87,7 @@ int CharacterType::add_state(LObject *symbol) // returns index into seq to use
 {
     if (item_type(symbol) != L_SYMBOL)
     {
-        symbol->Print();
+        lisp::print(symbol);
         lbreak("is not a symbol (in def_char)");
         exit(0);
     }
@@ -99,9 +99,9 @@ int CharacterType::add_state(LObject *symbol) // returns index into seq to use
     {
         if (item_type(val) != L_NUMBER)
         {
-            symbol->Print();
+            lisp::print(symbol);
             dprintf("expecting symbol value to be a number, instead got: ");
-            val->Print();
+            lisp::print(val);
             lbreak("");
             exit(0);
         }
@@ -118,7 +118,7 @@ int CharacterType::add_state(LObject *symbol) // returns index into seq to use
 
     if (num < ts && seq[num])
     {
-        symbol->Print();
+        lisp::print(symbol);
         lbreak("symbol has been assigned value %d, but value already in use "
                "by state %s\n" "use a different symbol for this state\n",
                lnumber_value(seq_syms[num]->GetValue()),
@@ -206,7 +206,7 @@ void CharacterType::add_var(void *symbol, void *name)
   LSymbol *s=(LSymbol *)symbol;
   if (DEFINEDP(s->m_value) && (item_type(s->m_value)!=L_OBJECT_VAR))
   {
-    ((LObject *)symbol)->Print();
+    lisp::print((LObject *)symbol);
     lbreak("symbol already has a value, cannot instantiate an object varible");
     exit(0);
   } else if (DEFINEDP(s->m_value))
@@ -403,7 +403,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
                 char *fake=lstring_value(lcar(lcdr(lcar(mf)))->Eval());
                 if (!isa_var_name(real))
                 {
-                    ((LObject *)field)->Print();
+                    lisp::print((LObject *)field);
                     lbreak("fields : no such var name \"%s\"\n",name);
                     exit(0);
                 }
@@ -430,7 +430,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
         }
         else
         {
-            lcar(field)->Print();
+            lisp::print(lcar(field));
             lbreak("Unknown field for character definition");
             exit(0);
         }

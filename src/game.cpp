@@ -2138,7 +2138,7 @@ void check_for_lisp(int argc, char **argv)
                     LObject *prog = LObject::Compile(s);
                     l_user_stack.push(prog);
                     while(*s==' ' || *s=='\t' || *s=='\r' || *s=='\n') s++;
-                    prog->Eval()->Print();
+                    lisp::print(prog->Eval());
                     l_user_stack.pop(1);
                 }
                 free(l);

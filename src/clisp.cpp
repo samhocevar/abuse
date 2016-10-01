@@ -1410,7 +1410,7 @@ long c_caller(long number, void *args)
       int32_t x=lnumber_value(lcar(a)); a=CDR(a);
       if (!a)
       {
-        ((LObject *)args)->Print();
+        lisp::print((LObject *)args);
         lbreak("expecting y after x in play_sound\n");
         exit(1);
       }
@@ -1496,7 +1496,7 @@ long c_caller(long number, void *args)
       int a=lnumber_value(CAR(args));
       if (a<0 || a>=TOTAL_ABILITIES)
       {
-    ((LObject *)args)->Print();
+    lisp::print((LObject *)args);
     lbreak("bad ability number for get_ability, should be 0..%d, not %d\n",
         TOTAL_ABILITIES,a);
     exit(0);
@@ -1590,7 +1590,7 @@ long c_caller(long number, void *args)
       int b=lnumber_value(CAR(a));
       if (r<0 || b<0 || g<0 || r>255 || g>255 || b>255)
       {
-    ((LObject *)args)->Print();
+    lisp::print((LObject *)args);
     lbreak("color out of range (0..255) in color lookup\n");
     exit(0);
       }
@@ -1599,31 +1599,31 @@ long c_caller(long number, void *args)
     case 173 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->x_suggestion;
     } break;
     case 174 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->y_suggestion;
     } break;
     case 175 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->b1_suggestion;
     } break;
     case 176 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->b2_suggestion;
     } break;
     case 177 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->b3_suggestion;
     } break;
     case 178 :
@@ -1632,8 +1632,8 @@ long c_caller(long number, void *args)
       bg_xdiv=lnumber_value(CAR(args)); args=CDR(args);
       bg_ymul=lnumber_value(CAR(args)); args=CDR(args);
       bg_ydiv=lnumber_value(CAR(args));
-      if (bg_xdiv==0) { bg_xdiv=1; ((LObject *)args)->Print(); dprintf("bg_set_scroll : cannot set xdiv to 0\n"); }
-      if (bg_ydiv==0) { bg_ydiv=1; ((LObject *)args)->Print(); dprintf("bg_set_scroll : cannot set ydiv to 0\n"); }
+      if (bg_xdiv==0) { bg_xdiv=1; lisp::print((LObject *)args); dprintf("bg_set_scroll : cannot set xdiv to 0\n"); }
+      if (bg_ydiv==0) { bg_ydiv=1; lisp::print((LObject *)args); dprintf("bg_set_scroll : cannot set ydiv to 0\n"); }
     } break;
     case 179 :
     {
@@ -1996,13 +1996,13 @@ long c_caller(long number, void *args)
     case 241 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->pointer_x;
     } break;
     case 242 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->pointer_y;
     } break;
     case 243 :
@@ -2077,49 +2077,49 @@ long c_caller(long number, void *args)
     case 254 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->kills;
     } break;
     case 255 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->tkills;
     } break;
     case 256 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->secrets;
     } break;
     case 257 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else return v->tsecrets;
     } break;
     case 258 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else v->kills=lnumber_value(CAR(args));
     } break;
     case 259 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else v->tkills=lnumber_value(CAR(args));
     } break;
     case 260 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else v->secrets=lnumber_value(CAR(args));
     } break;
     case 261 :
     {
       view *v=current_object->m_controller;
-      if (!v) { ((LObject *)args)->Print(); printf("get_player_inputs : object has no view!\n"); }
+      if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
       else v->tsecrets=lnumber_value(CAR(args));
     } break;
     case 262 :

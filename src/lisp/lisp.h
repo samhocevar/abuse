@@ -74,7 +74,6 @@ struct LObject
 
     /* Methods */
     LObject *Eval();
-    void Print();
 
     /* Members */
     ltype m_type;
@@ -244,9 +243,25 @@ private:
     static void CollectStacks();
 };
 
-static inline LObject *&CAR(void *x) { return ((LList *)x)->m_car; }
-static inline LObject *&CDR(void *x) { return ((LList *)x)->m_cdr; }
-static inline ltype item_type(void *x) { if (x) return *(ltype *)x; return L_CONS_CELL; }
+static inline LObject *&CAR(void *x)
+{
+    return static_cast<LList *>(x)->m_car;
+}
+
+static inline LObject *&CDR(void *x)
+{
+    return static_cast<LList *>(x)->m_cdr;
+}
+
+static inline ltype item_type(void *x)
+{
+    return x ? *static_cast<ltype *>(x) : ltype(L_CONS_CELL);
+}
+
+struct lisp
+{
+    static void print(LObject *);
+};
 
 void perm_space();
 void tmp_space();

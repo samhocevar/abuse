@@ -89,7 +89,7 @@ char *men_str(void *arg)
     { return lstring_value(CAR(arg)); } break;
     default :
     {
-      ((LObject *)arg)->Print();
+      lisp::print((LObject *)arg);
       printf(" is not a valid menu option\n");
       exit(0);
     }
