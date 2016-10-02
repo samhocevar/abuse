@@ -335,7 +335,7 @@ void load_data(int argc, char **argv)
   snprintf(prog, sizeof(prog), "(load \"%s\")\n", lsf);
 
   cs=prog;
-  if (!lisp::eval(LObject::Compile(cs)))
+  if (!lisp::eval(lisp::compile(cs)))
   {
     printf("unable to open file '%s'\n",lsf);
     exit(0);

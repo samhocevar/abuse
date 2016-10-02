@@ -69,9 +69,6 @@ struct LSpace
 
 struct LObject
 {
-    /* Factories */
-    static LObject *Compile(char const *&s);
-
     /* Members */
     ltype m_type;
 };
@@ -247,6 +244,7 @@ static inline ltype item_type(void const *x)
 
 struct lisp
 {
+    static LObject *compile(char const *&s);
     static LObject *eval(LObject *);
     static void print(LObject *);
 

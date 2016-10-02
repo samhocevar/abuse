@@ -363,7 +363,7 @@ void show_sell(int abortable)
 //    char *prog="((\"art/help.spe\" . \"sell2\")(\"art/help.spe\" . \"sell4\")(\"art/help.spe\" . \"sell3\")(\"art/fore/endgame.spe\" . \"credit\"))";
 //    char *prog="((\"art/fore/endgame.spe\" . \"credit\") (\"art/help.spe\" . \"sell6\"))";
     char const *prog = "((\"art/fore/endgame.spe\" . \"credit\"))";
-    ss->SetValue(LObject::Compile(prog));
+    ss->SetValue(lisp::compile(prog));
     LSpace::Current = sp;
   }
 

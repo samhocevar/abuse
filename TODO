@@ -74,5 +74,3 @@ is this necessary before eval()?
 
 car(car(...)) -> caar ?
 
-LObject::compile -> lisp::compile
-

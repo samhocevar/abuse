@@ -158,7 +158,7 @@ void lbreak(char const *format, ...)
       char const *s=st;
       do
       {
-        LObject *prog = LObject::Compile(s);
+        LObject *prog = lisp::compile(s);
         PtrRef r1(prog);
         while (*s==' ' || *s=='\t' || *s=='\r' || *s=='\n')
             s++;
@@ -1043,7 +1043,7 @@ void push_onto_list(void *object, void *&list)
 
 void *comp_optimize(void *list);
 
-LObject *LObject::Compile(char const *&code)
+LObject *lisp::compile(char const *&code)
 {
     LObject *ret = NULL;
 
@@ -1061,7 +1061,7 @@ LObject *LObject::Compile(char const *&code)
 
     ((LList *)cs)->m_car=quote_symbol;
     c2 = LList::Create();
-    tmp=Compile(code);
+    tmp = compile(code);
     ((LList *)c2)->m_car = (LObject *)tmp;
     ((LList *)c2)->m_cdr=NULL;
     ((LList *)cs)->m_cdr = (LObject *)c2;
@@ -1074,7 +1074,7 @@ LObject *LObject::Compile(char const *&code)
 
     ((LList *)cs)->m_car=backquote_symbol;
     c2 = LList::Create();
-    tmp=Compile(code);
+    tmp = compile(code);
     ((LList *)c2)->m_car = (LObject *)tmp;
     ((LList *)c2)->m_cdr=NULL;
     ((LList *)cs)->m_cdr = (LObject *)c2;
@@ -1086,7 +1086,7 @@ LObject *LObject::Compile(char const *&code)
 
     ((LList *)cs)->m_car=comma_symbol;
     c2 = LList::Create();
-    tmp=Compile(code);
+    tmp = compile(code);
     ((LList *)c2)->m_car = (LObject *)tmp;
     ((LList *)c2)->m_cdr=NULL;
     ((LList *)cs)->m_cdr = (LObject *)c2;
@@ -1117,7 +1117,7 @@ LObject *LObject::Compile(char const *&code)
                   {
                     void *tmp;
                     read_ltoken(code, token_buffer);              // skip the '.'
-                    tmp=Compile(code);
+                    tmp = lisp::compile(code);
                     ((LList *)last)->m_cdr = (LObject *)tmp;          // link the last cdr to
                     last=NULL;
                   }
@@ -1129,7 +1129,7 @@ LObject *LObject::Compile(char const *&code)
                   cur = LList::Create();
                   PtrRef r4(cur);
                   if (!first) first=cur;
-                  tmp=Compile(code);
+                  tmp = lisp::compile(code);
                   ((LList *)cur)->m_car = (LObject *)tmp;
                   if (last)
                     ((LList *)last)->m_cdr = (LObject *)cur;
@@ -1183,7 +1183,7 @@ LObject *LObject::Compile(char const *&code)
       tmp = LSymbol::FindOrCreate("function");
       ((LList *)cs)->m_car = (LObject *)tmp;
       c2 = LList::Create();
-      tmp=Compile(code);
+      tmp = lisp::compile(code);
       ((LList *)c2)->m_car = (LObject *)tmp;
       ((LList *)cs)->m_cdr = (LObject *)c2;
       ret=cs;
@@ -2303,7 +2303,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                     stat_man->update((cs - s) * 100 / l);
 #endif
                 void *m = LSpace::Tmp.Mark();
-                compiled_form = LObject::Compile(cs);
+                compiled_form = lisp::compile(cs);
                 lisp::eval(compiled_form);
                 compiled_form = NULL;
                 LSpace::Tmp.Restore(m);

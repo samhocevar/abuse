@@ -2135,7 +2135,7 @@ void check_for_lisp(int argc, char **argv)
                 char const *s = l;
                 while(*s)
                 {
-                    LObject *prog = LObject::Compile(s);
+                    LObject *prog = lisp::compile(s);
                     l_user_stack.push(prog);
                     while(*s==' ' || *s=='\t' || *s=='\r' || *s=='\n') s++;
                     lisp::print(lisp::eval(prog));
