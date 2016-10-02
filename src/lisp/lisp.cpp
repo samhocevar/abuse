@@ -36,6 +36,18 @@
 #   include "dev.h"
 #endif
 
+#if TYPE_CHECKING
+#   define ASSERT_TYPE(obj, type, message) \
+        if (item_type(obj) != type) \
+        { \
+            lisp::print(obj); \
+            lbreak(": %s\n", message); \
+            exit(0); \
+        }
+#else
+#   define ASSERT_TYPE(obj, type, message)
+#endif
+
 /* To bypass the whole garbage collection issue of lisp I am going to have
  * separate spaces where lisp objects can reside.  Compiled code and gloabal
  * variables will reside in permanant space.  Eveything else will reside in
@@ -468,16 +480,10 @@ void *nth(int num, void *list)
 
 void *lpointer_value(void *lpointer)
 {
-  if (!lpointer) return NULL;
-#ifdef TYPE_CHECKING
-  else if (item_type(lpointer)!=L_POINTER)
-  {
-    lisp::print((LObject *)lpointer);
-    lbreak(" is not a pointer\n");
-    exit(0);
-  }
-#endif
-  return ((LPointer *)lpointer)->m_addr;
+    if (!lpointer)
+        return nullptr;
+    ASSERT_TYPE((LPointer *)lpointer, L_POINTER, "not a pointer");
+    return ((LPointer *)lpointer)->m_addr;
 }
 
 int32_t lnumber_value(void *lnumber)
@@ -502,14 +508,7 @@ int32_t lnumber_value(void *lnumber)
 
 char *LString::GetString()
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_STRING)
-    {
-        lisp::print(this);
-        lbreak(" is not a string\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_STRING, "not a string");
     return m_str;
 }
 
@@ -539,14 +538,7 @@ LObject *lcar(void *c)
 
 uint16_t LChar::GetValue()
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_CHARACTER)
-    {
-        lisp::print(this);
-        lbreak("is not a character\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_CHARACTER, "not a character");
     return m_ch;
 }
 
@@ -595,14 +587,7 @@ void *lisp_eq(void *n1, void *n2)
 
 LObject *LArray::Get(int x)
 {
-#ifdef TYPE_CHECKING
-    if (m_type != L_1D_ARRAY)
-    {
-        lisp::print(this);
-        lbreak("is not an array\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_1D_ARRAY, "not an array");
     if (x >= (int)m_len || x < 0)
     {
         lbreak("array reference out of bounds (%d)\n", x);
@@ -863,14 +848,7 @@ size_t LList::GetLength()
 {
     size_t ret = 0;
 
-#ifdef TYPE_CHECKING
-    if (item_type(this) != (ltype)L_CONS_CELL)
-    {
-        lisp::print(this);
-        lbreak(" is not a sequence\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_CONS_CELL, "not a sequence");
 
     for (LObject *p = this; p; p = CDR(p))
         ret++;
@@ -1387,15 +1365,7 @@ void lisp::print(LObject *o)
 /* PtrRef check: OK */
 LObject *LSymbol::EvalFunction(void *arg_list)
 {
-#ifdef TYPE_CHECKING
-    int args, req_min, req_max;
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("EVAL: is not a function name (not symbol either)");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "EVAL: not a function name (not symbol either)");
 
     LObject *fun = m_function;
     PtrRef ref2(fun);
@@ -1405,6 +1375,8 @@ LObject *LSymbol::EvalFunction(void *arg_list)
     ltype t = item_type(fun);
 
 #ifdef TYPE_CHECKING
+    int args, req_min, req_max;
+
     switch (t)
     {
     case L_SYS_FUNCTION:
@@ -1980,14 +1952,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #endif
                 LArray *a = (LArray *)CAR(CDR(i))->Eval();
                 PtrRef r3(a);
-#ifdef TYPE_CHECKING
-                if (item_type(a) != L_1D_ARRAY)
-                {
-                    lisp::print(a);
-                    lbreak("is not an array (aref)\n");
-                    exit(0);
-                }
-#endif
+                ASSERT_TYPE(a, L_1D_ARRAY, "not an array (aref)");
                 int num = lnumber_value(CAR(CDR(CDR(i)))->Eval());
 #ifdef TYPE_CHECKING
                 if (num >= (int)a->m_len || num < 0)
@@ -2065,14 +2030,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         while (var_list)
         {
             LObject *var_name = CAR(CAR(var_list)), *tmp;
-#ifdef TYPE_CHECKING
-            if (item_type(var_name) != L_SYMBOL)
-            {
-                lisp::print(var_name);
-                lbreak("should be a symbol (let)\n");
-                exit(0);
-            }
-#endif
+            ASSERT_TYPE(var_name, L_SYMBOL, "should be a symbol (let)");
 
             l_user_stack.push(((LSymbol *)var_name)->m_value);
             tmp = CAR(CDR(CAR(var_list)))->Eval();
@@ -2103,21 +2061,10 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LSymbol *symbol = (LSymbol *)CAR(arg_list);
         PtrRef r1(symbol);
-#ifdef TYPE_CHECKING
-        if (item_type(symbol) != L_SYMBOL)
-        {
-            lisp::print(symbol);
-            lbreak(" is not a symbol! (DEFUN)\n");
-            exit(0);
-        }
 
-        if (item_type(arg_list) != L_CONS_CELL)
-        {
-            lisp::print(arg_list);
-            lbreak("is not a lambda list (DEFUN)\n");
-            exit(0);
-        }
-#endif
+        ASSERT_TYPE(symbol, L_SYMBOL, "not a symbol (DEFUN)");
+        ASSERT_TYPE(arg_list, L_CONS_CELL, "not a lambda list (DEFUN)");
+
         LObject *block_list = CDR(CDR(arg_list));
 
         LUserFunction *ufun = new_lisp_user_function((LList *)lcar(lcdr(arg_list)), (LList *)block_list);
@@ -2193,12 +2140,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LObject *i = CAR(arg_list)->Eval();
         PtrRef r1(i);
-        if (item_type(i) != L_NUMBER)
-        {
-            lisp::print(i);
-            lbreak(" is not number type\n");
-            exit(0);
-        }
+        ASSERT_TYPE(i, L_NUMBER, "not number type");
         ret = LChar::Create(((LNumber *)i)->m_num);
         break;
     }
@@ -2290,14 +2232,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_SYMBOL_NAME:
     {
         LSymbol *symb = (LSymbol *)CAR(arg_list)->Eval();
-#ifdef TYPE_CHECKING
-        if (item_type(symb) != L_SYMBOL)
-        {
-            lisp::print(symb);
-            lbreak(" is not a symbol (symbol-name)\n");
-            exit(0);
-        }
-#endif
+        ASSERT_TYPE(symb, L_SYMBOL, "not a symbol (symbol-name)");
         ret = symb->m_name;
         break;
     }
@@ -2955,14 +2890,7 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
     LObject *ret = NULL;
     PtrRef ref1(ret);
 
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("EVAL : is not a function name (not symbol either)");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "EVAL: not a function name (not symbol either)");
 #ifdef L_PROFILE
     Timer t;
 #endif
@@ -3168,27 +3096,13 @@ void LSpace::Clear()
 
 LString *LSymbol::GetName()
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("is not a symbol\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "not a symbol");
     return m_name;
 }
 
 void LSymbol::SetNumber(long num)
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("is not a symbol\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "not a symbol");
     if (m_value != l_undefined && item_type(m_value) == L_NUMBER)
         ((LNumber *)m_value)->m_num = num;
     else
@@ -3197,40 +3111,19 @@ void LSymbol::SetNumber(long num)
 
 void LSymbol::SetValue(LObject *val)
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("is not a symbol\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "not a symbol");
     m_value = val;
 }
 
 LObject *LSymbol::GetFunction()
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("is not a symbol\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "not a symbol");
     return m_function;
 }
 
 LObject *LSymbol::GetValue()
 {
-#ifdef TYPE_CHECKING
-    if (item_type(this) != L_SYMBOL)
-    {
-        lisp::print(this);
-        lbreak("is not a symbol\n");
-        exit(0);
-    }
-#endif
+    ASSERT_TYPE(this, L_SYMBOL, "not a symbol");
     return m_value;
 }
 
