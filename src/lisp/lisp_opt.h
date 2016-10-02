@@ -8,8 +8,7 @@
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __LISP_OPT_HPP_
-#define __LISP_OPT_HPP_
+#pragma once
 
 #include "lisp/lisp.h"
 
@@ -20,4 +19,3 @@ extern LSymbol *true_symbol, *list_symbol, *string_symbol, *quote_symbol,
 
 extern void *colon_initial_contents, *colon_initial_element, *load_warning;
 
-#endif

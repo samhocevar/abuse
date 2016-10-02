@@ -1,5 +1,14 @@
-#ifndef __FILEMAN_HPP_
-#define __FILEMAN_HPP_
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
+#pragma once
 
 #include <unistd.h>
 #include "sock.h"
@@ -24,7 +33,7 @@ class file_manager
     nfs_client(net_socket *sock, int file_fd, nfs_client *next);
     int send_read();     // flushes as much of size_to_read as possible
     ~nfs_client();
-  } ;
+  };
 
 
   class remote_file    // a remote client has opened this file with us
@@ -45,7 +54,7 @@ class file_manager
     int open_failure() { return sock==NULL; }
     ~remote_file();
     int fd() { if (sock) return sock->get_fd(); else return -1; }
-  } ;
+  };
 
 
   nfs_client *nfs_list;
@@ -70,9 +79,7 @@ class file_manager
   int32_t rf_file_size(int fd);
   void set_default_fs(net_address *def) { default_fs=def->copy(); }
   ~file_manager() { if (default_fs) delete default_fs; }
-} ;
+};
 
 extern file_manager *fman;
 
-
-#endif

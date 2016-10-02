@@ -1,16 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-
-#ifndef __LEVEL_HPP_
-#define __LEVEL_HPP_
+#pragma once
 
 #include "imlib/specs.h"
 
@@ -41,7 +39,7 @@ class area_controller
   int32_t ambient_speed, view_xoff_speed,view_yoff_speed;
   area_controller *next;
   area_controller(int32_t X, int32_t Y, int32_t W, int32_t H, area_controller *Next);
-} ;
+};
 
 extern int32_t last_tile_hit_x,last_tile_hit_y;
 extern int dev;
@@ -216,28 +214,8 @@ public :
   void write_player_info(bFILE *fp, object_node *save_list);
   void write_object_info(char *filename);
   void level_loaded_notify();
-} ;
+};
 
 extern Level *g_current_level;
 void pull_actives(GameObject *o, GameObject *&last_active, int &t);
-
-
-
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

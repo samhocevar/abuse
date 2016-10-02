@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __LISP_HPP_
-#define __LISP_HPP_
+#pragma once
 
 #include <cstdlib>
 #include <stdint.h>
@@ -337,7 +336,7 @@ int32_t lisp_cos(int32_t x);
 
 extern "C" {
 void lbreak(const char *format, ...);
-} ;
+};
 
 extern void clisp_init();                      // external initalizer call by lisp_init()
 extern long c_caller(long number, void *arg);  // exten c function switches on number
@@ -353,4 +352,3 @@ static inline char *lstring_value(void *str) { return ((LString *)str)->GetStrin
 
 #include "lisp_opt.h"
 
-#endif

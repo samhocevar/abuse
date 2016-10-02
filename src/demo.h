@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __DEMO_HPP_
-#define __DEMO_HPP_
+#pragma once
 
 #include "lisp/lisp.h"
 
@@ -36,7 +35,7 @@ class demo_manager
   int demo_skip() { if (skip_next) { skip_next--; return 1; } else return 0; }
   demo_manager() { state=NORMAL; skip_next=0; }
   void do_inputs();
-} ;
+};
 
 extern demo_manager demo_man;
 
@@ -47,5 +46,4 @@ extern ivec2 last_demo_mpos;
 extern int last_demo_mbut;
 
 //extern ulong demo_tick_on;
-#endif
 

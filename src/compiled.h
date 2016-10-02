@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __COMPILED_HPP_
-#define __COMPILED_HPP_
+#pragma once
 
 extern int32_t S_fall_start,S_falling,S_landing,S_pounce_wait,
             S_turn_around,S_fire_wait,S_ceil_fire,S_top_walk,
@@ -37,4 +36,3 @@ void compiled_uninit();
 extern uint8_t *bad_guy_array;  // list flaging each character saying they are a bad bug or not
                                 // mainly used by the rocket to find targets
 
-#endif

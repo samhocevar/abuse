@@ -1,5 +1,14 @@
-#ifndef __SOCK_HPP_
-#define __SOCK_HPP_
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
+#pragma once
 
 extern const char notify_signature[];
 extern const char notify_response[];
@@ -92,14 +101,4 @@ public:
   net_protocol() { next=first; first=this; debug_setting=DB_OFF; }
   virtual ~net_protocol() { cleanup(); }
 };
-
-#endif
-
-
-
-
-
-
-
-
 

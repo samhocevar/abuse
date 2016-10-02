@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __SPECS_HPP_
-#define __SPECS_HPP_
+#pragma once
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -149,7 +148,7 @@ public :
   virtual int unbuffered_tell();
   virtual int file_size() { return file_length; }
   virtual ~jFILE();
-} ;
+};
 
 class SpecEntry
 {
@@ -212,5 +211,4 @@ void set_spec_main_file(char *filename, int Search_order);
 void set_file_opener(bFILE *(*open_fun)(char const *, char const *));
 void set_no_space_handler(void (*handle_fun)());
 bFILE *open_file(char const *filename, char const *mode);
-#endif
 

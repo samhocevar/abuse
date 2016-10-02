@@ -1,5 +1,14 @@
-#ifndef __GCLIENT_HPP_
-#define __GCLIENT_HPP_
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
+#pragma once
 
 #include <unistd.h>
 #include "sock.h"
@@ -22,7 +31,5 @@ class game_client : public game_handler
   virtual int kill_slackers();
   virtual int quit();
   virtual ~game_client();
-} ;
+};
 
-
-#endif

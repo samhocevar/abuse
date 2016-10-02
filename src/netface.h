@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -10,8 +10,7 @@
 
 // structure used to comminicate with the engine
 
-#ifndef __NETFACE_HPP_
-#define __NETFACE_HPP_
+#pragma once
 
 #include <stdint.h>
 
@@ -54,13 +53,13 @@ enum { CLCMD_JOIN_FAILED,
        CLCMD_RELOAD_END,            // netstart.spe has been loaded, please continue
        CLCMD_REQUEST_RESEND,        // input didn't arrive, please resend
        CLCMD_UNJOIN                 // causes server to delete you (addes your delete command to next out packet)
-     } ;
+     };
 
 
 // return codes for NFCMD_OPEN
 enum { NF_OPEN_FAILED,
        NF_OPEN_LOCAL_FILE,      // should return path to local file as well
-       NF_OPEN_REMOTE_FILE } ;  // returned to engine for a filename
+       NF_OPEN_REMOTE_FILE };  // returned to engine for a filename
 
 
 // types of clients allowed to connect
@@ -69,7 +68,7 @@ enum { CLIENT_NFS=50,           // client can read one remote files
        CLIENT_CRC_WAITER,       // client waits for crcs to be saved
        CLIENT_LSF_WAITER        // waits for lsf to be transmitted
 
-     } ;
+     };
 
 // base->input_state will be one of the following
 
@@ -103,7 +102,7 @@ struct join_struct
   int client_id;
   char name[100];
   join_struct *next;
-} ;
+};
 
 struct net_packet
 {
@@ -147,7 +146,7 @@ struct net_packet
   void set_packet_size(uint16_t x) { uint16_t tmp = lstl(x); memcpy(data, &tmp, sizeof(tmp)); }
 
 
-} ;
+};
 
 struct base_memory_struct
 {
@@ -163,8 +162,5 @@ struct base_memory_struct
   int16_t current_tick;         // set by engine, used by driver to confirm packet is not left over
 
   join_struct *join_list;
-} ;
+};
 
-
-
-#endif

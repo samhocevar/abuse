@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef _OBJECTS_HPP_
-#define _OBJECTS_HPP_
+#pragma once
 
 #include "imlib/input.h"
 
@@ -48,7 +47,7 @@ extern int total_objects;
 
 
 #define TOTAL_OBJECT_VARS 28
-struct obj_desc { char const *name; int type; } ;
+struct obj_desc { char const *name; int type; };
 extern obj_desc object_descriptions[TOTAL_OBJECT_VARS];
 int RC_type_size(int type);
 //void init_object_offsets();
@@ -171,7 +170,7 @@ public :
       get_object(i)->_team = team;
     _team = team;
   }
-} ;
+};
 
 class object_node  // used to create various list of objects
 {
@@ -179,7 +178,7 @@ class object_node  // used to create various list of objects
   GameObject *me;
   object_node *next;
   object_node(GameObject *Me, object_node *Next) { me=Me; next=Next; }
-} ;
+};
 
 extern GameObject *current_object;
 extern view *current_view;
@@ -189,10 +188,4 @@ int base_size();
 void delete_object_list(object_node *first);
 int          object_to_number_in_list(GameObject *who, object_node *list);
 GameObject *number_to_object_in_list(int32_t x, object_node *list);
-
-
-#endif
-
-
-
 

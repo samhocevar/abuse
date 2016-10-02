@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __DIRECTOR_HPP_
-#define __DIRECTOR_HPP_
+#pragma once
 
 class director        // the director controlls the scene
 {
@@ -29,9 +28,7 @@ public :
   void wait(void *arg);
   director();
   void set_abort(int x) { scene_abort=x; }
-} ;
+};
 
 extern director scene_director;
 
-
-#endif

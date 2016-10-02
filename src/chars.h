@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __CHARACTERZ_HPP_
-#define __CHARACTERZ_HPP_
+#pragma once
 
 #include <string.h>
 #include <stdarg.h>
@@ -44,7 +43,7 @@ class named_field
     descript_name = strdup(fake);
   }
   ~named_field() { free(real_name); free(descript_name); }
-} ;
+};
 
 
 
@@ -78,7 +77,7 @@ enum { OFUN_AI,                   // objects ai function called by the mover, sh
        OFUN_RELOAD,               // called when the object is loaded from disk (not save games)
        OFUN_GET_CACHE_LIST,       // called on level load, should return list (a . b) a is character id, and b is other ids
        OFUN_CHANGE_TYPE
-     } ;
+     };
 extern char const *ofun_names[TOTAL_OFUNS];
 
 
@@ -115,7 +114,7 @@ public:
   int cache_in();    // returns false if out of cache memory
   void check_sizes();
   long isa_var_name(char *name);
-} ;
+};
 
 extern CharacterType **figures;
 int flinch_state(character_state state);
@@ -124,23 +123,4 @@ void *def_char(void *args);
 
 extern int total_weapons;
 extern int *weapon_types;    // maps 0..total_weapons into 'real' weapon type
-
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

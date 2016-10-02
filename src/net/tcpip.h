@@ -1,12 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
+
+#pragma once
 
 #include <stdlib.h>
 #include <fcntl.h>
@@ -69,7 +71,7 @@ public:
     //}}}
   int get_port() { return htons(addr.sin_port); }
   net_address *copy()  { return new ip_address(&addr); }
-  ip_address() { } ;
+  ip_address() { };
   void store_string(char *st, int st_length)
   //{ {{
   {
@@ -80,7 +82,7 @@ public:
     st[st_length-1]=0;
   }
   //}}}
-} ;
+};
 
 class tcpip_protocol : public net_protocol
 {
@@ -126,7 +128,7 @@ public :
   virtual net_address *find_address(int port, char *name);   // name should be a 256 byte buffer
   virtual void reset_find_list();
   virtual ~tcpip_protocol() { cleanup(); }
-} ;
+};
 
 extern tcpip_protocol tcpip;
 
@@ -158,7 +160,7 @@ class unix_fd : public net_socket
   int get_fd() { return fd; }
 
   void broadcastable();
-} ;
+};
 
 class tcp_socket : public unix_fd
 {
@@ -202,7 +204,7 @@ class tcp_socket : public unix_fd
     }
     return 0;
   }
-} ;
+};
 
 class udp_socket : public unix_fd
 {
@@ -242,5 +244,5 @@ class udp_socket : public unix_fd
     return 1;
   }
 
-} ;
+};
 

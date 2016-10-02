@@ -8,9 +8,9 @@
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
+#pragma once
+
 #include "stack.h"
-#ifndef __LISP_GC_HPP_
-#define __LISP_GC_HPP_
 
 // Stack user progs can push data and have it GCed
 extern GrowStack<void> l_user_stack;
@@ -39,6 +39,4 @@ public:
     // Stack of user pointers, user pointers get remapped on GC
     static GrowStack<void *> stack;
 };
-
-#endif
 

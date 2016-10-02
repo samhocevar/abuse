@@ -1,18 +1,16 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __STATUS_HPP_
-#define __STATUS_HPP_
+#pragma once
 
 #include "visobj.h"      // get visual object declaration
-
 
 class status_manager
 {
@@ -22,7 +20,7 @@ class status_manager
   virtual void pop() = 0;
   virtual void force_display() { ; }
   virtual ~status_manager() { }
-} ;
+};
 
 
 class text_status_node;
@@ -36,7 +34,7 @@ class text_status_manager : public status_manager
   virtual void push(char const *name, AVisualObject *show);
   virtual void update(int percentage);
   virtual void pop();
-} ;
+};
 
 
 extern status_manager *stat_man;
@@ -46,8 +44,5 @@ class stack_stat  // something you can declare on the stact that is sure to get 
   public :
   stack_stat(char const *st, AVisualObject *show = nullptr) { if (stat_man) stat_man->push(st,show); }
   ~stack_stat() { if (stat_man) stat_man->pop(); }
-} ;
-
-
-#endif
+};
 

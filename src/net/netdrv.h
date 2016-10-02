@@ -1,5 +1,14 @@
-#ifndef __NETDRV_HPP_
-#define __NETDRV_HPP_
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
+#pragma once
 
 #error hi
 #include "netface.h"
@@ -43,7 +52,7 @@ class net_driver
     lsf_waiter(net_socket *sock, lsf_waiter *next) : sock(sock), next(next)
     {
       sock->read_selectable();  // set in case socket dies
-    } ;
+    };
     ~lsf_waiter()
     {
       sock->read_unselectable();
@@ -60,7 +69,7 @@ class net_driver
     crc_waiter(net_socket *sock, crc_waiter *next) : sock(sock), next(next)
     {
       sock->read_selectable();  // set in case socket dies
-    } ;
+    };
     ~crc_waiter()
     {
       sock->read_unselectable();
@@ -87,10 +96,8 @@ class net_driver
   net_protocol *get_protocol() { return proto; }
   int become_server();
   ~net_driver();
-} ;
+};
 
 extern net_driver *driver;
 void mdie(char *reason);
-
-#endif
 

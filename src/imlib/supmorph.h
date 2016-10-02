@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __SUPER_MORPH_HPP__
-#define __SUPER_MORPH_HPP__
+#pragma once
 
 #include "imlib/transimage.h"
 
@@ -21,13 +20,13 @@ public :
   int w,h;
   super_morph(TransImage *h1, TransImage *h2, int aneal_steps, void (*stat_fun)(int));
   ~super_morph() { if (t) free(movers); }
-} ;
+};
 
 
 struct stepper
 {
   long x,y,r,g,b,dx,dy,dr,dg,db;
-} ;
+};
 
 class smorph_player
 {
@@ -38,7 +37,5 @@ public :
   smorph_player(super_morph *m, Palette *pal, AImage *i1, AImage *i2, int frames, int dir);
   int show(AImage *screen, int x, int y, ColorFilter *fil, Palette *pal, int blur_threshold);
   ~smorph_player() { free(hole); free(steps);  }
-} ;
+};
 
-
-#endif

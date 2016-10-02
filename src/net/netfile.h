@@ -1,5 +1,14 @@
-#ifndef __NETFILE_HPP_
-#define __NETFILE_HPP_
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
+#pragma once
 
 #include <sys/types.h>
 
@@ -18,7 +27,7 @@ class nfs_client    // this is a client only read's a file
   nfs_client(int Socket_fd, int File_fd, nfs_client *Next);
   int send_read();     // flushes as much of size_to_read as possible
   ~nfs_client();
-} ;
+};
 
 
 class remote_file    // a remote client has opened this file with us
@@ -39,7 +48,7 @@ class remote_file    // a remote client has opened this file with us
   int open_failure() { return socket_fd<0; }
   ~remote_file();
   int fd() { return socket_fd; }
-} ;
+};
 
 
 extern nfs_client *first_nfs_client;
@@ -54,4 +63,3 @@ void unlink_remote_file(remote_file *rf);
 int open_file(char *&filename, char *mode);
 int fetch_crcs(char *server);
 
-#endif

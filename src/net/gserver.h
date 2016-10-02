@@ -1,5 +1,14 @@
-#ifndef __GSERVER_HPP_
-#define __GSERVER_HPP_
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
+#pragma once
 
 #define MAX_JOINERS 32  // maximum clients that can join at the same time
 
@@ -47,7 +56,7 @@ class game_server : public game_handler
     comm->read_selectable();
       };
     ~player_client();
-  } ;
+  };
 
   player_client *player_list;
   int waiting_server_input, reload_state;
@@ -70,6 +79,5 @@ class game_server : public game_handler
   virtual int quit();
   game_server();
   ~game_server();
-} ;
+};
 
-#endif

@@ -1,7 +1,16 @@
+/*
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *
+ *  This software was released into the Public Domain. As with most public
+ *  domain software, no warranty is made or implied by Crack dot Com, by
+ *  Jonathan Clark, or by Sam Hocevar.
+ */
+
 // engine.c is the what comminicates with the abuse engine
 
-#ifndef __ENGINE_HPP_
-#define __ENGINE_HPP_
+#pragma once
 
 #include "../inc/netface.h"
 #include <stdio.h>
@@ -76,13 +85,9 @@ public :
     FD_CLR(socket_fd,&master_set);
     if (data_fd>0)
       close(data_fd);
-  } ;
-} ;
+  };
+};
 
 extern client *first_client;    // list of clients
 int connect_to_server(char *&server_name, int def_port=DEFAULT_COMM_PORT, int stream_type=SOCK_STREAM, int force_port=0);  // -1 on failure
-
-#endif
-
-
 

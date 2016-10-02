@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __NETCFG_HPP_
-#define __NETCFG_HPP_
+#pragma once
 
 #include "imlib/window.h"
 
@@ -39,8 +38,7 @@ class net_configuration
   int confirm_inputs(InputManager *i, int server);
   AWidget *center_ifield(AWidget *i,int x1, int x2, AWidget *place_below);
   int get_options(int server);
-} ;
+};
 
 extern net_configuration *main_net_cfg;
 
-#endif

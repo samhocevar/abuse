@@ -1,14 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __CLISP_HPP_
+#pragma once
 
 int get_lprop_number(void *sybol, int def);  // returns def if symbol undefined or not number type
 
@@ -55,5 +55,3 @@ extern void *l_main_menu,
      *l_title_screen,*l_console_font,*l_fields,*l_FIRE,*l_fire_object,
      *l_cop_dead_parts,*l_restart_player,*l_help_screens,*l_save_order;
 
-
-#endif

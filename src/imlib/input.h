@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __INPUT_HPP_
-#define __INPUT_HPP_
+#pragma once
 
 #include "imlib/window.h"
 #include "imlib/filter.h"
@@ -118,6 +117,4 @@ private:
     void put_para(AImage *screen, char const *st, int dx, int dy,
                   int xspace, int yspace, JCFont *font, int color);
 };
-
-#endif
 

@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef LIGHT_HPP
-#define LIGHT_HPP
+#pragma once
 
 #include "imlib/image.h"
 #include "imlib/palette.h"
@@ -80,4 +79,3 @@ extern int light_detail;
 extern int32_t light_to_number(LightSource *l);
 extern LightSource *number_to_light(int32_t x);
 
-#endif

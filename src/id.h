@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __ID_HPP_
-#define __ID_HPP_
+#pragma once
 
 enum dev_ids
 {
@@ -266,7 +265,4 @@ enum dev_ids
 #define SUSPEND_MODE          256
 #define MAP_MODE              512
 #define DRAW_LINKS           1024
-
-#endif
-
 

@@ -1,19 +1,17 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef GRUE_MENU_HPP
-#define GRUE_MENU_HPP
+#pragma once
 
 #include "imlib/fonts.h"
 
 int menu(void *args, JCFont *font);             // reurns -1 on esc
 void main_menu();
 
-#endif

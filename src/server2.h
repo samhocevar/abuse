@@ -1,15 +1,14 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
  *  Jonathan Clark, or by Sam Hocevar.
  */
 
-#ifndef __SERVER2_HPP_
-#define __SERVER2_HPP_
+#pragma once
 #error hi
 
 class client_descriptor;
@@ -27,12 +26,10 @@ class game_server
   void send_inputs();            // pass collected inputs to all non-local clients
   void join_new_players();
   ~game_server();
-} ;
+};
 
 extern int start_running;
 extern game_server *local_server;       // created on server machine, NULL on all others
 
 void game_net_init(int argc, char **argv);
-#endif
-
 
