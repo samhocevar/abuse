@@ -72,9 +72,6 @@ struct LObject
     /* Factories */
     static LObject *Compile(char const *&s);
 
-    /* Methods */
-    LObject *Eval();
-
     /* Members */
     ltype m_type;
 };
@@ -260,6 +257,7 @@ static inline ltype item_type(void const *x)
 
 struct lisp
 {
+    static LObject *eval(LObject *);
     static void print(LObject *);
 };
 

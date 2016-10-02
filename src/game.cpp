@@ -1117,7 +1117,7 @@ void do_title()
     fade_out(32);
 
     void *space_snd = LSymbol::FindOrCreate("SPACE_SND")->GetValue();
-    char *str = lstring_value(LSymbol::FindOrCreate("plot_start")->Eval());
+    char *str = lstring_value(lisp::eval(LSymbol::FindOrCreate("plot_start")));
 
     bFILE *fp = open_file("art/smoke.spe", "rb");
     if(!fp->open_failure())
@@ -2138,7 +2138,7 @@ void check_for_lisp(int argc, char **argv)
                     LObject *prog = LObject::Compile(s);
                     l_user_stack.push(prog);
                     while(*s==' ' || *s=='\t' || *s=='\r' || *s=='\n') s++;
-                    lisp::print(prog->Eval());
+                    lisp::print(lisp::eval(prog));
                     l_user_stack.pop(1);
                 }
                 free(l);

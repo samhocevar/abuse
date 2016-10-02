@@ -69,3 +69,12 @@ xstart() / xend() etc.
 jwindow::area
 button::area
 
+is this necessary before eval()?
+  while(*s==' ' || *s=='\t' || *s=='\r' || *s=='\n') s++;
+
+car(car(...)) -> caar ?
+
+replace CAR with lcar everywhere?
+
+LObject::compile -> lisp::compile
+

@@ -257,7 +257,7 @@ void *laser_ufun(void *args)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(CAR(args)->Eval());
+      int32_t value=lnumber_value(lisp::eval(CAR(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=3;
@@ -299,7 +299,7 @@ void *top_ufun(void *args)                       // generic top character ai GRE
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(CAR(args)->Eval());
+      int32_t value=lnumber_value(lisp::eval(CAR(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=6;
@@ -326,7 +326,7 @@ void *plaser_ufun(void *args)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(CAR(args)->Eval());
+      int32_t value=lnumber_value(lisp::eval(CAR(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=2;
@@ -350,7 +350,7 @@ void *lsaber_ufun(void *args)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(CAR(args)->Eval());
+      int32_t value=lnumber_value(lisp::eval(CAR(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=1;
@@ -377,7 +377,7 @@ void *player_rocket_ufun(void *args)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(CAR(args)->Eval());
+      int32_t value=lnumber_value(lisp::eval(CAR(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=6;

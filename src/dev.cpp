@@ -60,10 +60,10 @@ char const *symbol_str(char const *name)
   char prog[50];
   char const *cs=prog;
   strcpy(prog, "(setq section 'game_section)\n");
-  LObject::Compile(cs)->Eval();
+  lisp::eval(LObject::Compile(cs));
   strcpy(prog, "(load \"lisp/english.lsp\")\n");
   cs=prog;
-  if (!LObject::Compile(cs)->Eval())
+  if (!lisp::eval(LObject::Compile(cs)))
   {
     printf("unable to open file '%s'\n", lsf);
     exit(0);
@@ -937,7 +937,7 @@ void dev_controll::load_stuff()
     cs=prog;
     LObject *p = LObject::Compile(cs);
     l_user_stack.push(p);
-    p->Eval();
+    lisp::eval(p);
     l_user_stack.pop(1);
     for (int i=0; i<total_pals; i++)
       pal_wins[i]->close_window();
@@ -951,7 +951,7 @@ void dev_controll::do_command(char const *command, Event &ev)
   char const *st;
   if (command[0]=='(')            // is this a lisp command?
   {
-    LObject::Compile(command)->Eval();
+    lisp::eval(LObject::Compile(command));
     return ;
   }
 
@@ -2249,7 +2249,7 @@ void dev_controll::handle_event(Event &ev)
           atoi(mess_win->read(ID_MESS_STR1)),
           atoi(mess_win->read(ID_MESS_STR2)));
       char const *s=name;
-      LObject::Compile(s)->Eval();
+      lisp::eval(LObject::Compile(s));
       wm->Push(Event(ID_CANCEL, NULL));        // close window
     } break;
     case ID_TOGGLE_DELAY :
