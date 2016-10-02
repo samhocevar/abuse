@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -463,21 +463,18 @@ char *lerror(char const *loc, char const *cause)
   return NULL;
 }
 
-void *nth(int num, void *list)
+LObject *lisp::nth(int num, void *list)
 {
-  if (num<0)
-  {
-    lbreak("NTH: %d is not a nonnegative fixnum and therefore not a valid index\n", num);
-    exit(1);
-  }
+    if (num < 0)
+    {
+        lbreak("NTH: %d is not a nonnegative fixnum and therefore not a valid index\n", num);
+        exit(1);
+    }
 
-  while (list && num)
-  {
-    list=lisp::cdr(list);
-    num--;
-  }
-  if (!list) return NULL;
-  else return lisp::car(list);
+    while (list && num--)
+        list = lisp::cdr(list);
+
+    return list ? lisp::car(list) : nullptr;
 }
 
 void *lpointer_value(void *lpointer)
@@ -2348,7 +2345,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_NTH:
     {
         int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
-        ret = (LObject *)nth(x, lisp::eval(lisp::cadr(arg_list)));
+        ret = lisp::nth(x, lisp::eval(lisp::cadr(arg_list)));
         break;
     }
     case SYS_FUNC_RESIZE_TMP:
@@ -2772,36 +2769,16 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         ret = first;
         break;
     }
-    case SYS_FUNC_FIRST:
-        ret = lisp::eval(lisp::caar(arg_list));
-        break;
-    case SYS_FUNC_SECOND:
-        ret = lisp::eval(lisp::cadar(arg_list));
-        break;
-    case SYS_FUNC_THIRD:
-        ret = lisp::eval(lisp::caddar(arg_list));
-        break;
-    case SYS_FUNC_FOURTH:
-        ret = lisp::eval(lisp::cadddr(lisp::car(arg_list)));
-        break;
-    case SYS_FUNC_FIFTH:
-        ret = lisp::eval(lisp::cadddr(lisp::cdar(arg_list)));
-        break;
-    case SYS_FUNC_SIXTH:
-        ret = lisp::eval(lisp::cadddr(lisp::cddar(arg_list)));
-        break;
-    case SYS_FUNC_SEVENTH:
-        ret = lisp::eval(lisp::cadddr(lisp::cdddar(arg_list)));
-        break;
-    case SYS_FUNC_EIGHTH:
-        ret = lisp::eval(lisp::cadddr(lisp::cddddr(lisp::car(arg_list))));
-        break;
-    case SYS_FUNC_NINTH:
-        ret = lisp::eval(lisp::cadddr(lisp::cddddr(lisp::cdar(arg_list))));
-        break;
-    case SYS_FUNC_TENTH:
-        ret = lisp::eval(lisp::cadddr(lisp::cddddr(lisp::cddar(arg_list))));
-        break;
+    case SYS_FUNC_FIRST:   ret = lisp::eval(lisp::nth(0, lisp::car(arg_list))); break;
+    case SYS_FUNC_SECOND:  ret = lisp::eval(lisp::nth(1, lisp::car(arg_list))); break;
+    case SYS_FUNC_THIRD:   ret = lisp::eval(lisp::nth(2, lisp::car(arg_list))); break;
+    case SYS_FUNC_FOURTH:  ret = lisp::eval(lisp::nth(3, lisp::car(arg_list))); break;
+    case SYS_FUNC_FIFTH:   ret = lisp::eval(lisp::nth(4, lisp::car(arg_list))); break;
+    case SYS_FUNC_SIXTH:   ret = lisp::eval(lisp::nth(5, lisp::car(arg_list))); break;
+    case SYS_FUNC_SEVENTH: ret = lisp::eval(lisp::nth(6, lisp::car(arg_list))); break;
+    case SYS_FUNC_EIGHTH:  ret = lisp::eval(lisp::nth(7, lisp::car(arg_list))); break;
+    case SYS_FUNC_NINTH:   ret = lisp::eval(lisp::nth(8, lisp::car(arg_list))); break;
+    case SYS_FUNC_TENTH:   ret = lisp::eval(lisp::nth(9, lisp::car(arg_list))); break;
     case SYS_FUNC_SUBSTR:
     {
         int32_t x1 = lnumber_value(lisp::eval(lisp::car(arg_list)));

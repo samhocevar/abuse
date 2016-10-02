@@ -252,6 +252,8 @@ struct lisp
     static LObject *null;
 
     // List getters
+    static LObject *nth(int num, void *list);
+
     static inline LObject *&cdr(void *c)
     {
         if (!c || item_type(c) != ltype(L_CONS_CELL))
@@ -329,7 +331,6 @@ LSysFunction *new_user_lisp_function(int min_args, int max_args, int fun_number)
 
 int end_of_program(char *s);
 
-void *nth(int num, void *list);
 int32_t lisp_atan2(int32_t dy, int32_t dx);
 int32_t lisp_sin(int32_t x);
 int32_t lisp_cos(int32_t x);

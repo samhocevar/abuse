@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -211,7 +211,7 @@ int menu(void *args, JCFont *font)             // reurns -1 on esc
       TintArea(ivec2(mx + 1, by1), ivec2(mx + mw - 1, by2 + 1),
                u8vec3(63), color);
 
-      char *cur=men_str(nth(choice, args));
+      char *cur=men_str(lisp::nth(choice, args));
       font->PutString(main_screen, ivec2(mx + 10 + 1, by1 + 3), cur, wm->black());
       font->PutString(main_screen, ivec2(mx + 10, by1 + 2), cur, wm->bright_color());
       main_screen->Rectangle(ivec2(mx + 1, by1), ivec2(mx + mw - 2, by2),
@@ -236,7 +236,7 @@ int menu(void *args, JCFont *font)             // reurns -1 on esc
 
   if (choice!=-1)
   {
-    void *val=nth(choice, args);
+    void *val=lisp::nth(choice, args);
     if (item_type(val)==L_CONS_CELL)   // is there another value that the user want us to return?
       return lnumber_value(lisp::cdr(val));
   }
