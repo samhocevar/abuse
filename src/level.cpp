@@ -3084,7 +3084,7 @@ GameObject *Level::find_object_in_area(int32_t x, int32_t y, int32_t x1, int32_t
     {
       // check to see if the type is in the list
       Cell *v=list;
-      for (; !NILP(v) && lnumber_value(CAR(v))!=o->otype; v=CDR(v));
+      for (; !NILP(v) && lnumber_value(lcar(v))!=o->otype; v=lcdr(v));
       if (!NILP(v))
       {
     distance = sqlength(o->m_pos - ivec2(x, y));
@@ -3116,7 +3116,7 @@ GameObject *Level::find_object_in_angle(int32_t x, int32_t y, int32_t start_angl
     {
       // check to see if the type is in the list
       Cell *v=(Cell *)list;
-      for (; !NILP(v) && lnumber_value(CAR(v))!=o->otype; v=CDR(v));
+      for (; !NILP(v) && lnumber_value(lcar(v))!=o->otype; v=lcdr(v));
       if (!NILP(v))
       {
     distance = sqlength(o->m_pos - ivec2(x, y));

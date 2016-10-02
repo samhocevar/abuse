@@ -579,7 +579,7 @@ void *l_caller(long number, void *args)
   {
     case 0 :
     {
-      current_object->set_aistate(lnumber_value(lisp::eval(CAR(args))));
+      current_object->set_aistate(lnumber_value(lisp::eval(lcar(args))));
       current_object->set_aistate_time(0);
       void *ai=figures[current_object->otype]->get_fun(OFUN_AI);
       if (!ai)
@@ -593,8 +593,8 @@ void *l_caller(long number, void *args)
     case 1 :
     {
       GameObject *old_cur=current_object;
-      current_object=(GameObject *)lpointer_value(lisp::eval(CAR(args)));
-      void *ret=eval_block(CDR(args));
+      current_object=(GameObject *)lpointer_value(lisp::eval(lcar(args)));
+      void *ret=eval_block(lcdr(args));
       current_object=old_cur;
       return ret;
     }  break;
@@ -605,7 +605,7 @@ void *l_caller(long number, void *args)
       int whit;
       GameObject *o;
       if (args)
-        o=(GameObject *)lpointer_value(lisp::eval(CAR(args)));
+        o=(GameObject *)lpointer_value(lisp::eval(lcar(args)));
       else o=current_object;
       GameObject *hit=current_object->bmove(whit,o);
       if (hit)
@@ -621,17 +621,17 @@ void *l_caller(long number, void *args)
       else return LPointer::Create(player_list->m_focus); } break;
     case 5 : return LPointer::Create(g_current_level->find_closest(current_object->m_pos.x,
                                  current_object->m_pos.y,
-                               lnumber_value(lisp::eval(CAR(args))),
+                               lnumber_value(lisp::eval(lcar(args))),
                                        current_object)); break;
     case 6 : return LPointer::Create(g_current_level->find_xclosest(current_object->m_pos.x,
                                   current_object->m_pos.y,
-                                  lnumber_value(lisp::eval(CAR(args))),
+                                  lnumber_value(lisp::eval(lcar(args))),
                                   current_object
                                   )); break;
     case 7 :
     {
-      long n1 = lnumber_value(lisp::eval(CAR(args)));
-      long n2 = lnumber_value(lisp::eval(CAR(CDR(args))));
+      long n1 = lnumber_value(lisp::eval(lcar(args)));
+      long n2 = lnumber_value(lisp::eval(lcar(lcdr(args))));
       return LPointer::Create(g_current_level->find_xrange(current_object->m_pos.x,
                              current_object->m_pos.y,
                              n1,
@@ -640,12 +640,12 @@ void *l_caller(long number, void *args)
     } break;
     case 8 :
     {
-      int type = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long x = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long y = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
+      int type = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long x = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long y = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
       GameObject *o;
       if (args)
-        o=create(type,x,y,0,lnumber_value(lisp::eval(CAR(args))));
+        o=create(type,x,y,0,lnumber_value(lisp::eval(lcar(args))));
       else
         o=create(type,x,y);
       if (g_current_level)
@@ -654,12 +654,12 @@ void *l_caller(long number, void *args)
     } break;
     case 22 :
     {
-      int type = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long x = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long y = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
+      int type = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long x = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long y = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
       GameObject *o;
       if (args)
-        o=create(type,x,y,0,lnumber_value(lisp::eval(CAR(args))));
+        o=create(type,x,y,0,lnumber_value(lisp::eval(lcar(args))));
       else
         o=create(type,x,y);
       if (g_current_level)
@@ -670,7 +670,7 @@ void *l_caller(long number, void *args)
     case 9 : return LPointer::Create(the_game->first_view->m_focus); break;
     case 10 :
     {
-      view *v=((GameObject *)lpointer_value(lisp::eval(CAR(args))))->m_controller->next;
+      view *v=((GameObject *)lpointer_value(lisp::eval(lcar(args))))->m_controller->next;
       if (v)
         return LPointer::Create(v->m_focus);
       else return NULL;
@@ -678,12 +678,12 @@ void *l_caller(long number, void *args)
     case 11 :
     {
       return LPointer::Create
-      ((void *)current_object->get_object(lnumber_value(lisp::eval(CAR(args)))));
+      ((void *)current_object->get_object(lnumber_value(lisp::eval(lcar(args)))));
     } break;
     case 12 :
     {
       return LPointer::Create
-      ((void *)current_object->get_light(lnumber_value(lisp::eval(CAR(args)))));
+      ((void *)current_object->get_light(lnumber_value(lisp::eval(lcar(args)))));
     } break;
     case 13 :
     {
@@ -692,7 +692,7 @@ void *l_caller(long number, void *args)
       for (int i=0; i<old_cur->total_objects(); i++)
       {
     current_object=old_cur->get_object(i);
-    ret = lisp::eval(CAR(args));
+    ret = lisp::eval(lcar(args));
       }
       current_object=old_cur;
       return ret;
@@ -700,13 +700,13 @@ void *l_caller(long number, void *args)
     case 14 :
     {
       ivec2 pos, shift;
-      int t = lnumber_value(lisp::eval(CAR(args))); args=lcdr(args);
-      pos.x = lnumber_value(lisp::eval(CAR(args))); args=lcdr(args);
-      pos.y = lnumber_value(lisp::eval(CAR(args))); args=lcdr(args);
-      int r2 = lnumber_value(lisp::eval(CAR(args))); args=lcdr(args);
-      int r3 = lnumber_value(lisp::eval(CAR(args))); args=lcdr(args);
-      shift.x = lnumber_value(lisp::eval(CAR(args))); args=lcdr(args);
-      shift.y = lnumber_value(lisp::eval(CAR(args)));
+      int t = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      pos.x = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      pos.y = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      int r2 = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      int r3 = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      shift.x = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      shift.y = lnumber_value(lisp::eval(lcar(args)));
       return LPointer::Create(AddLightSource(t, pos, r2, r3, shift));
     } break;
     case 15 :
@@ -721,13 +721,13 @@ void *l_caller(long number, void *args)
     } break;
     case 17 :
     {
-      long trials = lnumber_value(lisp::eval(CAR(args)));
-      args = CDR(args);
+      long trials = lnumber_value(lisp::eval(lcar(args)));
+      args = lcdr(args);
       Timer t;
       for (int x = 0; x < trials; x++)
       {
         LSpace::Tmp.Clear();
-        lisp::eval(CAR(args));
+        lisp::eval(lcar(args));
       }
       return LFixedPoint::Create((long)(t.Get() * (1 << 16)));
     } break;
@@ -737,12 +737,12 @@ void *l_caller(long number, void *args)
     { return current_object->float_tick(); } break;
     case 20 :
     {
-      long x1 = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long y1 = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long x2 = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long y2 = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
+      long x1 = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long y1 = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long x2 = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long y2 = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
 
-      void *list = lisp::eval(CAR(args));
+      void *list = lisp::eval(lcar(args));
       GameObject *find=g_current_level->find_object_in_area(current_object->m_pos.x,
                           current_object->m_pos.y,
                           x1,y1,x2,y2,list,current_object);
@@ -752,10 +752,10 @@ void *l_caller(long number, void *args)
 
     case 21 :
     {
-      long a1=lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      long a2=lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
+      long a1=lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      long a2=lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
 
-      void *list = lisp::eval(CAR(args));
+      void *list = lisp::eval(lcar(args));
       PtrRef r2(list);
       GameObject *find=g_current_level->find_object_in_angle(current_object->m_pos.x,
                             current_object->m_pos.y,
@@ -787,16 +787,16 @@ void *l_caller(long number, void *args)
       }
 
       object_names[total_objects] = strdup(lstring_value(sym->GetName()));
-      figures[total_objects]=new CharacterType((LList *)CDR(args),sym);
+      figures[total_objects]=new CharacterType((LList *)lcdr(args),sym);
       total_objects++;
       return LNumber::Create(total_objects-1);
     } break;
     case 24 :
     {
-      int32_t x1=lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      int32_t y1=lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      int32_t x2=lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      int32_t y2=lnumber_value(lisp::eval(CAR(args)));
+      int32_t x1=lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      int32_t y1=lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      int32_t x2=lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      int32_t y2=lnumber_value(lisp::eval(lcar(args)));
       g_current_level->foreground_intersect(x1,y1,x2,y2);
       void *ret=NULL;
       push_onto_list(LNumber::Create(y2),ret);
@@ -832,9 +832,9 @@ void *l_caller(long number, void *args)
     {
 
       int32_t xm,ym,but;
-      xm=lnumber_value(CAR(args)); args=CDR(args);
-      ym=lnumber_value(CAR(args)); args=CDR(args);
-      but=lnumber_value(CAR(args));
+      xm=lnumber_value(lcar(args)); args=lcdr(args);
+      ym=lnumber_value(lcar(args)); args=lcdr(args);
+      but=lnumber_value(lcar(args));
       return cop_mover(xm,ym,but);
     } break;
     case 37 : return ladder_ai(); break;
@@ -874,7 +874,7 @@ void *l_caller(long number, void *args)
     } break;
     case 46 :
     {
-      return LString::Create(start_argv[lnumber_value(lisp::eval(CAR(args)))]);
+      return LString::Create(start_argv[lnumber_value(lisp::eval(lcar(args)))]);
     } break;
     case 47 :
     {
@@ -908,8 +908,8 @@ void *l_caller(long number, void *args)
     case 49 :
     {
       ivec2 pos;
-      pos.x = lnumber_value(lisp::eval(CAR(args))); args = CDR(args);
-      pos.y = lnumber_value(lisp::eval(CAR(args))); args = CDR(args);
+      pos.x = lnumber_value(lisp::eval(lcar(args))); args = lcdr(args);
+      pos.y = lnumber_value(lisp::eval(lcar(args))); args = lcdr(args);
       pos = the_game->MouseToGame(pos);
       void *ret = NULL;
       {
@@ -922,8 +922,8 @@ void *l_caller(long number, void *args)
     case 50 :
     {
       ivec2 pos;
-      pos.x = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
-      pos.y = lnumber_value(lisp::eval(CAR(args))); args=CDR(args);
+      pos.x = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
+      pos.y = lnumber_value(lisp::eval(lcar(args))); args=lcdr(args);
       pos = the_game->GameToMouse(pos, current_view);
       void *ret = NULL;
       {
@@ -956,16 +956,16 @@ void *l_caller(long number, void *args)
     case 55 :
 #if !defined __CELLOS_LV2__
       /* FIXME: this looks rather dangerous */
-      system(lstring_value(lisp::eval(CAR(args))));
+      system(lstring_value(lisp::eval(lcar(args))));
 #endif
       break;
     case 56 :
     {
-      void *fn = lisp::eval(CAR(args)); args=CDR(args);
+      void *fn = lisp::eval(lcar(args)); args=lcdr(args);
       char tmp[200];
       {
     PtrRef r2(fn);
-    char *slash=lstring_value(lisp::eval(CAR(args)));
+    char *slash=lstring_value(lisp::eval(lcar(args)));
     char *filename=lstring_value(fn);
 
     char *s=filename,*tp;
@@ -985,7 +985,7 @@ void *l_caller(long number, void *args)
       char **files,**dirs;
       int tfiles,tdirs,i;
 
-      get_directory(lstring_value(lisp::eval(CAR(args))),files,tfiles,dirs,tdirs);
+      get_directory(lstring_value(lisp::eval(lcar(args))),files,tfiles,dirs,tdirs);
       void *fl=NULL,*dl=NULL,*rl=NULL;
       {
     PtrRef r2(fl),r3(dl);
@@ -1008,15 +1008,15 @@ void *l_caller(long number, void *args)
     case 63 :
     {
         long x;
-        sscanf(lstring_value(lisp::eval(CAR(args))),"%lx",&x);
+        sscanf(lstring_value(lisp::eval(lcar(args))),"%lx",&x);
         return LPointer::Create((void *)(intptr_t)x);
     } break;
     case 64 :
     {
       char name[256],name2[256];
-      strcpy(name,lstring_value(lisp::eval(CAR(args))));  args=CDR(args);
-      long first=lnumber_value(lisp::eval(CAR(args)));  args=CDR(args);
-      long last=lnumber_value(lisp::eval(CAR(args)));
+      strcpy(name,lstring_value(lisp::eval(lcar(args))));  args=lcdr(args);
+      long first=lnumber_value(lisp::eval(lcar(args)));  args=lcdr(args);
+      long last=lnumber_value(lisp::eval(lcar(args)));
       long i;
       void *ret=NULL;
       PtrRef r2(ret);
@@ -1066,12 +1066,12 @@ long c_caller(long number, void *args)
             }
             else
             {
-                return current_object->m_controller->key_down(lnumber_value(CAR(args)));
+                return current_object->m_controller->key_down(lnumber_value(lcar(args)));
             }
         } break;
         case 4:
         {
-            return the_game->key_down(lnumber_value(CAR(args)));
+            return the_game->key_down(lnumber_value(lcar(args)));
         } break;
         case 5:
         {
@@ -1089,7 +1089,7 @@ long c_caller(long number, void *args)
         } break;
         case 8:
         {
-            int ns=lnumber_value(CAR(args));
+            int ns=lnumber_value(lcar(args));
             current_object->set_aistate_time(0);
             current_object->set_aistate(ns); return 1;
         } break;
@@ -1105,7 +1105,7 @@ long c_caller(long number, void *args)
     current_print_file=NULL;
       }*/
 
-            return rand(lnumber_value(CAR(args)));
+            return rand(lnumber_value(lcar(args)));
         } break;
         case 10 : return current_object->aistate_time(); break;
         case 11 : return current_object->state; break;
@@ -1118,7 +1118,7 @@ long c_caller(long number, void *args)
         } break;
         case 13:
         {
-            return current_object->move(lnumber_value(CAR(args)),lnumber_value(CAR(CDR(args))), lnumber_value(CAR(CDR(CDR(args)))));
+            return current_object->move(lnumber_value(lcar(args)),lnumber_value(lcar(lcdr(args))), lnumber_value(lcar(lcdr(lcdr(args)))));
         } break;
         case 14:
         {
@@ -1129,17 +1129,17 @@ long c_caller(long number, void *args)
         } break;
     case 15 : return current_object->otype; break;
     case 16 : return current_object->next_picture(); break;
-    case 17 : current_object->set_fade_dir(lnumber_value(CAR(args))); return 1; break;
+    case 17 : current_object->set_fade_dir(lnumber_value(lcar(args))); return 1; break;
     case 18 :
     {
-      int cx=lnumber_value(CAR(args));
-      args=CDR(args);
-      int cy=lnumber_value(CAR(args));
-      args=CDR(args);
-      int but=lnumber_value(CAR(args));
+      int cx=lnumber_value(lcar(args));
+      args=lcdr(args);
+      int cy=lnumber_value(lcar(args));
+      args=lcdr(args);
+      int but=lnumber_value(lcar(args));
       return current_object->mover(cx,cy,but);
     } break;
-    case 19 : current_object->set_fade_count(lnumber_value(CAR(args))); return 1; break;
+    case 19 : current_object->set_fade_count(lnumber_value(lcar(args))); return 1; break;
     case 20 : return current_object->fade_count(); break;
     case 21 : return current_object->fade_dir(); break;
     case 22 :
@@ -1150,8 +1150,8 @@ long c_caller(long number, void *args)
       if (xp1>x2 || xp2<x1 || yp1>y2 || yp2<y1) return 0;
       else return 1;
     } break;
-    case 23 : current_object->add_power(lnumber_value(CAR(args))); break;
-    case 24 : current_object->add_hp(lnumber_value(CAR(args))); break;
+    case 23 : current_object->add_power(lnumber_value(lcar(args))); break;
+    case 24 : current_object->add_hp(lnumber_value(lcar(args))); break;
 
     case 27 :
     { current_object->drawer(); return 1; } break;
@@ -1162,133 +1162,133 @@ long c_caller(long number, void *args)
     case 30 : return current_object->m_pos.x; break;
     case 31 : return current_object->m_pos.y; break;
     case 32 :
-    { int32_t v=lnumber_value(CAR(args));
+    { int32_t v=lnumber_value(lcar(args));
       current_object->m_pos.x=v;
 //      current_object->last_x=v;
       return 1;
     } break;
     case 33 :
-    { int32_t v=lnumber_value(CAR(args));
+    { int32_t v=lnumber_value(lcar(args));
       current_object->m_pos.y=v;
 //      current_object->last_y=v;
       return 1;
     } break;
 
-    case 34 : { return g_current_level->push_characters(current_object,lnumber_value(CAR(args)),
-                        lnumber_value(CAR(CDR(args))));
+    case 34 : { return g_current_level->push_characters(current_object,lnumber_value(lcar(args)),
+                        lnumber_value(lcar(lcdr(args))));
           } break;
 
     case 37 :
     {
-      int32_t s=lnumber_value(CAR(args));
+      int32_t s=lnumber_value(lcar(args));
       current_object->set_state((character_state)s);
       return (s==current_object->state);
     } break;
 
     case 38 : return g_current_level->attacker(current_object)->m_pos.x; break;
     case 39 : return g_current_level->attacker(current_object)->m_pos.y; break;
-    case 40 : current_object->change_aitype(lnumber_value(CAR(args))); return 1; break;
+    case 40 : current_object->change_aitype(lnumber_value(lcar(args))); return 1; break;
 
     case 42 : return current_object->m_vel.x; break;
     case 43 : return current_object->m_vel.y; break;
-    case 44 : current_object->m_vel.x = lnumber_value(CAR(args)); return 1; break;
-    case 45 : current_object->m_vel.y = lnumber_value(CAR(args)); return 1; break;
+    case 44 : current_object->m_vel.x = lnumber_value(lcar(args)); return 1; break;
+    case 45 : current_object->m_vel.y = lnumber_value(lcar(args)); return 1; break;
     case 46 : if (g_current_level->attacker(current_object)->m_pos.x>current_object->m_pos.x) return -1;
               else return 1; break;
-    case 47 : return lnumber_value(CAR(args))&BLOCKED_LEFT; break;
-    case 48 : return lnumber_value(CAR(args))&BLOCKED_RIGHT; break;
+    case 47 : return lnumber_value(lcar(args))&BLOCKED_LEFT; break;
+    case 48 : return lnumber_value(lcar(args))&BLOCKED_RIGHT; break;
 
     case 50 : dev_cont->add_palette(args); break;
-    case 51 : write_PCX(main_screen, g_palette, lstring_value(CAR(args))); break;
+    case 51 : write_PCX(main_screen, g_palette, lstring_value(lcar(args))); break;
 
-    case 52 : the_game->zoom=lnumber_value(CAR(args)); the_game->draw(); break;
-    case 55 : the_game->show_help(lstring_value(CAR(args))); break;
+    case 52 : the_game->zoom=lnumber_value(lcar(args)); the_game->draw(); break;
+    case 55 : the_game->show_help(lstring_value(lcar(args))); break;
 
     case 56 : return current_object->direction; break;
-    case 57 : current_object->direction=lnumber_value(CAR(args)); break;
+    case 57 : current_object->direction=lnumber_value(lcar(args)); break;
     case 58 :
     {
-      int x1=lnumber_value(CAR(args));
+      int x1=lnumber_value(lcar(args));
       if (!current_object->m_controller)
       { lbreak("set_freeze_time : object is not a focus\n"); }
       else current_object->m_controller->freeze_time=x1; return 1;
     } break;
     case 59 : return menu(args,big_font); break;
     case 60 :
-    { Event ev; dev_cont->do_command(lstring_value(CAR(args)),ev); return 1; } break;
-    case 61 : the_game->set_state(lnumber_value(CAR(args))); break;
+    { Event ev; dev_cont->do_command(lstring_value(lcar(args)),ev); return 1; } break;
+    case 61 : the_game->set_state(lnumber_value(lcar(args))); break;
 
     case 62 :
     {
-      int x1=lnumber_value(CAR(args)); args=CDR(args);
-      int y1=lnumber_value(CAR(args)); args=CDR(args);
-      int x2=lnumber_value(CAR(args)); args=CDR(args);
-      int y2=lnumber_value(CAR(args));
+      int x1=lnumber_value(lcar(args)); args=lcdr(args);
+      int y1=lnumber_value(lcar(args)); args=lcdr(args);
+      int x2=lnumber_value(lcar(args)); args=lcdr(args);
+      int y2=lnumber_value(lcar(args));
       scene_director.set_text_region(x1,y1,x2,y2);
     } break;
-    case 63 : scene_director.set_frame_speed(lnumber_value(CAR(args))); break;
-    case 64 : scene_director.set_scroll_speed(lnumber_value(CAR(args))); break;
-    case 65 : scene_director.set_pan_speed(lnumber_value(CAR(args))); break;
-    case 66 : scene_director.scroll_text(lstring_value(CAR(args))); break;
-    case 67 : scene_director.set_pan(lnumber_value(CAR(args)),
-                 lnumber_value(CAR(CDR(args))),
-                 lnumber_value(CAR(CDR(CDR(args))))); break;
-    case 68 : scene_director.wait(CAR(args)); break;
+    case 63 : scene_director.set_frame_speed(lnumber_value(lcar(args))); break;
+    case 64 : scene_director.set_scroll_speed(lnumber_value(lcar(args))); break;
+    case 65 : scene_director.set_pan_speed(lnumber_value(lcar(args))); break;
+    case 66 : scene_director.scroll_text(lstring_value(lcar(args))); break;
+    case 67 : scene_director.set_pan(lnumber_value(lcar(args)),
+                 lnumber_value(lcar(lcdr(args))),
+                 lnumber_value(lcar(lcdr(lcdr(args))))); break;
+    case 68 : scene_director.wait(lcar(args)); break;
 
 
-    case 73 : the_game->set_level(new Level(lnumber_value(CAR(args)),
-                        lnumber_value(CAR(CDR(args))),
-                        lstring_value(CAR(CDR(CDR(args)))))); break;
+    case 73 : the_game->set_level(new Level(lnumber_value(lcar(args)),
+                        lnumber_value(lcar(lcdr(args))),
+                        lstring_value(lcar(lcdr(lcdr(args)))))); break;
     case 74 :
     { if (g_current_level) delete g_current_level;
       g_current_level=new Level(100,100,"new_level");
     } break;
     case 75 :
     {
-      int amount=lnumber_value(CAR(args)); args=CDR(args);
-      GameObject *o=((GameObject *)lpointer_value(CAR(args))); args=CDR(args);
+      int amount=lnumber_value(lcar(args)); args=lcdr(args);
+      GameObject *o=((GameObject *)lpointer_value(lcar(args))); args=lcdr(args);
       int xv=0,yv=0;
       if (args)
       {
-    xv=lnumber_value(CAR(args)); args=CDR(args);
-    yv=lnumber_value(CAR(args));
+    xv=lnumber_value(lcar(args)); args=lcdr(args);
+    yv=lnumber_value(lcar(args));
       }
       o->do_damage(amount,current_object,current_object->m_pos.x,current_object->m_pos.y,xv,yv);
     } break;
     case 76 : return current_object->hp(); break;
     case 77 :
     {
-      GameObject *o=(GameObject *)lpointer_value(CAR(args));
+      GameObject *o=(GameObject *)lpointer_value(lcar(args));
       if (!o->m_controller) printf("set shift: object is not a focus\n");
-      else o->m_controller->m_shift.y=lnumber_value(CAR(CDR(args))); return 1;
+      else o->m_controller->m_shift.y=lnumber_value(lcar(lcdr(args))); return 1;
     } break;
     case 78 :
     {
-      GameObject *o=(GameObject *)lpointer_value(CAR(args));
+      GameObject *o=(GameObject *)lpointer_value(lcar(args));
       if (!o->m_controller) printf("set shift: object is not a focus\n");
-      else o->m_controller->m_shift.x=lnumber_value(CAR(CDR(args))); return 1;
+      else o->m_controller->m_shift.x=lnumber_value(lcar(lcdr(args))); return 1;
     } break;
-    case 79 : current_object->set_gravity(lnumber_value(CAR(args))); return 1; break;
+    case 79 : current_object->set_gravity(lnumber_value(lcar(args))); return 1; break;
     case 80 : return current_object->tick(); break;
-    case 81 : current_object->m_accel.x = lnumber_value(CAR(args)); return 1; break;
-    case 82 : current_object->m_accel.y = lnumber_value(CAR(args)); return 1; break;
-    case 84 : set_local_players(lnumber_value(CAR(args))); return 1; break;
+    case 81 : current_object->m_accel.x = lnumber_value(lcar(args)); return 1; break;
+    case 82 : current_object->m_accel.y = lnumber_value(lcar(args)); return 1; break;
+    case 84 : set_local_players(lnumber_value(lcar(args))); return 1; break;
     case 85 : return total_local_players(); break;
-    case 86 : light_detail=lnumber_value(CAR(args)); return 1; break;
+    case 86 : light_detail=lnumber_value(lcar(args)); return 1; break;
     case 87 : return light_detail; break;
-    case 88 : morph_detail=lnumber_value(CAR(args)); return 1; break;
+    case 88 : morph_detail=lnumber_value(lcar(args)); return 1; break;
     case 89 : return morph_detail; break;
-    case 90 : current_object->morph_into(lnumber_value(CAR(args)),NULL,
-                     lnumber_value(CAR(CDR(args))),
-                     lnumber_value(CAR(CDR(CDR(args))))); return 1; break;
-    case 91 : current_object->add_object((GameObject *)lpointer_value(CAR(args))); return 1; break;
+    case 90 : current_object->morph_into(lnumber_value(lcar(args)),NULL,
+                     lnumber_value(lcar(lcdr(args))),
+                     lnumber_value(lcar(lcdr(lcdr(args))))); return 1; break;
+    case 91 : current_object->add_object((GameObject *)lpointer_value(lcar(args))); return 1; break;
     case 92 :
     {
-      int32_t x1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t y1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t x2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t y2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t c = lnumber_value(CAR(args));
+      int32_t x1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t y1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t x2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t y2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t c = lnumber_value(lcar(args));
       ivec2 pos1 = the_game->GameToMouse(ivec2(x1, y1), current_view);
       ivec2 pos2 = the_game->GameToMouse(ivec2(x2, y2), current_view);
       main_screen->Line(pos1, pos2, c);
@@ -1298,16 +1298,16 @@ long c_caller(long number, void *args)
     case 94 : return wm->medium_color(); break;
     case 95 : return wm->bright_color(); break;
 
-    case 99 : current_object->remove_object((GameObject *)lpointer_value(CAR(args))); return 1; break;
-    case 100 : current_object->add_light((LightSource *)lpointer_value(CAR(args))); return 1; break;
-    case 101 : current_object->remove_light((LightSource *)lpointer_value(CAR(args))); return 1; break;
+    case 99 : current_object->remove_object((GameObject *)lpointer_value(lcar(args))); return 1; break;
+    case 100 : current_object->add_light((LightSource *)lpointer_value(lcar(args))); return 1; break;
+    case 101 : current_object->remove_light((LightSource *)lpointer_value(lcar(args))); return 1; break;
     case 102 : return current_object->total_objects(); break;
     case 103 : return current_object->total_lights(); break;
 
     case 104 :
     {
-      LightSource *l = (LightSource *)lpointer_value(CAR(args));
-      int32_t x = lnumber_value(CAR(CDR(args)));
+      LightSource *l = (LightSource *)lpointer_value(lcar(args));
+      int32_t x = lnumber_value(lcar(lcdr(args)));
       if (x >= 1)
         l->m_inner_radius = x;
       l->CalcRange();
@@ -1315,8 +1315,8 @@ long c_caller(long number, void *args)
     } break;
     case 105 :
     {
-      LightSource *l = (LightSource *)lpointer_value(CAR(args));
-      int32_t x = lnumber_value(CAR(CDR(args)));
+      LightSource *l = (LightSource *)lpointer_value(lcar(args));
+      int32_t x = lnumber_value(lcar(lcdr(args)));
       if (x > l->m_inner_radius)
         l->m_outer_radius = x;
       l->CalcRange();
@@ -1324,57 +1324,57 @@ long c_caller(long number, void *args)
     } break;
     case 106 :
     {
-      LightSource *l = (LightSource *)lpointer_value(CAR(args));
-      l->m_pos.x = lnumber_value(CAR(CDR(args)));
+      LightSource *l = (LightSource *)lpointer_value(lcar(args));
+      l->m_pos.x = lnumber_value(lcar(lcdr(args)));
       l->CalcRange();
       return 1;
     } break;
     case 107 :
     {
-      LightSource *l = (LightSource *)lpointer_value(CAR(args));
-      l->m_pos.y = lnumber_value(CAR(CDR(args)));
+      LightSource *l = (LightSource *)lpointer_value(lcar(args));
+      l->m_pos.y = lnumber_value(lcar(lcdr(args)));
       l->CalcRange();
       return 1;
     } break;
     case 108 :
     {
-      LightSource *l = (LightSource *)lpointer_value(CAR(args));
-      l->m_shift.x = lnumber_value(CAR(CDR(args)));
+      LightSource *l = (LightSource *)lpointer_value(lcar(args));
+      l->m_shift.x = lnumber_value(lcar(lcdr(args)));
       l->CalcRange();
       return 1;
     } break;
     case 109 :
     {
-      LightSource *l = (LightSource *)lpointer_value(CAR(args));
-      l->m_shift.y = lnumber_value(CAR(CDR(args)));
+      LightSource *l = (LightSource *)lpointer_value(lcar(args));
+      l->m_shift.y = lnumber_value(lcar(lcdr(args)));
       l->CalcRange();
       return 1;
     } break;
-    case 110 : return ((LightSource *)lpointer_value(CAR(args)))->m_inner_radius; break;
-    case 111 : return ((LightSource *)lpointer_value(CAR(args)))->m_outer_radius; break;
-    case 112 : return ((LightSource *)lpointer_value(CAR(args)))->m_pos.x; break;
-    case 113 : return ((LightSource *)lpointer_value(CAR(args)))->m_pos.y; break;
-    case 114 : return ((LightSource *)lpointer_value(CAR(args)))->m_shift.x; break;
-    case 115 : return ((LightSource *)lpointer_value(CAR(args)))->m_shift.y; break;
+    case 110 : return ((LightSource *)lpointer_value(lcar(args)))->m_inner_radius; break;
+    case 111 : return ((LightSource *)lpointer_value(lcar(args)))->m_outer_radius; break;
+    case 112 : return ((LightSource *)lpointer_value(lcar(args)))->m_pos.x; break;
+    case 113 : return ((LightSource *)lpointer_value(lcar(args)))->m_pos.y; break;
+    case 114 : return ((LightSource *)lpointer_value(lcar(args)))->m_shift.x; break;
+    case 115 : return ((LightSource *)lpointer_value(lcar(args)))->m_shift.y; break;
     case 116 : return current_object->m_accel.x; break;
     case 117 : return current_object->m_accel.y; break;
-    case 118 : g_current_level->remove_light((LightSource *)lpointer_value(CAR(args))); break;
-    case 119 : current_object->set_fx(lnumber_value(CAR(args))); break;
-    case 120 : current_object->set_fy(lnumber_value(CAR(args))); break;
-    case 121 : current_object->set_fxvel(lnumber_value(CAR(args))); break;
-    case 122 : current_object->set_fyvel(lnumber_value(CAR(args))); break;
-    case 123 : current_object->set_fxacel(lnumber_value(CAR(args))); break;
-    case 124 : current_object->set_fyacel(lnumber_value(CAR(args))); break;
+    case 118 : g_current_level->remove_light((LightSource *)lpointer_value(lcar(args))); break;
+    case 119 : current_object->set_fx(lnumber_value(lcar(args))); break;
+    case 120 : current_object->set_fy(lnumber_value(lcar(args))); break;
+    case 121 : current_object->set_fxvel(lnumber_value(lcar(args))); break;
+    case 122 : current_object->set_fyvel(lnumber_value(lcar(args))); break;
+    case 123 : current_object->set_fxacel(lnumber_value(lcar(args))); break;
+    case 124 : current_object->set_fyacel(lnumber_value(lcar(args))); break;
     case 125 : return current_object->picture()->Size().x; break;
     case 126 : return current_object->picture()->Size().y; break;
     case 127 : { dprintf("trap\n"); } break;   // I use this to set gdb break points
-    case 128 : { return g_current_level->platform_push(current_object,lnumber_value(CAR(args)),
-                        lnumber_value(CAR(CDR(args))));
+    case 128 : { return g_current_level->platform_push(current_object,lnumber_value(lcar(args)),
+                        lnumber_value(lcar(lcdr(args))));
                         } break;
     case 133 :  // def_sound
     {
       LSymbol *sym=NULL;
-      if (CDR(args))
+      if (lcdr(args))
       {
     sym=(LSymbol *)lcar(args);
     if (item_type(sym)!=L_SYMBOL)
@@ -1382,7 +1382,7 @@ long c_caller(long number, void *args)
       lbreak("expecting first arg to def-character to be a symbol!\n");
       exit(0);
     }
-    args=CDR(args);
+    args=lcdr(args);
       }
 
       LSpace *sp = LSpace::Current;
@@ -1399,15 +1399,15 @@ long c_caller(long number, void *args)
       PtrRef r2(a);
       int id=lnumber_value(lcar(a));
       if (id<0) return 0;
-      a=CDR(a);
+      a=lcdr(a);
       if (!a)
         cache.sfx(id)->play(127);
       else
       {
-    int vol=lnumber_value(lcar(a)); a=CDR(a);
+    int vol=lnumber_value(lcar(a)); a=lcdr(a);
     if (a)
     {
-      int32_t x=lnumber_value(lcar(a)); a=CDR(a);
+      int32_t x=lnumber_value(lcar(a)); a=lcdr(a);
       if (!a)
       {
         lisp::print((LObject *)args);
@@ -1423,15 +1423,15 @@ long c_caller(long number, void *args)
 
     case 137 : return defun_pseq(args); break;
     case 138 :
-    { int id=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t dir=lnumber_value(CAR(args));
+    { int id=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t dir=lnumber_value(lcar(args));
       add_panim(id,x,y,dir);
     } break;
     case 142 :
     {
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
       if (x<0 || x>=total_weapons)
       {
     lbreak("weapon out of range (%d)\n",x);
@@ -1441,12 +1441,12 @@ long c_caller(long number, void *args)
     } break;
     case 143 :
     {
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t r=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t m=lnumber_value(CAR(args)); args=CDR(args);
-      GameObject *o=(GameObject *)lpointer_value(CAR(args)); args=CDR(args);
-      int32_t mp=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t r=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t m=lnumber_value(lcar(args)); args=lcdr(args);
+      GameObject *o=(GameObject *)lpointer_value(lcar(args)); args=lcdr(args);
+      int32_t mp=lnumber_value(lcar(args));
       g_current_level->hurt_radius(x,y,r,m,current_object,o,mp);
     } break;
 
@@ -1456,8 +1456,8 @@ long c_caller(long number, void *args)
       if (!v) dprintf("Can't add weapons for non-players\n");
       else
       {
-    int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-    int32_t y=lnumber_value(CAR(args)); args=CDR(args);
+    int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+    int32_t y=lnumber_value(lcar(args)); args=lcdr(args);
     if (x<0 || x>=total_weapons)
     { lbreak("weapon out of range (%d)\n",x); exit(0); }
     v->add_ammo(x,y);
@@ -1467,7 +1467,7 @@ long c_caller(long number, void *args)
     {
       view *v=current_object->m_controller;
       if (!v) return 0;
-      else return v->weapon_total(lnumber_value(CAR(args)));
+      else return v->weapon_total(lnumber_value(lcar(args)));
     } break;
     case 146 :
     {
@@ -1481,19 +1481,19 @@ long c_caller(long number, void *args)
         return 0; }
       else return v->current_weapon;
     } break;
-    case 148 : return lnumber_value(CAR(args))&BLOCKED_UP; break;
-    case 149 : return lnumber_value(CAR(args))&BLOCKED_DOWN; break;
+    case 148 : return lnumber_value(lcar(args))&BLOCKED_UP; break;
+    case 149 : return lnumber_value(lcar(args))&BLOCKED_DOWN; break;
     case 150 :
     {
       view *v=current_object->m_controller;
-      int x=lnumber_value(CAR(args));
+      int x=lnumber_value(lcar(args));
       if (x<0 || x>=total_weapons)
       { lbreak("weapon out of range (%d)\n",x); exit(0); }
       if (v) v->give_weapon(x);
     } break;
     case 151 :
     {
-      int a=lnumber_value(CAR(args));
+      int a=lnumber_value(lcar(args));
       if (a<0 || a>=TOTAL_ABILITIES)
       {
     lisp::print((LObject *)args);
@@ -1512,15 +1512,15 @@ long c_caller(long number, void *args)
     } break;
     case 153 :
     {
-      GameObject *o=(GameObject *)lpointer_value(CAR(args));
+      GameObject *o=(GameObject *)lpointer_value(lcar(args));
       int32_t x=o->m_pos.x-current_object->m_pos.x,
         y=-(o->m_pos.y-o->picture()->Size().y/2-(current_object->m_pos.y-(current_object->picture()->Size().y/2)));
       return lisp_atan2(y,x);
     } break;
     case 154 :
     {
-      int32_t ang=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t mag=lfixed_point_value(CAR(args));
+      int32_t ang=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t mag=lfixed_point_value(lcar(args));
       int32_t xvel=(lisp_cos(ang)>>8)*(mag>>8);
       int32_t yvel=-(lisp_sin(ang)>>8)*(mag>>8);
       current_object->m_vel = ivec2(xvel >> 16, yvel >> 16);
@@ -1531,14 +1531,14 @@ long c_caller(long number, void *args)
     {
       int tframes=current_object->total_frames(),f;
 
-      int32_t ang1=lnumber_value(CAR(args)); args=CDR(args);
+      int32_t ang1=lnumber_value(lcar(args)); args=lcdr(args);
       if (ang1<0) ang1=(ang1%360)+360;
       else if (ang1>=360) ang1=ang1%360;
-      int32_t ang2=lnumber_value(CAR(args)); args=CDR(args);
+      int32_t ang2=lnumber_value(lcar(args)); args=lcdr(args);
       if (ang2<0) ang2=(ang2%360)+360;
       else if (ang2>=360) ang2=ang2%360;
 
-      int32_t ang=(lnumber_value(CAR(args))+90/tframes)%360;
+      int32_t ang=(lnumber_value(lcar(args))+90/tframes)%360;
       if (ang1>ang2)
       {
         if (ang<ang1 && ang>ang2)
@@ -1559,19 +1559,19 @@ long c_caller(long number, void *args)
     case 156 :
     {
       int x=current_object->current_frame;
-      current_object->set_state((character_state)lnumber_value(CAR(args)));
+      current_object->set_state((character_state)lnumber_value(lcar(args)));
       current_object->current_frame=x;
     } break;
 
     case 168 : if (current_object->morph_status()) return 1; else return 0; break;
     case 169 :
     {
-      int32_t am=lnumber_value(CAR(args)); args=CDR(args);
-      GameObject *from=(GameObject *)lpointer_value(CAR(args)); args=CDR(args);
-      int32_t hitx=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t hity=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t px=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t py=lnumber_value(CAR(args)); args=CDR(args);
+      int32_t am=lnumber_value(lcar(args)); args=lcdr(args);
+      GameObject *from=(GameObject *)lpointer_value(lcar(args)); args=lcdr(args);
+      int32_t hitx=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t hity=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t px=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t py=lnumber_value(lcar(args)); args=lcdr(args);
       current_object->damage_fun(am,from,hitx,hity,px,py);
     } break;
     case 170 : return current_object->gravity(); break;
@@ -1580,14 +1580,14 @@ long c_caller(long number, void *args)
       view *v=current_object->m_controller;
       if (!v) dprintf("make_view_solid : object has no view\n");
       else
-        v->draw_solid=lnumber_value(CAR(args));
+        v->draw_solid=lnumber_value(lcar(args));
     } break;
     case 172 :
     {
       void *a=args;
-      int r=lnumber_value(CAR(a)); a=CDR(a);
-      int g=lnumber_value(CAR(a)); a=CDR(a);
-      int b=lnumber_value(CAR(a));
+      int r=lnumber_value(lcar(a)); a=lcdr(a);
+      int g=lnumber_value(lcar(a)); a=lcdr(a);
+      int b=lnumber_value(lcar(a));
       if (r<0 || b<0 || g<0 || r>255 || g>255 || b>255)
       {
     lisp::print((LObject *)args);
@@ -1628,29 +1628,29 @@ long c_caller(long number, void *args)
     } break;
     case 178 :
     {
-      bg_xmul=lnumber_value(CAR(args)); args=CDR(args);
-      bg_xdiv=lnumber_value(CAR(args)); args=CDR(args);
-      bg_ymul=lnumber_value(CAR(args)); args=CDR(args);
-      bg_ydiv=lnumber_value(CAR(args));
+      bg_xmul=lnumber_value(lcar(args)); args=lcdr(args);
+      bg_xdiv=lnumber_value(lcar(args)); args=lcdr(args);
+      bg_ymul=lnumber_value(lcar(args)); args=lcdr(args);
+      bg_ydiv=lnumber_value(lcar(args));
       if (bg_xdiv==0) { bg_xdiv=1; lisp::print((LObject *)args); dprintf("bg_set_scroll : cannot set xdiv to 0\n"); }
       if (bg_ydiv==0) { bg_ydiv=1; lisp::print((LObject *)args); dprintf("bg_set_scroll : cannot set ydiv to 0\n"); }
     } break;
     case 179 :
     {
-      view *v=lget_view(CAR(args),"set_ambient_light");       args=CDR(args);
-      int32_t x=lnumber_value(CAR(args));
+      view *v=lget_view(lcar(args),"set_ambient_light");       args=lcdr(args);
+      int32_t x=lnumber_value(lcar(args));
       if (x>=0 && x<64) v->ambient=x;
     } break;
-    case 180 : return lget_view(CAR(args),"ambient_light")->ambient; break;
+    case 180 : return lget_view(lcar(args),"ambient_light")->ambient; break;
     case 181 :
     {
       int x=current_object->total_objects();
-      GameObject *who=(GameObject *)lpointer_value(CAR(args));
+      GameObject *who=(GameObject *)lpointer_value(lcar(args));
       for (int i=0; i<x; i++)
         if (current_object->get_object(i)==who) return 1;
       return 0;
     } break;
-    case 182 : current_object->change_type(lnumber_value(CAR(args))); break;
+    case 182 : current_object->change_type(lnumber_value(lcar(args))); break;
     case 184 : return current_object->current_frame; break;
 
     case 185 : return current_object->fx(); break;
@@ -1661,14 +1661,14 @@ long c_caller(long number, void *args)
     case 190 : return current_object->fyacel(); break;
     case 191 :
     {
-//      char *fn=lstring_value(CAR(args)); args=CDR(args);
-//      stat_bar=cache.reg_object(fn,CAR(args),SPEC_IMAGE,1);
+//      char *fn=lstring_value(lcar(args)); args=lcdr(args);
+//      stat_bar=cache.reg_object(fn,lcar(args),SPEC_IMAGE,1);
     } break;
     case 192 :
     {
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t type=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t type=lnumber_value(lcar(args));
       if (x<0 || y<0 || x>=g_current_level->foreground_width() || y>=g_current_level->foreground_width())
         lbreak("%d %d is out of range of fg map",x,y);
       else
@@ -1676,17 +1676,17 @@ long c_caller(long number, void *args)
     } break;
     case 193 :
     {
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args));
       if (x<0 || y<0 || x>=g_current_level->foreground_width() || y>=g_current_level->foreground_width())
         lbreak("%d %d is out of range of fg map",x,y);
       else return g_current_level->GetFg(ivec2(x, y));
     } break;
     case 194 :
     {
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t type=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t type=lnumber_value(lcar(args));
       if (x<0 || y<0 || x>=g_current_level->background_width() || y>=g_current_level->background_width())
         lbreak("%d %d is out of range of fg map",x,y);
       else
@@ -1694,8 +1694,8 @@ long c_caller(long number, void *args)
     } break;
     case 195 :
     {
-      int32_t x=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args));
       if (x<0 || y<0 || x>=g_current_level->background_width() || y>=g_current_level->background_width())
         lbreak("%d %d is out of range of fg map",x,y);
       else return g_current_level->GetBg(ivec2(x, y));
@@ -1703,17 +1703,17 @@ long c_caller(long number, void *args)
     case 196 : load_tiles(args); break;
     case 197 :
     {
-      bFILE *fp=open_file(lstring_value(CAR(args)),"rb");
+      bFILE *fp=open_file(lstring_value(lcar(args)),"rb");
       if (fp->open_failure())
       {
     delete fp;
-        lbreak("load_palette : could not open file %s for reading",lstring_value(CAR(args)));
+        lbreak("load_palette : could not open file %s for reading",lstring_value(lcar(args)));
     exit(1);
       } else
       {
     SpecDir sd(fp);
     SpecEntry *se=sd.find(SPEC_PALETTE);
-    if (!se) lbreak("File %s has no palette!\n",lstring_value(CAR(args)));
+    if (!se) lbreak("File %s has no palette!\n",lstring_value(lcar(args)));
     else
     {
       if (g_palette)
@@ -1725,17 +1725,17 @@ long c_caller(long number, void *args)
     } break;
     case 198 :
     {
-      bFILE *fp=open_file(lstring_value(CAR(args)),"rb");
+      bFILE *fp=open_file(lstring_value(lcar(args)),"rb");
       if (fp->open_failure())
       {
     delete fp;
-        lbreak("load_color_filter : could not open file %s for reading",lstring_value(CAR(args)));
+        lbreak("load_color_filter : could not open file %s for reading",lstring_value(lcar(args)));
     exit(1);
       } else
       {
     SpecDir sd(fp);
     SpecEntry *se=sd.find(SPEC_COLOR_TABLE);
-    if (!se) lbreak("File %s has no color filter!",lstring_value(CAR(args)));
+    if (!se) lbreak("File %s has no color filter!",lstring_value(lcar(args)));
     else
     {
       delete color_table;
@@ -1746,16 +1746,16 @@ long c_caller(long number, void *args)
     } break;
     case 199 :
     {
-      current_start_type=lnumber_value(CAR(args));
+      current_start_type=lnumber_value(lcar(args));
       set_local_players(1);
     } break;
     case 200 :
     {
-      int32_t xv=lnumber_value(CAR(args));  args=CDR(args);
-      int32_t yv=lnumber_value(CAR(args));  args=CDR(args);
+      int32_t xv=lnumber_value(lcar(args));  args=lcdr(args);
+      int32_t yv=lnumber_value(lcar(args));  args=lcdr(args);
       int top=2;
       if (args)
-        if (!CAR(args)) top=0;
+        if (!lcar(args)) top=0;
 
       int32_t oxv=xv,oyv=yv;
       current_object->try_move(current_object->m_pos.x,current_object->m_pos.y,xv,yv,1|top);
@@ -1764,16 +1764,16 @@ long c_caller(long number, void *args)
     } break;
     case 201 :
     {
-      int32_t x=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args));
       return figures[current_object->otype]->get_sequence((character_state)x)->length();
     } break;
     case 202 :
     {
-      int32_t x1=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y1=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t x2=lnumber_value(CAR(args)); args=CDR(args);
-      int32_t y2=lnumber_value(CAR(args)); args=CDR(args);
-      void *block_all=CAR(args);
+      int32_t x1=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y1=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t x2=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y2=lnumber_value(lcar(args)); args=lcdr(args);
+      void *block_all=lcar(args);
       int32_t nx2=x2,ny2=y2;
       g_current_level->foreground_intersect(x1,y1,x2,y2);
       if (x2!=nx2 || y2!=ny2) return 0;
@@ -1787,25 +1787,25 @@ long c_caller(long number, void *args)
     } break;
     case 203 :
     {
-      char *fn=lstring_value(CAR(args)); args=CDR(args);
-      char *name=lstring_value(CAR(args));
+      char *fn=lstring_value(lcar(args)); args=lcdr(args);
+      char *name=lstring_value(lcar(args));
       big_font_pict=cache.reg(fn,name,SPEC_IMAGE,1);
     } break;
     case 204 :
     {
-      char *fn=lstring_value(CAR(args)); args=CDR(args);
-      char *name=lstring_value(CAR(args));
+      char *fn=lstring_value(lcar(args)); args=lcdr(args);
+      char *name=lstring_value(lcar(args));
       small_font_pict=cache.reg(fn,name,SPEC_IMAGE,1);
     } break;
     case 205 :
     {
-      char *fn=lstring_value(CAR(args)); args=CDR(args);
-      char *name=lstring_value(CAR(args));
+      char *fn=lstring_value(lcar(args)); args=lcdr(args);
+      char *name=lstring_value(lcar(args));
       console_font_pict=cache.reg(fn,name,SPEC_IMAGE,1);
     } break;
     case 206 :
     {
-      int32_t x=lnumber_value(CAR(args));
+      int32_t x=lnumber_value(lcar(args));
       if (x<current_object->total_frames())
         current_object->current_frame=x;
       else
@@ -1814,38 +1814,38 @@ long c_caller(long number, void *args)
 
     case 208 :
     {
-      current_object->draw_trans(lnumber_value(CAR(args)),lnumber_value(CAR(CDR(args))));
+      current_object->draw_trans(lnumber_value(lcar(args)),lnumber_value(lcar(lcdr(args))));
     } break;
     case 209 :
     {
-      current_object->draw_tint(lnumber_value(CAR(args)));
+      current_object->draw_tint(lnumber_value(lcar(args)));
     } break;
     case 210 :
     {
       current_object->draw_predator();
     } break;
     case 211:
-    { return lget_view(CAR(args),"shift_down")->m_shift.y; } break;
+    { return lget_view(lcar(args),"shift_down")->m_shift.y; } break;
     case 212:
-    { return lget_view(CAR(args),"shift_right")->m_shift.x; } break;
+    { return lget_view(lcar(args),"shift_right")->m_shift.x; } break;
     case 213 :
-    { view *v=lget_view(CAR(args),"set_no_scroll_range"); args=CDR(args);
-      v->no_xleft=lnumber_value(CAR(args)); args=CDR(args);
-      v->no_ytop=lnumber_value(CAR(args));  args=CDR(args);
-      v->no_xright=lnumber_value(CAR(args)); args=CDR(args);
-      v->no_ybottom=lnumber_value(CAR(args));
+    { view *v=lget_view(lcar(args),"set_no_scroll_range"); args=lcdr(args);
+      v->no_xleft=lnumber_value(lcar(args)); args=lcdr(args);
+      v->no_ytop=lnumber_value(lcar(args));  args=lcdr(args);
+      v->no_xright=lnumber_value(lcar(args)); args=lcdr(args);
+      v->no_ybottom=lnumber_value(lcar(args));
     } break;
     case 215 :
     {
-      char *fn=lstring_value(CAR(args)); args=CDR(args);
-      char *name=lstring_value(CAR(args)); args=CDR(args);
+      char *fn=lstring_value(lcar(args)); args=lcdr(args);
+      char *name=lstring_value(lcar(args)); args=lcdr(args);
       return cache.reg(fn,name,SPEC_IMAGE,1);
     } break;
     case 216 :
     {
-      int32_t x1=lnumber_value(CAR(args)); args=lcdr(args);
-      int32_t y1=lnumber_value(CAR(args)); args=lcdr(args);
-      int32_t id=lnumber_value(CAR(args));
+      int32_t x1=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t y1=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t id=lnumber_value(lcar(args));
       main_screen->PutImage(cache.img(id), ivec2(x1, y1), 1);
     } break;
     case 217 :
@@ -1876,7 +1876,7 @@ long c_caller(long number, void *args)
     {
       view *v=current_object->m_controller;
       if (!v) lbreak("object has no view : view_push_down");
-      else v->m_lastpos.y-=lnumber_value(CAR(args));
+      else v->m_lastpos.y-=lnumber_value(lcar(args));
     } break;
     case 222 :
     {
@@ -1886,41 +1886,41 @@ long c_caller(long number, void *args)
     } break;
     case 223 :
     {
-      char *fn=lstring_value(CAR(args));
+      char *fn=lstring_value(lcar(args));
       g_current_level->save(fn,1);
     } break;
     case 224 :
     {
-      current_object->set_hp(lnumber_value(CAR(args)));
+      current_object->set_hp(lnumber_value(lcar(args)));
     } break;
     case 225 :
     {
       char fn[255];
       // If a save filename is requested, prepend the savegame directory.
-      if( strncmp( lstring_value( CAR(args) ), "save", 4 ) == 0 )
+      if( strncmp( lstring_value( lcar(args) ), "save", 4 ) == 0 )
       {
-        sprintf( fn, "%s%s", get_save_filename_prefix(), lstring_value( CAR(args) ) );
+        sprintf( fn, "%s%s", get_save_filename_prefix(), lstring_value( lcar(args) ) );
       }
       else
       {
-        strcpy( fn, lstring_value(CAR(args)) );
+        strcpy( fn, lstring_value(lcar(args)) );
       }
       the_game->request_level_load(fn);
     } break;
     case 226 :
     {
-      strcpy(level_file,lstring_value(CAR(args)));
+      strcpy(level_file,lstring_value(lcar(args)));
     } break;
     case 227 :
     {
-      return cache.reg(lstring_value(CAR(args)),"palette",SPEC_PALETTE,1);
+      return cache.reg(lstring_value(lcar(args)),"palette",SPEC_PALETTE,1);
     } break;
     case 228 :
     {
       ivec3 delta;
-      delta.r = lnumber_value(CAR(args)); args=CDR(args);
-      delta.g = lnumber_value(CAR(args)); args=CDR(args);
-      delta.b = lnumber_value(CAR(args));
+      delta.r = lnumber_value(lcar(args)); args=lcdr(args);
+      delta.g = lnumber_value(lcar(args)); args=lcdr(args);
+      delta.b = lnumber_value(lcar(args));
 
       Palette *p = g_palette->Copy();
       for (int i = 0; i < 256; i++)
@@ -1940,7 +1940,7 @@ long c_caller(long number, void *args)
       if (!v) lbreak("object has no view : local_player");
       else
       {
-    int32_t x=lnumber_value(CAR(args));
+    int32_t x=lnumber_value(lcar(args));
     if (x<0 || x>=total_weapons)
     { lbreak("weapon out of range (%d)\n",x); exit(0); }
     v->current_weapon=x;
@@ -1950,11 +1950,11 @@ long c_caller(long number, void *args)
     {
       view *v=current_object->m_controller;
       if (!v) lbreak("object has no view : local_player");
-      else return v->has_weapon(lnumber_value(CAR(args)));
+      else return v->has_weapon(lnumber_value(lcar(args)));
     } break;
     case 232 :
     {
-      ambient_ramp+=lnumber_value(CAR(args));
+      ambient_ramp+=lnumber_value(lcar(args));
     } break;
 
     case 233 :
@@ -1962,12 +1962,12 @@ long c_caller(long number, void *args)
 
     case 234 :
     {
-      int32_t x1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t y1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t x2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t y2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t c = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t s = lnumber_value(CAR(args));
+      int32_t x1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t y1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t x2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t y2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t c = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t s = lnumber_value(lcar(args));
       ivec2 pos1 = the_game->GameToMouse(ivec2(x1, y1), current_view);
       ivec2 pos2 = the_game->GameToMouse(ivec2(x2, y2), current_view);
       ScatterLine(pos1, pos2, c, s);
@@ -1983,7 +1983,7 @@ long c_caller(long number, void *args)
     } break;
     case 237 :
     {
-      (void)lnumber_value(CAR(args)); return 1;
+      (void)lnumber_value(lcar(args)); return 1;
     } break;
     case 238 :
     {
@@ -2014,13 +2014,13 @@ long c_caller(long number, void *args)
     } break;
     case 244 :
     {
-      int32_t x1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t y1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t x2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t y2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t c1 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t c2 = lnumber_value(CAR(args)); args = lcdr(args);
-      int32_t s = lnumber_value(CAR(args));
+      int32_t x1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t y1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t x2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t y2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t c1 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t c2 = lnumber_value(lcar(args)); args = lcdr(args);
+      int32_t s = lnumber_value(lcar(args));
       ivec2 pos1 = the_game->GameToMouse(ivec2(x1, y1), current_view);
       ivec2 pos2 = the_game->GameToMouse(ivec2(x2, y2), current_view);
       AScatterLine(pos1, pos2, c1, c2, s);
@@ -2033,15 +2033,15 @@ long c_caller(long number, void *args)
     } break;
     case 246 :
     {
-      (void)lnumber_value(CAR(args)); /* deprecated */
+      (void)lnumber_value(lcar(args)); /* deprecated */
     } break;
     case 247 :
     {
-      int32_t cx1=lnumber_value(CAR(args)); args=lcdr(args);
-      int32_t cy1=lnumber_value(CAR(args)); args=lcdr(args);
-      int32_t cx2=lnumber_value(CAR(args)); args=lcdr(args);
-      int32_t cy2=lnumber_value(CAR(args)); args=lcdr(args);
-      int32_t c1=lnumber_value(CAR(args)); args=lcdr(args);
+      int32_t cx1=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t cy1=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t cx2=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t cy2=lnumber_value(lcar(args)); args=lcdr(args);
+      int32_t c1=lnumber_value(lcar(args)); args=lcdr(args);
       main_screen->Bar(ivec2(cx1, cy1), ivec2(cx2, cy2), c1);
     } break;
     case 248 :
@@ -2052,7 +2052,7 @@ long c_caller(long number, void *args)
     {
       if ((sound_avail&MUSIC_INITIALIZED))
       {
-    char *fn=lstring_value(CAR(args));
+    char *fn=lstring_value(lcar(args));
     if (current_song)
     {
       if (current_song->playing())
@@ -2072,7 +2072,7 @@ long c_caller(long number, void *args)
       current_song=NULL;
     } break;
     case 251 : return current_object->targetable(); break;
-    case 252 : current_object->set_targetable( CAR(args)==NULL ? 0 : 1); break;
+    case 252 : current_object->set_targetable( lcar(args)==NULL ? 0 : 1); break;
     case 253 : show_stats(); break;
     case 254 :
     {
@@ -2102,25 +2102,25 @@ long c_caller(long number, void *args)
     {
       view *v=current_object->m_controller;
       if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
-      else v->kills=lnumber_value(CAR(args));
+      else v->kills=lnumber_value(lcar(args));
     } break;
     case 259 :
     {
       view *v=current_object->m_controller;
       if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
-      else v->tkills=lnumber_value(CAR(args));
+      else v->tkills=lnumber_value(lcar(args));
     } break;
     case 260 :
     {
       view *v=current_object->m_controller;
       if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
-      else v->secrets=lnumber_value(CAR(args));
+      else v->secrets=lnumber_value(lcar(args));
     } break;
     case 261 :
     {
       view *v=current_object->m_controller;
       if (!v) { lisp::print((LObject *)args); printf("get_player_inputs : object has no view!\n"); }
-      else v->tsecrets=lnumber_value(CAR(args));
+      else v->tsecrets=lnumber_value(lcar(args));
     } break;
     case 262 :
     {
@@ -2145,15 +2145,15 @@ long c_caller(long number, void *args)
     } break;
     case 267 :
     {
-      current_object->draw_double_tint(lnumber_value(CAR(args)),lnumber_value(CAR(CDR(args))));
+      current_object->draw_double_tint(lnumber_value(lcar(args)),lnumber_value(lcar(lcdr(args))));
     } break;
     case 268 :
     {
-      return cache.img(lnumber_value(CAR(args)))->Size().x;
+      return cache.img(lnumber_value(lcar(args)))->Size().x;
     } break;
     case 269 :
     {
-      return cache.img(lnumber_value(CAR(args)))->Size().y;
+      return cache.img(lnumber_value(lcar(args)))->Size().y;
     } break;
     case 270 :
     {
@@ -2173,13 +2173,13 @@ long c_caller(long number, void *args)
     } break;
     case 274 :
     {
-      return get_keycode(lstring_value(CAR(args)));
+      return get_keycode(lstring_value(lcar(args)));
     }
     case 275 :
     {
-      int id=lnumber_value(CAR(args));  args=CDR(args);
-      int x=lnumber_value(CAR(args));  args=CDR(args);
-      int y=lnumber_value(CAR(args));
+      int id=lnumber_value(lcar(args));  args=lcdr(args);
+      int x=lnumber_value(lcar(args));  args=lcdr(args);
+      int y=lnumber_value(lcar(args));
       c_target=id;
       if (main_screen)
         wm->SetMouseShape(cache.img(c_target)->copy(), ivec2(x, y));
@@ -2191,55 +2191,55 @@ long c_caller(long number, void *args)
     } break;
     case 277 :
     {
-      JCFont *fnt=(JCFont *)lpointer_value(CAR(args)); args=CDR(args);
-      int32_t x=lnumber_value(CAR(args));       args=CDR(args);
-      int32_t y=lnumber_value(CAR(args));       args=CDR(args);
-      char *st=lstring_value(CAR(args));     args=CDR(args);
+      JCFont *fnt=(JCFont *)lpointer_value(lcar(args)); args=lcdr(args);
+      int32_t x=lnumber_value(lcar(args));       args=lcdr(args);
+      int32_t y=lnumber_value(lcar(args));       args=lcdr(args);
+      char *st=lstring_value(lcar(args));     args=lcdr(args);
       int color=-1;
       if (args)
-        color=lnumber_value(CAR(args));
+        color=lnumber_value(lcar(args));
       fnt->PutString(main_screen, ivec2(x, y), st, color);
     } break;
-    case 278 : return ((JCFont *)lpointer_value(CAR(args)))->Size().x; break;
-    case 279 : return ((JCFont *)lpointer_value(CAR(args)))->Size().y; break;
-    case 280 : if (chat) chat->put_all(lstring_value(CAR(args))); break;
+    case 278 : return ((JCFont *)lpointer_value(lcar(args)))->Size().x; break;
+    case 279 : return ((JCFont *)lpointer_value(lcar(args)))->Size().y; break;
+    case 280 : if (chat) chat->put_all(lstring_value(lcar(args))); break;
     case 281 :
     {
       view *v=current_object->m_controller;
       if (!v) { lbreak("get_player_name : object has no view!\n"); }
-      else strcpy(v->name,lstring_value(CAR(args)));
+      else strcpy(v->name,lstring_value(lcar(args)));
     } break;
     case 282 :
     {
-      int32_t x1=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t y1=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t x2=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t y2=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t c=lnumber_value(CAR(args));
+      int32_t x1=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t y1=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t x2=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t y2=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t c=lnumber_value(lcar(args));
       main_screen->Bar(ivec2(x1, y1), ivec2(x2, y2), c);
     } break;
     case 283 :
     {
-      int32_t x1=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t y1=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t x2=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t y2=lnumber_value(CAR(args));   args=CDR(args);
-      int32_t c=lnumber_value(CAR(args));
+      int32_t x1=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t y1=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t x2=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t y2=lnumber_value(lcar(args));   args=lcdr(args);
+      int32_t c=lnumber_value(lcar(args));
       main_screen->Rectangle(ivec2(x1, y1), ivec2(x2, y2), c);
     } break;
     case 284 :
     {
-      if (get_option(lstring_value(CAR(args))))
+      if (get_option(lstring_value(lcar(args))))
         return 1;
       else return 0;
     } break;
     case 288 :
     {
-      if (CAR(args)) the_game->set_delay(1); else the_game->set_delay(0);
+      if (lcar(args)) the_game->set_delay(1); else the_game->set_delay(0);
     } break;
     case 289 :
     {
-      set_login(lstring_value(CAR(args)));
+      set_login(lstring_value(lcar(args)));
     } break;
     case 290 :
     {
@@ -2286,20 +2286,20 @@ long c_caller(long number, void *args)
     } break;
     case 295 :
     {
-      strncpy(game_name,lstring_value(CAR(args)),sizeof(game_name));
+      strncpy(game_name,lstring_value(lcar(args)),sizeof(game_name));
       game_name[sizeof(game_name)-1]=0;
 
     } break;
     case 296 :
     {
       if (main_net_cfg)
-        main_net_cfg->min_players=lnumber_value(CAR(args));
+        main_net_cfg->min_players=lnumber_value(lcar(args));
     } break;
     case 1001: // (set_object_tint)
       if(current_object->m_controller)
-        current_object->m_controller->set_tint(lnumber_value(CAR(args)));
+        current_object->m_controller->set_tint(lnumber_value(lcar(args)));
       else
-        current_object->set_tint(lnumber_value(CAR(args)));
+        current_object->set_tint(lnumber_value(lcar(args)));
       break;
     case 1002: //(get_object_tint)
       if(current_object->m_controller)
@@ -2309,9 +2309,9 @@ long c_caller(long number, void *args)
       break;
     case 1003: //(set_object_team)
       if(current_object->m_controller)
-        current_object->m_controller->set_team(lnumber_value(CAR(args)));
+        current_object->m_controller->set_team(lnumber_value(lcar(args)));
       else
-        current_object->set_team(lnumber_value(CAR(args)));
+        current_object->set_team(lnumber_value(lcar(args)));
       break;
     case 1004: //(get_object_team)
       if(current_object->m_controller)

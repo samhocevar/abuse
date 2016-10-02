@@ -250,14 +250,14 @@ void *laser_ufun(void *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=CAR(args);  args=CDR(args);
+  void *signal=lcar(args);  args=lcdr(args);
   void *ret=NULL;
 
   if (signal==l_FIRE)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(lisp::eval(CAR(args)));
+      int32_t value=lnumber_value(lisp::eval(lcar(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=3;
@@ -292,14 +292,14 @@ void *top_ufun(void *args)                       // generic top character ai GRE
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=CAR(args);  args=CDR(args);
+  void *signal=lcar(args);  args=lcdr(args);
   void *ret=NULL;
 
   if (signal==l_FIRE)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(lisp::eval(CAR(args)));
+      int32_t value=lnumber_value(lisp::eval(lcar(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=6;
@@ -319,14 +319,14 @@ void *plaser_ufun(void *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=CAR(args);  args=CDR(args);
+  void *signal=lcar(args);  args=lcdr(args);
   void *ret=NULL;
 
   if (signal==l_FIRE)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(lisp::eval(CAR(args)));
+      int32_t value=lnumber_value(lisp::eval(lcar(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=2;
@@ -343,14 +343,14 @@ void *lsaber_ufun(void *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=CAR(args);  args=CDR(args);
+  void *signal=lcar(args);  args=lcdr(args);
   void *ret=NULL;
 
   if (signal==l_FIRE)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(lisp::eval(CAR(args)));
+      int32_t value=lnumber_value(lisp::eval(lcar(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=1;
@@ -370,14 +370,14 @@ void *player_rocket_ufun(void *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=CAR(args);  args=CDR(args);
+  void *signal=lcar(args);  args=lcdr(args);
   void *ret=NULL;
   int xd,yd,cl=0xfffffff,d;
   if (signal==l_FIRE)
   {
     if (!o->lvars[fire_delay1])                   // make sur we are not waiting of previous fire
     {
-      int32_t value=lnumber_value(lisp::eval(CAR(args)));
+      int32_t value=lnumber_value(lisp::eval(lcar(args)));
       if (value)                                   // do we have ammo ?
       {
     o->lvars[fire_delay1]=6;

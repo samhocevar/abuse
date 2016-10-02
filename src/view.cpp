@@ -312,22 +312,22 @@ void view::get_input()
 /*    if( DEFINEDP( symbol_function( l_get_local_input ) ) )
     {
         void *ret = ((LSymbol *)l_get_local_input->EvalFunction(NULL);
-        sug_x = lnumber_value( CAR( ret ) );
-        ret = CDR( ret );
-        sug_y = lnumber_value( CAR( ret ) );
-        ret = CDR( ret );
-        if( CAR( ret ) )
+        sug_x = lnumber_value( lcar( ret ) );
+        ret = lcdr( ret );
+        sug_y = lnumber_value( lcar( ret ) );
+        ret = lcdr( ret );
+        if( lcar( ret ) )
             sug_b1 = 1;
         else
             sug_b1 = 0;
-        ret = CDR( ret );
-        if( CAR( ret ) )
+        ret = lcdr( ret );
+        if( lcar( ret ) )
             sug_b2 = 1;
         else
             sug_b2 = 0;
-        ret = CDR( ret );
-        int x = lnumber_value( CAR( ret ) );
-        ret = CDR( ret );
+        ret = lcdr( ret );
+        int x = lnumber_value( lcar( ret ) );
+        ret = lcdr( ret );
         if( x < 0 )
             sug_b3 = 1;
         else
@@ -336,10 +336,10 @@ void view::get_input()
             sug_b4 = 1;
         else sug_b4 = 0;
 
-        int32_t bx = lnumber_value( CAR( ret ) );
-        ret = CDR( ret );
-        int32_t by = lnumber_value( CAR( ret ) );
-        ret = CDR( ret );
+        int32_t bx = lnumber_value( lcar( ret ) );
+        ret = lcdr( ret );
+        int32_t by = lnumber_value( lcar( ret ) );
+        ret = lcdr( ret );
         the_game->mouse_to_game( bx, by, sug_px, sug_py, this );
 
     }

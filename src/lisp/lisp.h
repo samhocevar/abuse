@@ -240,16 +240,6 @@ private:
     static void CollectStacks();
 };
 
-static inline LObject *&CAR(void *x)
-{
-    return static_cast<LList *>(x)->m_car;
-}
-
-static inline LObject *&CDR(void *x)
-{
-    return static_cast<LList *>(x)->m_cdr;
-}
-
 static inline ltype item_type(void const *x)
 {
     return x ? *static_cast<ltype const *>(x) : ltype(L_CONS_CELL);
@@ -259,7 +249,25 @@ struct lisp
 {
     static LObject *eval(LObject *);
     static void print(LObject *);
+
+    // Use this object when a reference to null has to be provided
+    // (the caller must not try to write to it)
+    static LObject *null;
 };
+
+static inline LObject *&lcdr(void *c)
+{
+    if (!c || item_type(c) != ltype(L_CONS_CELL))
+        return lisp::null;
+    return ((LList *)c)->m_cdr;
+}
+
+static inline LObject *&lcar(void *c)
+{
+    if (!c || item_type(c) != ltype(L_CONS_CELL))
+        return lisp::null;
+    return ((LList *)c)->m_car;
+}
 
 void perm_space();
 void tmp_space();
@@ -267,8 +275,6 @@ void *lpointer_value(void *lpointer);
 int32_t lnumber_value(void *lnumber);
 long lfixed_point_value(void *c);
 void *lisp_atom(void *i);
-LObject *lcdr(void *c);
-LObject *lcar(void *c);
 void *lisp_eq(void *n1, void *n2);
 void *lisp_equal(void *n1, void *n2);
 void *eval_block(void *list);

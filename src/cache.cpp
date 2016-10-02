@@ -373,12 +373,12 @@ void CacheList::preload_cache_object(int type)
       void *obj_list=lcar(CacheList);
       while (obj_list)
       {
-        int t=lnumber_value(CAR(obj_list));
+        int t=lnumber_value(lcar(obj_list));
         if (t<0 || t>=total_objects)
           lbreak("Get cache list returned a bad object number %d\n",t);
         else
           preload_cache_object(t);
-        obj_list=CDR(obj_list);
+        obj_list=lcdr(obj_list);
       }
     }
     if (CacheList && lcdr(CacheList))
@@ -386,14 +386,14 @@ void CacheList::preload_cache_object(int type)
       void *id_list=lcar(lcdr(CacheList));
       while (id_list)
       {
-        int id=lnumber_value(CAR(id_list));
+        int id=lnumber_value(lcar(id_list));
         if (id<0 || id>=total)
           lbreak("Get cache list returned a bad id number %d\n",id);
         else if (list[id].last_access<0)
           list[id].last_access=-2;
         else list[id].last_access=2;
 
-        id_list=CDR(id_list);
+        id_list=lcdr(id_list);
       }
     }
     LSpace::Current=sp;

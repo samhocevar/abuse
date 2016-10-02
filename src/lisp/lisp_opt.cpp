@@ -35,7 +35,7 @@ void *comp_optimize(void *list)
   PtrRef r1(list);
   if (list)
   {
-    if (CAR(list)==if_symbol)
+    if (lcar(list)==if_symbol)
     {
       void *eval1=lcar(lcdr(lcdr(list)));
       PtrRef r2(eval1);

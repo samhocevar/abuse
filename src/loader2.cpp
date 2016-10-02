@@ -389,16 +389,16 @@ void load_data(int argc, char **argv)
   if (DEFINEDP(symbol_value(l_help_screens)))
   {
     void *v=symbol_value(l_help_screens);
-    char *ff=lstring_value(CAR(v));  v=CDR(v);
+    char *ff=lstring_value(lcar(v));  v=lcdr(v);
     total_help_screens=0;
-    while (v) { total_help_screens++; v=CDR(v); }
+    while (v) { total_help_screens++; v=lcdr(v); }
     if (total_help_screens)
     {
       help_screens=(int *)malloc(sizeof(int)*total_help_screens);
-      v=CDR(symbol_value(l_help_screens));
+      v=lcdr(symbol_value(l_help_screens));
       int i=0;
-      for (; v; v=CDR(v),i++)
-        help_screens[i]=cache.reg(ff,lstring_value(CAR(v)),SPEC_IMAGE);
+      for (; v; v=lcdr(v),i++)
+        help_screens[i]=cache.reg(ff,lstring_value(lcar(v)),SPEC_IMAGE);
     }
     else
       dprintf("Warning no help images following filename\n");

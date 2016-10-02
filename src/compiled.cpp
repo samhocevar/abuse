@@ -132,7 +132,7 @@ void compiled_init()
     memset(bad_guy_array,0,total_objects);
     while (b)
     {
-      int32_t x=lnumber_value(CAR(b));
+      int32_t x=lnumber_value(lcar(b));
       if (x>=0 && x<total_objects)
         bad_guy_array[x]=1;
       else { lbreak("objetc number out of range %d\n",x); }

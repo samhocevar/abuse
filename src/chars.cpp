@@ -322,14 +322,14 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
         abil[i]=get_ability_default((ability)i);
     LObject *field = args;
     PtrRef r7(field);
-    for (; field; field=CDR(field))
+    for (; field; field=lcdr(field))
     {
-        LObject *f=CAR(CAR(field));
+        LObject *f=lcar(lcar(field));
         PtrRef r1(f);
 
         if (f==l_abil)
         {
-            LList *l = (LList *)CDR(CAR(field));
+            LList *l = (LList *)lcdr(lcar(field));
             PtrRef r4(l);
             for (int i=0; i<TOTAL_ABILITIES; i++)
             {
@@ -340,7 +340,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             }
         } else if (f==l_funs)
         {
-            LList *l = (LList *)CDR(CAR(field));
+            LList *l = (LList *)lcdr(lcar(field));
             PtrRef r4(l);
             for (int i=0; i<TOTAL_OFUNS; i++)
             {
@@ -351,7 +351,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             }
         } else if (f==l_flags)
         {
-            LList *l = (LList *)CDR(CAR(field));
+            LList *l = (LList *)lcdr(lcar(field));
             PtrRef r4(l);
             for (int i=0; i<TOTAL_CFLAGS; i++)
             {
@@ -378,24 +378,24 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             draw_rangey = lnumber_value(lisp::eval(lcar(lcdr(lcdr(lcar(field))))));
         } else if (f==l_states)
         {
-            LObject *l=CDR(CAR(field));
+            LObject *l=lcdr(lcar(field));
             PtrRef r4(l);
             char fn[100];
-            strcpy(fn,lstring_value(lisp::eval(CAR(l)))); l=CDR(l);
+            strcpy(fn,lstring_value(lisp::eval(lcar(l)))); l=lcdr(l);
             while (l)
             {
                 int index;
                 void *e;
                 sequence *mem;
-                index = add_state(CAR((CAR(l))));
-                e = lisp::eval(CAR(CDR(CAR(l))));
+                index = add_state(lcar((lcar(l))));
+                e = lisp::eval(lcar(lcdr(lcar(l))));
                 mem = new sequence(fn,e,NULL);
                 seq[index]=mem;
-                l=CDR(l);
+                l=lcdr(l);
             }
         } else if (f==l_fields)
         {
-            void *mf=CDR(CAR(field));
+            void *mf=lcdr(lcar(field));
             PtrRef r4(mf);
             while (!NILP(mf))
             {
@@ -415,17 +415,17 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             }
         } else if (f==l_logo)
         {
-            char *fn = lstring_value(lisp::eval(CAR(CDR(CAR(field)))));
-            char *o = lstring_value(lisp::eval(CAR(CDR(CDR(CAR(field))))));
+            char *fn = lstring_value(lisp::eval(lcar(lcdr(lcar(field)))));
+            char *o = lstring_value(lisp::eval(lcar(lcdr(lcdr(lcar(field))))));
             logo=cache.reg(fn,o,SPEC_IMAGE,1);
         } else if (f==l_vars)
         {
-            void *l=CDR(CAR(field));
+            void *l=lcdr(lcar(field));
             PtrRef r8(l);
             while (l)
             {
-                add_var(CAR(l),name);
-                l=CDR(l);
+                add_var(lcar(l),name);
+                l=lcdr(l);
             }
         }
         else
