@@ -35,12 +35,12 @@ size_t block_size(LObject *level)  // return size needed to recreate this block
         {
             size_t ret = sizeof(uint8_t) + sizeof(uint32_t);
             void *b = level;
-            for (; b && item_type(b) == L_CONS_CELL; b = lcdr(b))
+            for (; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 ;
             if (b)
                 ret += block_size((LObject *)b);
-            for (b = level; b && item_type(b) == L_CONS_CELL; b = lcdr(b))
-                ret += block_size(lcar(b));
+            for (b = level; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
+                ret += block_size(lisp::car(b));
             return ret;
         }
     case L_CHARACTER:
@@ -72,7 +72,7 @@ void write_level(bFILE *fp, LObject *level)
         {
             size_t count = 0;
             void *b = level;
-            for (; b && item_type(b) == L_CONS_CELL; b = lcdr(b))
+            for (; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 count++;
             /* If last element is not the empty list, it's a dotted list
              * and we need to save the last object. Write a negative size
@@ -81,8 +81,8 @@ void write_level(bFILE *fp, LObject *level)
             if (b)
                 write_level(fp, (LObject *)b);
 
-            for (b = level; b && item_type(b) == L_CONS_CELL; b = lcdr(b))
-                write_level(fp, lcar(b));
+            for (b = level; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
+                write_level(fp, lisp::car(b));
         }
         break;
     case L_CHARACTER:

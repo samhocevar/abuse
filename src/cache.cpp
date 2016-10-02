@@ -368,32 +368,32 @@ void CacheList::preload_cache_object(int type)
     void *CacheList = ((LSymbol *)cache_fun)->EvalFunction(call_with);
     PtrRef r1(CacheList);
 
-    if (CacheList && lcar(CacheList))
+    if (CacheList && lisp::car(CacheList))
     {
-      void *obj_list=lcar(CacheList);
+      void *obj_list=lisp::car(CacheList);
       while (obj_list)
       {
-        int t=lnumber_value(lcar(obj_list));
+        int t=lnumber_value(lisp::car(obj_list));
         if (t<0 || t>=total_objects)
           lbreak("Get cache list returned a bad object number %d\n",t);
         else
           preload_cache_object(t);
-        obj_list=lcdr(obj_list);
+        obj_list=lisp::cdr(obj_list);
       }
     }
-    if (CacheList && lcdr(CacheList))
+    if (CacheList && lisp::cdr(CacheList))
     {
-      void *id_list=lcar(lcdr(CacheList));
+      void *id_list=lisp::cadr(CacheList);
       while (id_list)
       {
-        int id=lnumber_value(lcar(id_list));
+        int id=lnumber_value(lisp::car(id_list));
         if (id<0 || id>=total)
           lbreak("Get cache list returned a bad id number %d\n",id);
         else if (list[id].last_access<0)
           list[id].last_access=-2;
         else list[id].last_access=2;
 
-        id_list=lcdr(id_list);
+        id_list=lisp::cdr(id_list);
       }
     }
     LSpace::Current=sp;
@@ -769,8 +769,8 @@ int CacheList::reg_object(char const *filename, LObject *object,
     // it's a string.
     if (item_type(object) == L_CONS_CELL)
     {
-        filename = lstring_value(lcar(object));
-        object = lcdr(object);
+        filename = lstring_value(lisp::car(object));
+        object = lisp::cdr(object);
     }
 
     return reg(filename, lstring_value(object), type, rm_dups);

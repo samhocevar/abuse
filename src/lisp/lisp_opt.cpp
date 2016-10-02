@@ -35,54 +35,54 @@ void *comp_optimize(void *list)
   PtrRef r1(list);
   if (list)
   {
-    if (lcar(list)==if_symbol)
+    if (lisp::car(list)==if_symbol)
     {
-      void *eval1=lcar(lcdr(lcdr(list)));
+      void *eval1 = lisp::caddr(list);
       PtrRef r2(eval1);
-      void *eval2=lcar(lcdr(lcdr(lcdr(list))));
+      void *eval2 = lisp::cadddr(list);
       PtrRef r3(eval2);
 
       void *ret=NULL;
       PtrRef r4(ret);
-      if (lcar(list)==eq_symbol && (lcar(lcdr(list))==zero_symbol))  //  simplify (eq 0 x) -> (eq0 x)
+      if (lisp::car(list)==eq_symbol && (lisp::cadr(list))==zero_symbol)  //  simplify (eq 0 x) -> (eq0 x)
       {
-    push_onto_list(lcar(lcdr(lcdr(list))),ret);
+    push_onto_list(lisp::caddr(list),ret);
     push_onto_list(eq0_symbol,ret);
     return_val=comp_optimize(ret);
-      } else if (lcar(list)==eq_symbol &&
-         (lcar(lcdr(lcdr(list)))==zero_symbol)) //simplify (eq x 0)-> (eq0 x)
+      } else if (lisp::car(list)==eq_symbol &&
+         (lisp::caddr(list)==zero_symbol)) //simplify (eq x 0)-> (eq0 x)
       {
-    push_onto_list(lcar(lcdr(list)),ret);
+    push_onto_list(lisp::cadr(list),ret);
     push_onto_list(eq0_symbol,ret);
     return_val=comp_optimize(ret);
-      } else if (lcar(lcar(lcdr(list)))==not_symbol)  // simplify (if (not y) x z) -> (if y z x)
+      } else if (lisp::caadr(list)==not_symbol)  // simplify (if (not y) x z) -> (if y z x)
       {
-    push_onto_list(lcar(lcdr(lcdr(list))),ret);
-    push_onto_list(lcar(lcdr(lcdr(lcdr(list)))),ret);
-    push_onto_list(lcar(lcdr(lcar(lcdr(list)))),ret);
+    push_onto_list(lisp::caddr(list),ret);
+    push_onto_list(lisp::cadddr(list),ret);
+    push_onto_list(lisp::cadadr(list),ret);
     push_onto_list(if_symbol,ret);
     return_val=comp_optimize(ret);
       }
-      else if (lcar(eval1)==progn_symbol && (eval2==NULL ||
+      else if (lisp::car(eval1)==progn_symbol && (eval2==NULL ||
                          item_type(eval2)!=L_CONS_CELL))
       {
     push_onto_list(eval2,ret);
-    push_onto_list(lcdr(eval1),ret);
-    push_onto_list(lcar(lcdr(list)),ret);
+    push_onto_list(lisp::cdr(eval1),ret);
+    push_onto_list(lisp::cadr(list),ret);
     push_onto_list(if_1progn,ret);
     return_val=comp_optimize(ret);
-      } else if (lcar(eval1)==progn_symbol && lcar(eval2)==progn_symbol)
+      } else if (lisp::car(eval1)==progn_symbol && lisp::car(eval2)==progn_symbol)
       {
-    push_onto_list(lcdr(eval2),ret);
-    push_onto_list(lcdr(eval1),ret);
-    push_onto_list(lcar(lcdr(list)),ret);
+    push_onto_list(lisp::cdr(eval2),ret);
+    push_onto_list(lisp::cdr(eval1),ret);
+    push_onto_list(lisp::cadr(list),ret);
     push_onto_list(if_12progn,ret);
     return_val=comp_optimize(ret);
-      } else if (lcar(eval2)==progn_symbol)
+      } else if (lisp::car(eval2)==progn_symbol)
       {
-    push_onto_list(lcdr(eval2),ret);
+    push_onto_list(lisp::cdr(eval2),ret);
     push_onto_list(eval1,ret);
-    push_onto_list(lcar(lcdr(list)),ret);
+    push_onto_list(lisp::cadr(list),ret);
     push_onto_list(if_2progn,ret);
     return_val=comp_optimize(ret);
       }

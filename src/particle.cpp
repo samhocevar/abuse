@@ -63,7 +63,7 @@ void delete_panims()
 
 int defun_pseq(void *args)
 {
-  LSymbol *sym=(LSymbol *)lcar(args);
+  LSymbol *sym=(LSymbol *)lisp::car(args);
   if (item_type(sym)!=L_SYMBOL)
   {
     lisp::print((LObject *)args);
@@ -76,7 +76,7 @@ int defun_pseq(void *args)
   LSpace::Current = sp;
   pseqs=(part_sequence **)realloc(pseqs,sizeof(part_sequence *)*(total_pseqs+1));
 
-  args=lcdr(args);
+  args=lisp::cdr(args);
   pseqs[total_pseqs]=new part_sequence(args);
   total_pseqs++;
   return total_pseqs;
@@ -86,7 +86,7 @@ extern int total_files_open;
 
 part_sequence::part_sequence(void *args)
 {
-  char *fn=lstring_value(lcar(args));
+  char *fn=lstring_value(lisp::car(args));
   bFILE *fp=open_file(fn,"rb");
   if (fp->open_failure())
   {

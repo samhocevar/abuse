@@ -322,43 +322,43 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
         abil[i]=get_ability_default((ability)i);
     LObject *field = args;
     PtrRef r7(field);
-    for (; field; field=lcdr(field))
+    for (; field; field=lisp::cdr(field))
     {
-        LObject *f=lcar(lcar(field));
+        LObject *f=lisp::caar(field);
         PtrRef r1(f);
 
         if (f==l_abil)
         {
-            LList *l = (LList *)lcdr(lcar(field));
+            LList *l = (LList *)lisp::cdar(field);
             PtrRef r4(l);
             for (int i=0; i<TOTAL_ABILITIES; i++)
             {
                 Cell *ab = l->Assoc(LSymbol::FindOrCreate(ability_names[i]));
                 PtrRef r5(ab);
                 if (!NILP(ab))
-                    abil[i] = lnumber_value(lisp::eval(lcar(lcdr(ab))));
+                    abil[i] = lnumber_value(lisp::eval(lisp::cadr(ab)));
             }
         } else if (f==l_funs)
         {
-            LList *l = (LList *)lcdr(lcar(field));
+            LList *l = (LList *)lisp::cdar(field);
             PtrRef r4(l);
             for (int i=0; i<TOTAL_OFUNS; i++)
             {
                 Cell *ab = l->Assoc(LSymbol::FindOrCreate(ofun_names[i]));
                 PtrRef r5(ab);
-                if (!NILP(ab) && lcar(lcdr(ab)))
-                    fun_table[i]=lcar(lcdr(ab));
+                if (!NILP(ab) && lisp::cadr(ab))
+                    fun_table[i]=lisp::cadr(ab);
             }
         } else if (f==l_flags)
         {
-            LList *l = (LList *)lcdr(lcar(field));
+            LList *l = (LList *)lisp::cdar(field);
             PtrRef r4(l);
             for (int i=0; i<TOTAL_CFLAGS; i++)
             {
 
                 Cell *ab = l->Assoc(LSymbol::FindOrCreate(cflag_names[i]));
                 PtrRef r5(ab);
-                if (!NILP(ab) && lisp::eval(lcar(lcdr(ab))))
+                if (!NILP(ab) && lisp::eval(lisp::cadr(ab)))
                     cflags|=(1<<i);
             }
 
@@ -370,37 +370,37 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             }
         } else if (f==l_range)
         {
-            rangex = lnumber_value(lisp::eval(lcar(lcdr(lcar(field)))));
-            rangey = lnumber_value(lisp::eval(lcar(lcdr(lcdr(lcar(field))))));
+            rangex = lnumber_value(lisp::eval(lisp::cadar(field)));
+            rangey = lnumber_value(lisp::eval(lisp::caddar(field)));
         } else if (f==l_draw_range)
         {
-            draw_rangex = lnumber_value(lisp::eval(lcar(lcdr(lcar(field)))));
-            draw_rangey = lnumber_value(lisp::eval(lcar(lcdr(lcdr(lcar(field))))));
+            draw_rangex = lnumber_value(lisp::eval(lisp::cadar(field)));
+            draw_rangey = lnumber_value(lisp::eval(lisp::caddar(field)));
         } else if (f==l_states)
         {
-            LObject *l=lcdr(lcar(field));
+            LObject *l=lisp::cdar(field);
             PtrRef r4(l);
             char fn[100];
-            strcpy(fn,lstring_value(lisp::eval(lcar(l)))); l=lcdr(l);
+            strcpy(fn,lstring_value(lisp::eval(lisp::car(l)))); l=lisp::cdr(l);
             while (l)
             {
                 int index;
                 void *e;
                 sequence *mem;
-                index = add_state(lcar((lcar(l))));
-                e = lisp::eval(lcar(lcdr(lcar(l))));
+                index = add_state(lisp::caar(l));
+                e = lisp::eval(lisp::cadar(l));
                 mem = new sequence(fn,e,NULL);
                 seq[index]=mem;
-                l=lcdr(l);
+                l=lisp::cdr(l);
             }
         } else if (f==l_fields)
         {
-            void *mf=lcdr(lcar(field));
+            void *mf=lisp::cdar(field);
             PtrRef r4(mf);
             while (!NILP(mf))
             {
-                char *real = lstring_value(lisp::eval(lcar(lcar(mf))));
-                char *fake = lstring_value(lisp::eval(lcar(lcdr(lcar(mf)))));
+                char *real = lstring_value(lisp::eval(lisp::caar(mf)));
+                char *fake = lstring_value(lisp::eval(lisp::cadar(mf)));
                 if (!isa_var_name(real))
                 {
                     lisp::print((LObject *)field);
@@ -411,26 +411,26 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
 
                 fields=(named_field **)realloc(fields,sizeof(named_field *)*total_fields);
                 fields[total_fields-1]=new named_field(real,fake);
-                mf=lcdr(mf);
+                mf=lisp::cdr(mf);
             }
         } else if (f==l_logo)
         {
-            char *fn = lstring_value(lisp::eval(lcar(lcdr(lcar(field)))));
-            char *o = lstring_value(lisp::eval(lcar(lcdr(lcdr(lcar(field))))));
+            char *fn = lstring_value(lisp::eval(lisp::cadar(field)));
+            char *o = lstring_value(lisp::eval(lisp::caddar(field)));
             logo=cache.reg(fn,o,SPEC_IMAGE,1);
         } else if (f==l_vars)
         {
-            void *l=lcdr(lcar(field));
+            void *l=lisp::cdar(field);
             PtrRef r8(l);
             while (l)
             {
-                add_var(lcar(l),name);
-                l=lcdr(l);
+                add_var(lisp::car(l),name);
+                l=lisp::cdr(l);
             }
         }
         else
         {
-            lisp::print(lcar(field));
+            lisp::print(lisp::car(field));
             lbreak("Unknown field for character definition");
             exit(0);
         }
@@ -440,22 +440,22 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
         lbreak("object (%s) has no stopped state, please define one!\n",
              lstring_value(name->GetName()));
 
-/*  char *fn=lstring_value(lcar(desc));
+/*  char *fn=lstring_value(lisp::car(desc));
   if (!fn)
   {
     printf("No filename given for def-character (%s)\n",name);
     exit(0);
   }
-  desc=lcdr(desc);  //  skip filename
+  desc=lisp::cdr(desc);  //  skip filename
 
 
   Cell *mrph = desc->Assoc(l_morph);     // check for morph info
   morph_power=0;
   if (!NILP(mrph))
   {
-    mrph=lcdr(mrph);
-    morph_mask=cache.reg_object(fn,lcar(mrph),SPEC_IMAGE,1);
-    morph_power=lnumber_value(lcar(lcdr(mrph)));
+    mrph=lisp::cdr(mrph);
+    morph_mask=cache.reg_object(fn,lisp::car(mrph),SPEC_IMAGE,1);
+    morph_power=lnumber_value(lisp::cadr(mrph));
   } else morph_mask=-1;
 
   Cell *sa = desc->Assoc(l_state_art);
@@ -465,23 +465,23 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
     exit(0);
   }
 
-  sa=lcdr(sa);   // list of state sequences
+  sa=lisp::cdr(sa);   // list of state sequences
   while (!NILP(sa))
   {
-    int num=lnumber_value(lcar(lcar(sa)));
+    int num=lnumber_value(lisp::caar(sa));
     if (seq[num])
       printf("Warning : state '%s' defined multiply for object %s\n"
          "          using first definition\n",state_names[num],name);
     else
-      seq[lnumber_value(lcar(lcar(sa)))]=new sequence(fn,lcar(lcdr(lcar(sa))),lcar(lcdr(lcdr(lcar(sa)))));
-    sa=lcdr(sa);
+      seq[lnumber_value(lisp::caar(sa))]=new sequence(fn,lisp::cadar(sa),lisp::caddar(sa));
+    sa=lisp::cdr(sa);
   }
 
   Cell *range = desc->Assoc(l_range);
   if (!NILP(range))
   {
-    rangex=lnumber_value(lcar(lcdr(range)));
-    rangey=lnumber_value(lcar(lcdr(lcdr(range))));
+    rangex=lnumber_value(lisp::cadr(range));
+    rangey=lnumber_value(lisp::caddr(range));
   } else
   {
     rangex=100;
@@ -494,11 +494,11 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
   Cell *mf = desc->Assoc(l_fields);
   if (!NILP(mf))
   {
-    mf=lcdr(mf);
+    mf=lisp::cdr(mf);
     total_fields=0;
     while (!NILP(mf))
     {
-      char *name=lstring_value(lcar(lcar(mf)));
+      char *name=lstring_value(lisp::caar(mf));
       int t = g_default_simple.total_vars(),find=-1;
       for (int i=0; find<0 && i<t; i++)
         if (!strcmp(g_default_simple.var_name(i),name))
@@ -512,12 +512,12 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
     printf("\n");
     exit(0);
       }
-      char *new_name=lstring_value(lcar(lcdr(lcar(mf))));
+      char *new_name=lstring_value(lisp::cadar(mf));
       total_fields++;
 
       fields=(named_field **)realloc(fields,sizeof(named_field *)*total_fields);
       fields[total_fields-1]=new named_field(find,new_name);
-      mf=lcdr(mf);
+      mf=lisp::cdr(mf);
     }
   } else total_fields=0;
 
@@ -534,7 +534,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
     logo=-1;
   }
   else
-    logo=cache.reg_object(fn,lcdr(lg),SPEC_IMAGE,1);
+    logo=cache.reg_object(fn,lisp::cdr(lg),SPEC_IMAGE,1);
     */
 }
 

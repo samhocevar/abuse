@@ -72,5 +72,4 @@ button::area
 is this necessary before eval()?
   while(*s==' ' || *s=='\t' || *s=='\r' || *s=='\n') s++;
 
-car(car(...)) -> caar ?
-
+symbols at bottom of clist.h

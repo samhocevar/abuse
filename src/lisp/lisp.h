@@ -251,21 +251,53 @@ struct lisp
     // Use this object when a reference to null has to be provided
     // (the caller must not try to write to it)
     static LObject *null;
+
+    // List getters
+    static inline LObject *&cdr(void *c)
+    {
+        if (!c || item_type(c) != ltype(L_CONS_CELL))
+            return lisp::null;
+        return ((LList *)c)->m_cdr;
+    }
+
+    static inline LObject *&car(void *c)
+    {
+        if (!c || item_type(c) != ltype(L_CONS_CELL))
+            return lisp::null;
+        return ((LList *)c)->m_car;
+    }
+
+    static inline LObject *&caar(void *c) { return car(car(c)); }
+    static inline LObject *&cadr(void *c) { return car(cdr(c)); }
+    static inline LObject *&cdar(void *c) { return cdr(car(c)); }
+    static inline LObject *&cddr(void *c) { return cdr(cdr(c)); }
+
+    static inline LObject *&caaar(void *c) { return car(caar(c)); }
+    static inline LObject *&caadr(void *c) { return car(cadr(c)); }
+    static inline LObject *&cadar(void *c) { return car(cdar(c)); }
+    static inline LObject *&caddr(void *c) { return car(cddr(c)); }
+    static inline LObject *&cdaar(void *c) { return cdr(caar(c)); }
+    static inline LObject *&cdadr(void *c) { return cdr(cadr(c)); }
+    static inline LObject *&cddar(void *c) { return cdr(cdar(c)); }
+    static inline LObject *&cdddr(void *c) { return cdr(cddr(c)); }
+
+    static inline LObject *&caaaar(void *c) { return car(caaar(c)); }
+    static inline LObject *&caaadr(void *c) { return car(caadr(c)); }
+    static inline LObject *&caadar(void *c) { return car(cadar(c)); }
+    static inline LObject *&caaddr(void *c) { return car(caddr(c)); }
+    static inline LObject *&cadaar(void *c) { return car(cdaar(c)); }
+    static inline LObject *&cadadr(void *c) { return car(cdadr(c)); }
+    static inline LObject *&caddar(void *c) { return car(cddar(c)); }
+    static inline LObject *&cadddr(void *c) { return car(cdddr(c)); }
+    static inline LObject *&cdaaar(void *c) { return cdr(caaar(c)); }
+    static inline LObject *&cdaadr(void *c) { return cdr(caadr(c)); }
+    static inline LObject *&cdadar(void *c) { return cdr(cadar(c)); }
+    static inline LObject *&cdaddr(void *c) { return cdr(caddr(c)); }
+    static inline LObject *&cddaar(void *c) { return cdr(cdaar(c)); }
+    static inline LObject *&cddadr(void *c) { return cdr(cdadr(c)); }
+    static inline LObject *&cdddar(void *c) { return cdr(cddar(c)); }
+    static inline LObject *&cddddr(void *c) { return cdr(cdddr(c)); }
 };
-
-static inline LObject *&lcdr(void *c)
-{
-    if (!c || item_type(c) != ltype(L_CONS_CELL))
-        return lisp::null;
-    return ((LList *)c)->m_cdr;
-}
-
-static inline LObject *&lcar(void *c)
-{
-    if (!c || item_type(c) != ltype(L_CONS_CELL))
-        return lisp::null;
-    return ((LList *)c)->m_car;
-}
 
 void perm_space();
 void tmp_space();

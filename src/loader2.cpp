@@ -172,12 +172,12 @@ void load_tiles(Cell *file_list)
   int old_fsize=nforetiles,
       old_bsize=nbacktiles;
 
-  for (fl=file_list; !NILP(fl); fl=lcdr(fl))
+  for (fl=file_list; !NILP(fl); fl=lisp::cdr(fl))
   {
-    fp=open_file(lstring_value(lcar(fl)),"rb");
+    fp=open_file(lstring_value(lisp::car(fl)),"rb");
     if (fp->open_failure())
     {
-      printf("Warning : open %s for reading\n",lstring_value(lcar(fl)));
+      printf("Warning : open %s for reading\n",lstring_value(lisp::car(fl)));
       delete fp;
     }
     else
@@ -221,9 +221,9 @@ void load_tiles(Cell *file_list)
 
 
 // now load them up
-  for (fl=file_list; !NILP(fl); fl=lcdr(fl))
+  for (fl=file_list; !NILP(fl); fl=lisp::cdr(fl))
   {
-    char const *fn=lstring_value(lcar(fl));
+    char const *fn=lstring_value(lisp::car(fl));
     fp=open_file(fn,"rb");
     if (!fp->open_failure())
     {
@@ -389,16 +389,16 @@ void load_data(int argc, char **argv)
   if (DEFINEDP(symbol_value(l_help_screens)))
   {
     void *v=symbol_value(l_help_screens);
-    char *ff=lstring_value(lcar(v));  v=lcdr(v);
+    char *ff=lstring_value(lisp::car(v));  v=lisp::cdr(v);
     total_help_screens=0;
-    while (v) { total_help_screens++; v=lcdr(v); }
+    while (v) { total_help_screens++; v=lisp::cdr(v); }
     if (total_help_screens)
     {
       help_screens=(int *)malloc(sizeof(int)*total_help_screens);
-      v=lcdr(symbol_value(l_help_screens));
+      v=lisp::cdr(symbol_value(l_help_screens));
       int i=0;
-      for (; v; v=lcdr(v),i++)
-        help_screens[i]=cache.reg(ff,lstring_value(lcar(v)),SPEC_IMAGE);
+      for (; v; v=lisp::cdr(v),i++)
+        help_screens[i]=cache.reg(ff,lstring_value(lisp::car(v)),SPEC_IMAGE);
     }
     else
       dprintf("Warning no help images following filename\n");

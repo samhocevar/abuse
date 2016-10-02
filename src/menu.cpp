@@ -86,7 +86,7 @@ char *men_str(void *arg)
     case L_STRING :
     { return lstring_value(arg); } break;
     case L_CONS_CELL :
-    { return lstring_value(lcar(arg)); } break;
+    { return lstring_value(lisp::car(arg)); } break;
     default :
     {
       lisp::print((LObject *)arg);
@@ -105,19 +105,19 @@ int menu(void *args, JCFont *font)             // reurns -1 on esc
 {
   main_menu();
   char *title=NULL;
-  if (!NILP(lcar(args)))
-    title=lstring_value(lcar(args));
-  Cell *def=lcar(lcdr(lcdr(args)));
-  args=lcar(lcdr(args));
+  if (!NILP(lisp::car(args)))
+    title=lstring_value(lisp::car(args));
+  Cell *def=lisp::caddr(args);
+  args=lisp::cadr(args);
 
   int options = ((LList *)args)->GetLength();
   int mh=(font->Size().y+1)*options+10, maxw=0;
 
   Cell *c=(Cell *)args;
-  for (; !NILP(c); c=lcdr(c))
+  for (; !NILP(c); c=lisp::cdr(c))
   {
-    if( strlen(men_str(lcar(c))) > (unsigned)maxw)
-      maxw = strlen(men_str(lcar(c)));
+    if( strlen(men_str(lisp::car(c))) > (unsigned)maxw)
+      maxw = strlen(men_str(lisp::car(c)));
   }
 
   int mw=(font->Size().x)*maxw+20;
@@ -140,9 +140,9 @@ int menu(void *args, JCFont *font)             // reurns -1 on esc
 
 
   int y=my+5;
-  for (c=(Cell *)args; !NILP(c); c=lcdr(c))
+  for (c=(Cell *)args; !NILP(c); c=lisp::cdr(c))
   {
-    char *ms=men_str(lcar(c));
+    char *ms=men_str(lisp::car(c));
     font->PutString(main_screen, ivec2(mx + 10 + 1, y + 1), ms, wm->black());
     font->PutString(main_screen, ivec2(mx + 10, y), ms, wm->bright_color());
     y+=font->Size().y+1;
@@ -238,7 +238,7 @@ int menu(void *args, JCFont *font)             // reurns -1 on esc
   {
     void *val=nth(choice, args);
     if (item_type(val)==L_CONS_CELL)   // is there another value that the user want us to return?
-      return lnumber_value(lcdr(val));
+      return lnumber_value(lisp::cdr(val));
   }
   return choice;
 }
@@ -376,7 +376,7 @@ void show_sell(int abortable)
     int quit=0;
     while (tmp && !quit)
     {
-      int im=cache.reg_object("art/help.spe", lcar(tmp), SPEC_IMAGE, 1);
+      int im=cache.reg_object("art/help.spe", lisp::car(tmp), SPEC_IMAGE, 1);
       fade_in(cache.img(im), 16);
 
       Event ev;
@@ -387,7 +387,7 @@ void show_sell(int abortable)
       if (ev.key==JK_ESC && abortable)
         quit=1;
       fade_out(16);
-      tmp = (LObject *)lcdr(tmp);
+      tmp = (LObject *)lisp::cdr(tmp);
     }
     wm->SetMouseShape(cache.img(c_normal)->copy(), ivec2(1, 1));
   }
@@ -656,9 +656,9 @@ void main_menu()
                 }
                 if (current_demo)
                 {
-                    demo_man.set_state(demo_manager::PLAYING, lstring_value(lcar(current_demo)));
+                    demo_man.set_state(demo_manager::PLAYING, lstring_value(lisp::car(current_demo)));
                     stop_menu=1;
-                    current_demo=lcdr(current_demo);
+                    current_demo=lisp::cdr(current_demo);
                 }
             }
         }

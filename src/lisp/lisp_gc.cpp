@@ -64,7 +64,7 @@ LList *Lisp::CollectList(LList *x)
         LList *p = LList::Create();
         LObject *old_car = x->m_car;
         LObject *old_x = x;
-        x = (LList *)lcdr(x);
+        x = (LList *)lisp::cdr(x);
         ((LRedirect *)old_x)->m_type = L_COLLECTED_OBJECT;
         ((LRedirect *)old_x)->m_ref = p;
 
@@ -161,15 +161,15 @@ LObject *Lisp::CollectObject(LObject *x)
     {
         // Still need to remap cons_cells lying outside of space, for
         // instance on the stack.
-        for (LObject *cell = NULL; x; cell = x, x = lcdr(x))
+        for (LObject *cell = NULL; x; cell = x, x = lisp::cdr(x))
         {
             if (item_type(x) != L_CONS_CELL)
             {
                 if (cell)
-                    lcdr(cell) = CollectObject(lcdr(cell));
+                    lisp::cdr(cell) = CollectObject(lisp::cdr(cell));
                 break;
             }
-            lcar(x) = CollectObject(lcar(x));
+            lisp::car(x) = CollectObject(lisp::car(x));
         }
     }
 

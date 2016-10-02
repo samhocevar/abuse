@@ -2866,25 +2866,25 @@ pal_win::pal_win(void *args)
   int i=0;
   Cell *ao=(Cell *)args;
 
-  name = strdup(lstring_value(lcar(args)));
-  ao=lcdr(ao);
+  name = strdup(lstring_value(lisp::car(args)));
+  ao=lisp::cdr(ao);
   scale=w=h=1;
   x=y=0;
 
   if (!NILP(ao))
   {
-    w=lnumber_value(lcar(ao)); ao=lcdr(ao);
+    w=lnumber_value(lisp::car(ao)); ao=lisp::cdr(ao);
     if (!NILP(ao))
     {
-      h=lnumber_value(lcar(ao)); ao=lcdr(ao);
+      h=lnumber_value(lisp::car(ao)); ao=lisp::cdr(ao);
       if (!NILP(ao))
       {
-    x=lnumber_value(lcar(ao)); ao=lcdr(ao);
+    x=lnumber_value(lisp::car(ao)); ao=lisp::cdr(ao);
     if (!NILP(ao))
     {
-      y=lnumber_value(lcar(ao)); ao=lcdr(ao);
+      y=lnumber_value(lisp::car(ao)); ao=lisp::cdr(ao);
       if (!NILP(ao))
-        scale=lnumber_value(lcar(ao)); ao=lcdr(ao);
+        scale=lnumber_value(lisp::car(ao)); ao=lisp::cdr(ao);
     }
       }
     }
@@ -2902,11 +2902,11 @@ pal_win::pal_win(void *args)
       lbreak("to many parameters to add_palette ");
       exit(0);
     }
-    pat[i]=lnumber_value(lcar(ao));
+    pat[i]=lnumber_value(lisp::car(ao));
     // make sure the tile that they suggested exists
     if (pat[i]<=0 || pat[i]>nforetiles || foretiles[pat[i]]<0)
       pat[i]=0;
-    ao=lcdr(ao);
+    ao=lisp::cdr(ao);
     i++;
   }
   last_selected=-1;

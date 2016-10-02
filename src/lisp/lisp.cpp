@@ -80,9 +80,9 @@ void l1print(void *block)
     }
 
     dprintf("(");
-    for( ; block && item_type(block) == L_CONS_CELL; block = lcdr(block))
+    for( ; block && item_type(block) == L_CONS_CELL; block = lisp::cdr(block))
     {
-        void *a = lcar(block);
+        void *a = lisp::car(block);
         if(item_type(a) == L_CONS_CELL)
             dprintf("[...]");
         else
@@ -228,8 +228,8 @@ void *eval_block(void *list)
   void *ret=NULL;
   while (list)
   {
-    ret = lisp::eval(lcar(list));
-    list = lcdr(list);
+    ret = lisp::eval(lisp::car(list));
+    list = lisp::cdr(list);
   }
   return ret;
 }
@@ -250,12 +250,12 @@ LArray *LArray::Create(size_t len, void *rest)
 
     if (rest)
     {
-        LObject *x = lisp::eval(lcar(rest));
+        LObject *x = lisp::eval(lisp::car(rest));
         if (x == colon_initial_contents)
         {
-            x = lisp::eval(lcar(lcdr(rest)));
+            x = lisp::eval(lisp::cadr(rest));
             data = p->GetData();
-            for (size_t i = 0; i < len; i++, x = lcdr(x))
+            for (size_t i = 0; i < len; i++, x = lisp::cdr(x))
             {
                 if (!x)
                 {
@@ -263,7 +263,7 @@ LArray *LArray::Create(size_t len, void *rest)
                     lbreak("(make-array) incorrect list length\n");
                     exit(0);
                 }
-                data[i] = (LObject *)lcar(x);
+                data[i] = (LObject *)lisp::car(x);
             }
             if (x)
             {
@@ -274,7 +274,7 @@ LArray *LArray::Create(size_t len, void *rest)
         }
         else if (x == colon_initial_element)
         {
-            x = lisp::eval(lcar(lcdr(rest)));
+            x = lisp::eval(lisp::cadr(rest));
             data = p->GetData();
             for (size_t i = 0; i < len; i++)
                 data[i] = (LObject *)x;
@@ -473,11 +473,11 @@ void *nth(int num, void *list)
 
   while (list && num)
   {
-    list=lcdr(list);
+    list=lisp::cdr(list);
     num--;
   }
   if (!list) return NULL;
-  else return lcar(list);
+  else return lisp::car(list);
 }
 
 void *lpointer_value(void *lpointer)
@@ -602,10 +602,10 @@ void *lisp_equal(void *n1, void *n2)
     case L_CONS_CELL :
         while (n1 && n2) // loop through the list and compare each element
         {
-          if (!lisp_equal(lcar(n1), lcar(n2)))
+          if (!lisp_equal(lisp::car(n1), lisp::car(n2)))
             return NULL;
-          n1=lcdr(n1);
-          n2=lcdr(n2);
+          n1=lisp::cdr(n1);
+          n2=lisp::cdr(n2);
           if (n1 && *((ltype *)n1)!=L_CONS_CELL)
             return lisp_equal(n1, n2);
         }
@@ -724,7 +724,7 @@ int32_t lisp_atan2(int32_t dy, int32_t dx)
 LSymbol *find_symbol(char const *name)
 {
   LList *cs;
-  for (cs=(LList *)symbol_list; cs; cs=(LList *)lcdr(cs))
+  for (cs=(LList *)symbol_list; cs; cs=(LList *)lisp::cdr(cs))
   {
     if (!strcmp( ((char *)((LSymbol *)cs->m_car)->m_name)+sizeof(LString), name))
       return (LSymbol *)(cs->m_car);
@@ -819,11 +819,11 @@ LList *LList::Assoc(LObject *item)
 {
     LList *list = this;
     while (list && item_type(list) == L_CONS_CELL
-                && item_type(lcar(list)) == L_CONS_CELL)
+                && item_type(lisp::car(list)) == L_CONS_CELL)
     {
-        if (lisp_eq(lcar(lcar(list)), item))
-            return (LList *)lcar(list);
-        list = (LList *)lcdr(list);
+        if (lisp_eq(lisp::caar(list), item))
+            return (LList *)lisp::car(list);
+        list = (LList *)lisp::cdr(list);
     }
 
     return NULL;
@@ -835,7 +835,7 @@ size_t LList::GetLength()
 
     ASSERT_TYPE(this, L_CONS_CELL, "not a sequence");
 
-    for (LObject *p = this; p; p = lcdr(p))
+    for (LObject *p = this; p; p = lisp::cdr(p))
         ret++;
     return ret;
 }
@@ -871,9 +871,9 @@ void *pairlis(void *list1, void *list2, void *list3)
       last = cur;
 
       LList *cell = LList::Create();
-      tmp = (LObject *)lcar(list1);
+      tmp = (LObject *)lisp::car(list1);
       cell->m_car = tmp;
-      tmp = (LObject *)lcar(list2);
+      tmp = (LObject *)lisp::car(list2);
       cell->m_cdr = tmp;
       cur->m_car = cell;
 
@@ -1243,7 +1243,7 @@ void lisp::print(LObject *o)
         {
             LList *cs = (LList *)o;
             lprint_string("(");
-            for (; cs; cs = (LList *)lcdr(cs))
+            for (; cs; cs = (LList *)lisp::cdr(cs))
             {
                 if (item_type(cs) == (ltype)L_CONS_CELL)
                 {
@@ -1383,7 +1383,7 @@ LObject *LSymbol::EvalFunction(void *arg_list)
     if (req_min != -1)
     {
         void *a = arg_list;
-        for (args = 0; a; a = lcdr(a))
+        for (args = 0; a; a = lisp::cdr(a))
             args++; // count number of parameters
 
         if (args < req_min)
@@ -1433,9 +1433,9 @@ LObject *LSymbol::EvalFunction(void *arg_list)
                 first = tmp;
             cur = tmp;
 
-            LObject *val = lisp::eval(lcar(arg_list));
+            LObject *val = lisp::eval(lisp::car(arg_list));
             ((LList *)cur)->m_car = val;
-            arg_list = lcdr(arg_list);
+            arg_list = lisp::cdr(arg_list);
         }
         if (t == L_C_FUNCTION)
             ret = LNumber::Create(c_caller(((LSysFunction *)fun)->fun_number, first));
@@ -1482,7 +1482,7 @@ void preport(char *fn)
 void *mapcar(void *arg_list)
 {
   PtrRef ref1(arg_list);
-  LObject *sym = lisp::eval(lcar(arg_list));
+  LObject *sym = lisp::eval(lisp::car(arg_list));
   switch ((short)item_type(sym))
   {
     case L_SYS_FUNCTION:
@@ -1496,19 +1496,19 @@ void *mapcar(void *arg_list)
       exit(0);
     }
   }
-  int i, stop = 0, num_args = ((LList *)lcdr(arg_list))->GetLength();
+  int i, stop = 0, num_args = ((LList *)lisp::cdr(arg_list))->GetLength();
   if (!num_args) return 0;
 
   void **arg_on=(void **)malloc(sizeof(void *)*num_args);
-  LList *list_on=(LList *)lcdr(arg_list);
+  LList *list_on=(LList *)lisp::cdr(arg_list);
   long old_ptr_son=PtrRef::stack.m_size;
 
   for (i=0; i<num_args; i++)
   {
-    arg_on[i] = (LList *)lisp::eval(lcar(list_on));
+    arg_on[i] = (LList *)lisp::eval(lisp::car(list_on));
     PtrRef::stack.push(&arg_on[i]);
 
-    list_on=(LList *)lcdr(list_on);
+    list_on=(LList *)lisp::cdr(list_on);
     if (!arg_on[i]) stop=1;
   }
 
@@ -1532,14 +1532,14 @@ void *mapcar(void *arg_list)
       else
       {
         na_list->m_cdr = (LObject *)LList::Create();
-                na_list=(LList *)lcdr(na_list);
+                na_list=(LList *)lisp::cdr(na_list);
       }
 
 
       if (arg_on[i])
       {
-                na_list->m_car = (LObject *)lcar(arg_on[i]);
-                arg_on[i]=(LList *)lcdr(arg_on[i]);
+                na_list->m_car = (LObject *)lisp::car(arg_on[i]);
+                arg_on[i]=(LList *)lisp::cdr(arg_on[i]);
       }
       else stop=1;
     }
@@ -1563,10 +1563,10 @@ void *mapcar(void *arg_list)
 
 void *concatenate(void *prog_list)
 {
-  void *el_list=lcdr(prog_list);
+  void *el_list=lisp::cdr(prog_list);
   PtrRef ref1(prog_list), ref2(el_list);
   void *ret=NULL;
-  void *rtype = lisp::eval(lcar(prog_list));
+  void *rtype = lisp::eval(lisp::car(prog_list));
 
   long len=0;                                // determin the length of the resulting string
   if (rtype==string_symbol)
@@ -1579,9 +1579,9 @@ void *concatenate(void *prog_list)
       int i, old_ptr_stack_start=PtrRef::stack.m_size;
 
       // evalaute all the strings and count their lengths
-      for (i=0; i<elements; i++, el_list=lcdr(el_list))
+      for (i=0; i<elements; i++, el_list=lisp::cdr(el_list))
       {
-        str_eval[i] = lisp::eval(lcar(el_list));
+        str_eval[i] = lisp::eval(lisp::car(el_list));
     PtrRef::stack.push(&str_eval[i]);
 
     switch ((short)item_type(str_eval[i]))
@@ -1591,7 +1591,7 @@ void *concatenate(void *prog_list)
         LList *char_list=(LList *)str_eval[i];
         while (char_list)
         {
-          if (item_type(lcar(char_list))==(ltype)L_CHARACTER)
+          if (item_type(lisp::car(char_list))==(ltype)L_CHARACTER)
             len++;
           else
           {
@@ -1599,7 +1599,7 @@ void *concatenate(void *prog_list)
         lbreak(" is not a character\n");
         exit(0);
           }
-          char_list=(LList *)lcdr(char_list);
+          char_list=(LList *)lisp::cdr(char_list);
         }
       } break;
       case L_STRING : len+=strlen(lstring_value(str_eval[i])); break;
@@ -1624,9 +1624,9 @@ void *concatenate(void *prog_list)
         LList *char_list=(LList *)str_eval[i];
         while (char_list)
         {
-          if (item_type(lcar(char_list))==L_CHARACTER)
-            *(s++)=((LChar *)lcar(char_list))->m_ch;
-          char_list=(LList *)lcdr(char_list);
+          if (item_type(lisp::car(char_list))==L_CHARACTER)
+            *(s++)=((LChar *)lisp::car(char_list))->m_ch;
+          char_list=(LList *)lisp::cdr(char_list);
         }
       } break;
       case L_STRING :
@@ -1660,7 +1660,7 @@ void *backquote_eval(void *args)
   else if (args==NULL)
     return NULL;
   else if ((LSymbol *) (((LList *)args)->m_car)==comma_symbol)
-    return lisp::eval(lcar(lcdr(args)));
+    return lisp::eval(lisp::cadr(args));
   else
   {
     void *first=NULL, *last=NULL, *cur=NULL, *tmp;
@@ -1669,9 +1669,9 @@ void *backquote_eval(void *args)
     {
       if (item_type(args)==L_CONS_CELL)
       {
-    if (lcar(args)==comma_symbol)               // dot list with a comma?
+    if (lisp::car(args)==comma_symbol)               // dot list with a comma?
     {
-      tmp = lisp::eval(lcar(lcdr(args)));
+      tmp = lisp::eval(lisp::cadr(args));
       ((LList *)last)->m_cdr = (LObject *)tmp;
       args=NULL;
     }
@@ -1683,9 +1683,9 @@ void *backquote_eval(void *args)
       else
             first=cur;
       last=cur;
-          tmp=backquote_eval(lcar(args));
+          tmp=backquote_eval(lisp::car(args));
           ((LList *)cur)->m_car = (LObject *)tmp;
-       args=lcdr(args);
+       args=lisp::cdr(args);
     }
       } else
       {
@@ -1712,20 +1712,20 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_PRINT:
         while (arg_list)
         {
-            ret = lisp::eval(lcar(arg_list));
-            arg_list = (LList *)lcdr(arg_list);
+            ret = lisp::eval(lisp::car(arg_list));
+            arg_list = (LList *)lisp::cdr(arg_list);
             lisp::print(ret);
         }
         break;
     case SYS_FUNC_CAR:
-        ret = lcar(lisp::eval(lcar(arg_list)));
+        ret = lisp::car(lisp::eval(lisp::car(arg_list)));
         break;
     case SYS_FUNC_CDR:
-        ret = lcdr(lisp::eval(lcar(arg_list)));
+        ret = lisp::cdr(lisp::eval(lisp::car(arg_list)));
         break;
     case SYS_FUNC_LENGTH:
     {
-        LObject *v = lisp::eval(lcar(arg_list));
+        LObject *v = lisp::eval(lisp::car(arg_list));
         switch (item_type(v))
         {
         case L_STRING:
@@ -1748,14 +1748,14 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         while (arg_list)
         {
             cur = LList::Create();
-            LObject *val = lisp::eval(lcar(arg_list));
+            LObject *val = lisp::eval(lisp::car(arg_list));
             cur->m_car = val;
             if (last)
                 last->m_cdr = cur;
             else
                 first = cur;
             last = cur;
-            arg_list = (LList *)lcdr(arg_list);
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = first;
         break;
@@ -1764,24 +1764,24 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LList *c = LList::Create();
         PtrRef r1(c);
-        LObject *val = lisp::eval(lcar(arg_list));
+        LObject *val = lisp::eval(lisp::car(arg_list));
         c->m_car = val;
-        val = lisp::eval(lcar(lcdr(arg_list)));
+        val = lisp::eval(lisp::cadr(arg_list));
         c->m_cdr = val;
         ret = c;
         break;
     }
     case SYS_FUNC_QUOTE:
-        ret = lcar(arg_list);
+        ret = lisp::car(arg_list);
         break;
     case SYS_FUNC_EQ:
-        l_user_stack.push(lisp::eval(lcar(arg_list)));
-        l_user_stack.push(lisp::eval(lcar(lcdr(arg_list))));
+        l_user_stack.push(lisp::eval(lisp::car(arg_list)));
+        l_user_stack.push(lisp::eval(lisp::cadr(arg_list)));
         ret = (LObject *)lisp_eq(l_user_stack.pop(1), l_user_stack.pop(1));
         break;
     case SYS_FUNC_EQUAL:
-        l_user_stack.push(lisp::eval(lcar(arg_list)));
-        l_user_stack.push(lisp::eval(lcar(lcdr(arg_list))));
+        l_user_stack.push(lisp::eval(lisp::car(arg_list)));
+        l_user_stack.push(lisp::eval(lisp::cadr(arg_list)));
         ret = (LObject *)lisp_equal(l_user_stack.pop(1), l_user_stack.pop(1));
         break;
     case SYS_FUNC_PLUS:
@@ -1789,8 +1789,8 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         int32_t sum = 0;
         while (arg_list)
         {
-            sum += lnumber_value(lisp::eval(lcar(arg_list)));
-            arg_list = (LList *)lcdr(arg_list);
+            sum += lnumber_value(lisp::eval(lisp::car(arg_list)));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = LNumber::Create(sum);
         break;
@@ -1798,7 +1798,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_TIMES:
     {
         int32_t prod;
-        LObject *first = lisp::eval(lcar(arg_list));
+        LObject *first = lisp::eval(lisp::car(arg_list));
         PtrRef r1(first);
         if (arg_list && item_type(first) == L_FIXED_POINT)
         {
@@ -1806,9 +1806,9 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             do
             {
                 prod = (prod >> 8) * (lfixed_point_value(first) >> 8);
-                arg_list = (LList *)lcdr(arg_list);
+                arg_list = (LList *)lisp::cdr(arg_list);
                 if (arg_list)
-                    first = lisp::eval(lcar(arg_list));
+                    first = lisp::eval(lisp::car(arg_list));
             } while (arg_list);
             ret = LFixedPoint::Create(prod);
         }
@@ -1817,10 +1817,10 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             prod = 1;
             do
             {
-                prod *= lnumber_value(lisp::eval(lcar(arg_list)));
-                arg_list = (LList *)lcdr(arg_list);
+                prod *= lnumber_value(lisp::eval(lisp::car(arg_list)));
+                arg_list = (LList *)lisp::cdr(arg_list);
                 if (arg_list)
-                    first = lisp::eval(lcar(arg_list));
+                    first = lisp::eval(lisp::car(arg_list));
             } while (arg_list);
             ret = LNumber::Create(prod);
         }
@@ -1831,7 +1831,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         int32_t quot = 0, first = 1;
         while (arg_list)
         {
-            LObject *i = lisp::eval(lcar(arg_list));
+            LObject *i = lisp::eval(lisp::car(arg_list));
             if (item_type(i) != L_NUMBER)
             {
                 lisp::print(i);
@@ -1845,31 +1845,31 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             }
             else
                 quot /= ((LNumber *)i)->m_num;
-            arg_list = (LList *)lcdr(arg_list);
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = LNumber::Create(quot);
         break;
     }
     case SYS_FUNC_MINUS:
     {
-        int32_t sub = lnumber_value(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
+        int32_t sub = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
         while (arg_list)
         {
-            sub -= lnumber_value(lisp::eval(lcar(arg_list)));
-            arg_list = (LList *)lcdr(arg_list);
+            sub -= lnumber_value(lisp::eval(lisp::car(arg_list)));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = LNumber::Create(sub);
         break;
     }
     case SYS_FUNC_IF:
-        if (lisp::eval(lcar(arg_list)))
-            ret = lisp::eval(lcar(lcdr(arg_list)));
+        if (lisp::eval(lisp::car(arg_list)))
+            ret = lisp::eval(lisp::cadr(arg_list));
         else
         {
-            arg_list = (LList *)lcdr(lcdr(arg_list)); // check for a else part
+            arg_list = (LList *)lisp::cddr(arg_list); // check for a else part
             if (arg_list)
-                ret = lisp::eval(lcar(arg_list));
+                ret = lisp::eval(lisp::car(arg_list));
             else
                 ret = NULL;
         }
@@ -1877,9 +1877,9 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_SETQ:
     case SYS_FUNC_SETF:
     {
-        LObject *set_to = lisp::eval(lcar(lcdr(arg_list))), *i = NULL;
+        LObject *set_to = lisp::eval(lisp::cadr(arg_list)), *i = NULL;
         PtrRef r1(set_to), r2(i);
-        i = lcar(arg_list);
+        i = lisp::car(arg_list);
 
         ltype x = item_type(set_to);
         switch (item_type(i))
@@ -1907,7 +1907,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             LObject *car = ((LList *)i)->m_car;
             if (car == car_symbol)
             {
-                car = lisp::eval(lcar(lcdr(i)));
+                car = lisp::eval(lisp::cadr(i));
                 if (!car || item_type(car) != L_CONS_CELL)
                 {
                     lisp::print(car);
@@ -1918,7 +1918,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             }
             else if (car == cdr_symbol)
             {
-                car = lisp::eval(lcar(lcdr(i)));
+                car = lisp::eval(lisp::cadr(i));
                 if (!car || item_type(car) != L_CONS_CELL)
                 {
                     lisp::print(car);
@@ -1935,10 +1935,10 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             else
             {
 #endif
-                LArray *a = (LArray *)lisp::eval(lcar(lcdr(i)));
+                LArray *a = (LArray *)lisp::eval(lisp::cadr(i));
                 PtrRef r3(a);
                 ASSERT_TYPE(a, L_1D_ARRAY, "not an array (aref)");
-                int num = lnumber_value(lisp::eval(lcar(lcdr(lcdr(i)))));
+                int num = lnumber_value(lisp::eval(lisp::caddr(i)));
 #ifdef TYPE_CHECKING
                 if (num >= (int)a->m_len || num < 0)
                 {
@@ -1966,25 +1966,25 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     case SYS_FUNC_ASSOC:
     {
-        LObject *item = lisp::eval(lcar(arg_list));
+        LObject *item = lisp::eval(lisp::car(arg_list));
         PtrRef r1(item);
-        LList *list = (LList *)lisp::eval(lcar(lcdr(arg_list)));
+        LList *list = (LList *)lisp::eval(lisp::cadr(arg_list));
         PtrRef r2(list);
         ret = list->Assoc(item);
         break;
     }
     case SYS_FUNC_NOT:
     case SYS_FUNC_NULL:
-        if (lisp::eval(lcar(arg_list)) == NULL)
+        if (lisp::eval(lisp::car(arg_list)) == NULL)
             ret = true_symbol;
         else
             ret = NULL;
         break;
     case SYS_FUNC_ACONS:
     {
-        LObject *i1 = lisp::eval(lcar(arg_list));
+        LObject *i1 = lisp::eval(lisp::car(arg_list));
         PtrRef r1(i1);
-        LObject *i2 = lisp::eval(lcar(lcdr(arg_list)));
+        LObject *i2 = lisp::eval(lisp::cadr(arg_list));
         PtrRef r2(i2);
         LList *cs = LList::Create();
         cs->m_car = i1;
@@ -1994,11 +1994,11 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_PAIRLIS:
     {
-        l_user_stack.push(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
-        l_user_stack.push(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
-        LObject *n3 = lisp::eval(lcar(arg_list));
+        l_user_stack.push(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
+        l_user_stack.push(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
+        LObject *n3 = lisp::eval(lisp::car(arg_list));
         LObject *n2 = (LObject *)l_user_stack.pop(1);
         LObject *n1 = (LObject *)l_user_stack.pop(1);
         ret = (LObject *)pairlis(n1, n2, n3);
@@ -2007,58 +2007,58 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_LET:
     {
         // make an a-list of new variable names and new values
-        LObject *var_list = lcar(arg_list);
-        LObject *block_list = lcdr(arg_list);
+        LObject *var_list = lisp::car(arg_list);
+        LObject *block_list = lisp::cdr(arg_list);
         PtrRef r1(block_list), r2(var_list);
         long stack_start = l_user_stack.m_size;
 
         while (var_list)
         {
-            LObject *var_name = lcar(lcar(var_list)), *tmp;
+            LObject *var_name = lisp::caar(var_list), *tmp;
             ASSERT_TYPE(var_name, L_SYMBOL, "should be a symbol (let)");
 
             l_user_stack.push(((LSymbol *)var_name)->m_value);
-            tmp = lisp::eval(lcar(lcdr(lcar(var_list))));
+            tmp = lisp::eval(lisp::cadar(var_list));
             ((LSymbol *)var_name)->SetValue(tmp);
-            var_list = lcdr(var_list);
+            var_list = lisp::cdr(var_list);
         }
 
         // now evaluate each of the blocks with the new environment and
         // return value from the last block
         while (block_list)
         {
-            ret = lisp::eval(lcar(block_list));
-            block_list = lcdr(block_list);
+            ret = lisp::eval(lisp::car(block_list));
+            block_list = lisp::cdr(block_list);
         }
 
         long cur_stack = stack_start;
-        var_list = lcar(arg_list); // now restore the old symbol values
+        var_list = lisp::car(arg_list); // now restore the old symbol values
         while (var_list)
         {
-            LObject *var_name = lcar(lcar(var_list));
+            LObject *var_name = lisp::caar(var_list);
             ((LSymbol *)var_name)->SetValue((LObject *)l_user_stack.sdata[cur_stack++]);
-            var_list = lcdr(var_list);
+            var_list = lisp::cdr(var_list);
         }
         l_user_stack.m_size = stack_start; // restore the stack
         break;
     }
     case SYS_FUNC_DEFUN:
     {
-        LSymbol *symbol = (LSymbol *)lcar(arg_list);
+        LSymbol *symbol = (LSymbol *)lisp::car(arg_list);
         PtrRef r1(symbol);
 
         ASSERT_TYPE(symbol, L_SYMBOL, "not a symbol (DEFUN)");
         ASSERT_TYPE(arg_list, L_CONS_CELL, "not a lambda list (DEFUN)");
 
-        LObject *block_list = lcdr(lcdr(arg_list));
+        LObject *block_list = lisp::cddr(arg_list);
 
-        LUserFunction *ufun = new_lisp_user_function((LList *)lcar(lcdr(arg_list)), (LList *)block_list);
+        LUserFunction *ufun = new_lisp_user_function((LList *)lisp::cadr(arg_list), (LList *)block_list);
         symbol->SetFunction(ufun);
         ret = symbol;
         break;
     }
     case SYS_FUNC_ATOM:
-        ret = (LObject *)lisp_atom(lisp::eval(lcar(arg_list)));
+        ret = (LObject *)lisp_atom(lisp::eval(lisp::car(arg_list)));
         break;
     case SYS_FUNC_AND:
     {
@@ -2067,13 +2067,13 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         ret = true_symbol;
         while (l)
         {
-            if (!lisp::eval(lcar(l)))
+            if (!lisp::eval(lisp::car(l)))
             {
                 ret = NULL;
                 l = NULL; // short-circuit
             }
             else
-                l = lcdr(l);
+                l = lisp::cdr(l);
         }
         break;
     }
@@ -2084,13 +2084,13 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         ret = NULL;
         while (l)
         {
-            if (lisp::eval(lcar(l)))
+            if (lisp::eval(lisp::car(l)))
             {
                 ret = true_symbol;
                 l = NULL; // short-circuit
             }
             else
-                l = lcdr(l);
+                l = lisp::cdr(l);
         }
         break;
     }
@@ -2102,7 +2102,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     case SYS_FUNC_CHAR_CODE:
     {
-        LObject *i = lisp::eval(lcar(arg_list));
+        LObject *i = lisp::eval(lisp::car(arg_list));
         PtrRef r1(i);
         ret = NULL;
         switch (item_type(i))
@@ -2123,7 +2123,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_CODE_CHAR:
     {
-        LObject *i = lisp::eval(lcar(arg_list));
+        LObject *i = lisp::eval(lisp::car(arg_list));
         PtrRef r1(i);
         ASSERT_TYPE(i, L_NUMBER, "not number type");
         ret = LChar::Create(((LNumber *)i)->m_num);
@@ -2131,51 +2131,51 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_COND:
     {
-        LList *block_list = (LList *)lcar(arg_list);
+        LList *block_list = (LList *)lisp::car(arg_list);
         PtrRef r1(block_list);
         ret = NULL;
         PtrRef r2(ret); // Required to protect from the last eval call
         while (block_list)
         {
-            if (lisp::eval(lcar(lcar(block_list))))
-                ret = lisp::eval(lcar(lcdr(lcar(block_list))));
-            block_list = (LList *)lcdr(block_list);
+            if (lisp::eval(lisp::caar(block_list)))
+                ret = lisp::eval(lisp::cadar(block_list));
+            block_list = (LList *)lisp::cdr(block_list);
         }
         break;
     }
     case SYS_FUNC_SELECT:
     {
-        LObject *selector = lisp::eval(lcar(arg_list));
-        LObject *sel = lcdr(arg_list);
+        LObject *selector = lisp::eval(lisp::car(arg_list));
+        LObject *sel = lisp::cdr(arg_list);
         PtrRef r1(selector), r2(sel);
         ret = NULL;
         PtrRef r3(ret); // Required to protect from the last eval call
         while (sel)
         {
-            if (lisp_equal(selector, lisp::eval(lcar(lcar(sel)))))
+            if (lisp_equal(selector, lisp::eval(lisp::caar(sel))))
             {
-                sel = lcdr(lcar(sel));
+                sel = lisp::cdar(sel);
                 while (sel)
                 {
-                    ret = lisp::eval(lcar(sel));
-                    sel = lcdr(sel);
+                    ret = lisp::eval(lisp::car(sel));
+                    sel = lisp::cdr(sel);
                 }
             }
             else
-                sel = lcdr(sel);
+                sel = lisp::cdr(sel);
         }
         break;
     }
     case SYS_FUNC_FUNCTION:
-        ret = ((LSymbol *)lisp::eval(lcar(arg_list)))->GetFunction();
+        ret = ((LSymbol *)lisp::eval(lisp::car(arg_list)))->GetFunction();
         break;
     case SYS_FUNC_MAPCAR:
         ret = (LObject *)mapcar(arg_list);
         break;
     case SYS_FUNC_FUNCALL:
     {
-        LSymbol *n1 = (LSymbol *)lisp::eval(lcar(arg_list));
-        ret = n1->EvalFunction(lcdr(arg_list));
+        LSymbol *n1 = (LSymbol *)lisp::eval(lisp::car(arg_list));
+        ret = n1->EvalFunction(lisp::cdr(arg_list));
         break;
     }
     case SYS_FUNC_GT:
@@ -2183,8 +2183,8 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_GE:
     case SYS_FUNC_LE:
     {
-        int32_t n1 = lnumber_value(lisp::eval(lcar(arg_list)));
-        int32_t n2 = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
+        int32_t n1 = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        int32_t n2 = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
         bool test = fun_number == SYS_FUNC_GT ? n1 > n2 :
                     fun_number == SYS_FUNC_LT ? n1 < n2 :
                     fun_number == SYS_FUNC_GE ? n1 >= n2 :
@@ -2202,7 +2202,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     case SYS_FUNC_SYMBOL_NAME:
     {
-        LSymbol *symb = (LSymbol *)lisp::eval(lcar(arg_list));
+        LSymbol *symb = (LSymbol *)lisp::eval(lisp::car(arg_list));
         ASSERT_TYPE(symb, L_SYMBOL, "not a symbol (symbol-name)");
         ret = symb->m_name;
         break;
@@ -2210,7 +2210,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_TRACE:
         trace_level++;
         if (arg_list)
-            trace_print_level = lnumber_value(lisp::eval(lcar(arg_list)));
+            trace_print_level = lnumber_value(lisp::eval(lisp::car(arg_list)));
         ret = true_symbol;
         break;
     case SYS_FUNC_UNTRACE:
@@ -2225,8 +2225,8 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_DIGSTR:
     {
         char tmp[50], *tp;
-        int32_t num = lnumber_value(lisp::eval(lcar(arg_list)));
-        int32_t dig = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
+        int32_t num = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        int32_t dig = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
         tp = tmp + 49;
         *(tp--) = 0;
         while (num)
@@ -2244,7 +2244,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_LOAD:
     case SYS_FUNC_COMPILE_FILE:
     {
-        LObject *fn = lisp::eval(lcar(arg_list));
+        LObject *fn = lisp::eval(lisp::car(arg_list));
         PtrRef r1(fn);
         char *st = lstring_value(fn);
         bFILE *fp;
@@ -2321,24 +2321,24 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     }
     case SYS_FUNC_ABS:
-        ret = LNumber::Create(lol::abs(lnumber_value(lisp::eval(lcar(arg_list)))));
+        ret = LNumber::Create(lol::abs(lnumber_value(lisp::eval(lisp::car(arg_list)))));
         break;
     case SYS_FUNC_MIN:
     {
-        int32_t x = lnumber_value(lisp::eval(lcar(arg_list)));
-        int32_t y = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
+        int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        int32_t y = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
         ret = LNumber::Create(x < y ? x : y);
         break;
     }
     case SYS_FUNC_MAX:
     {
-        int32_t x = lnumber_value(lisp::eval(lcar(arg_list)));
-        int32_t y = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
+        int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        int32_t y = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
         ret = LNumber::Create(x > y ? x : y);
         break;
     }
     case SYS_FUNC_BACKQUOTE:
-        ret = (LObject *)backquote_eval(lcar(arg_list));
+        ret = (LObject *)backquote_eval(lisp::car(arg_list));
         break;
     case SYS_FUNC_COMMA:
         lisp::print(arg_list);
@@ -2347,8 +2347,8 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     case SYS_FUNC_NTH:
     {
-        int32_t x = lnumber_value(lisp::eval(lcar(arg_list)));
-        ret = (LObject *)nth(x, lisp::eval(lcar(lcdr(arg_list))));
+        int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        ret = (LObject *)nth(x, lisp::eval(lisp::cadr(arg_list)));
         break;
     }
     case SYS_FUNC_RESIZE_TMP:
@@ -2358,15 +2358,15 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         // Deprecated and useless
         break;
     case SYS_FUNC_COS:
-        ret = LFixedPoint::Create(lisp_cos(lnumber_value(lisp::eval(lcar(arg_list)))));
+        ret = LFixedPoint::Create(lisp_cos(lnumber_value(lisp::eval(lisp::car(arg_list)))));
         break;
     case SYS_FUNC_SIN:
-        ret = LFixedPoint::Create(lisp_sin(lnumber_value(lisp::eval(lcar(arg_list)))));
+        ret = LFixedPoint::Create(lisp_sin(lnumber_value(lisp::eval(lisp::car(arg_list)))));
         break;
     case SYS_FUNC_ATAN2:
     {
-        int32_t y = (lnumber_value(lisp::eval(lcar(arg_list))));
-        int32_t x = (lnumber_value(lisp::eval(lcar(lcdr(arg_list)))));
+        int32_t y = (lnumber_value(lisp::eval(lisp::car(arg_list))));
+        int32_t x = (lnumber_value(lisp::eval(lisp::cadr(arg_list))));
         ret = LNumber::Create(lisp_atan2(y, x));
         break;
     }
@@ -2377,7 +2377,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         int32_t x = 0;
         while (arg_list)
         {
-            LObject *sym = lisp::eval(lcar(arg_list));
+            LObject *sym = lisp::eval(lisp::car(arg_list));
             PtrRef r1(sym);
             switch (item_type(sym))
             {
@@ -2389,7 +2389,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             }
             case L_CONS_CELL:
             {
-                LObject *s = lisp::eval(lcar(sym));
+                LObject *s = lisp::eval(lisp::car(sym));
                 PtrRef r2(s);
 #ifdef TYPE_CHECKING
                 if (item_type(s) != L_SYMBOL)
@@ -2399,7 +2399,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                     exit(0);
                 }
 #endif
-                x = lnumber_value(lisp::eval(lcar(lcdr(sym))));
+                x = lnumber_value(lisp::eval(lisp::cadr(sym)));
                 LObject *tmp = LNumber::Create(x);
                 ((LSymbol *)sym)->m_value = tmp;
                 break;
@@ -2409,7 +2409,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                 lbreak("expecting symbol or (symbol value) in enum\n");
                 exit(0);
             }
-            arg_list = (LList *)lcdr(arg_list);
+            arg_list = (LList *)lisp::cdr(arg_list);
             x++;
         }
         LSpace::Current = sp;
@@ -2419,15 +2419,15 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         exit(0);
         break;
     case SYS_FUNC_EVAL:
-        ret = lisp::eval(lisp::eval(lcar(arg_list)));
+        ret = lisp::eval(lisp::eval(lisp::car(arg_list)));
         break;
     case SYS_FUNC_BREAK:
         lbreak("User break");
         break;
     case SYS_FUNC_MOD:
     {
-        int32_t x = lnumber_value(lisp::eval(lcar(arg_list)));
-        int32_t y = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
+        int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        int32_t y = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
         if (y == 0)
         {
             lbreak("mod: division by zero\n");
@@ -2439,15 +2439,15 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #if 0
     case SYS_FUNC_WRITE_PROFILE:
     {
-        char *fn = lstring_value(lisp::eval(lcar(arg_list)));
+        char *fn = lstring_value(lisp::eval(lisp::car(arg_list)));
         FILE *fp = fopen(fn, "wb");
         if (!fp)
             lbreak("could not open %s for writing", fn);
         else
         {
-            for (void *s = symbol_list; s; s = lcdr(s))
-                fprintf(fp, "%8d  %s\n", ((LSymbol *)(lcar(s)))->call_counter,
-                        lstring_value(((LSymbol *)(lcar(s)))->m_name));
+            for (void *s = symbol_list; s; s = lisp::cdr(s))
+                fprintf(fp, "%8d  %s\n", ((LSymbol *)(lisp::car(s)))->call_counter,
+                        lstring_value(((LSymbol *)(lisp::car(s)))->m_name));
             fclose(fp);
         }
         break;
@@ -2455,32 +2455,32 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 #endif
     case SYS_FUNC_FOR:
     {
-        LSymbol *bind_var = (LSymbol *)lcar(arg_list);
+        LSymbol *bind_var = (LSymbol *)lisp::car(arg_list);
         PtrRef r1(bind_var);
         if (item_type(bind_var) != L_SYMBOL)
         {
             lbreak("expecting for iterator to be a symbol\n");
             exit(1);
         }
-        arg_list = (LList *)lcdr(arg_list);
+        arg_list = (LList *)lisp::cdr(arg_list);
 
-        if (lcar(arg_list) != in_symbol)
+        if (lisp::car(arg_list) != in_symbol)
         {
             lbreak("expecting in after 'for iterator'\n");
             exit(1);
         }
-        arg_list = (LList *)lcdr(arg_list);
+        arg_list = (LList *)lisp::cdr(arg_list);
 
-        LObject *ilist = lisp::eval(lcar(arg_list));
+        LObject *ilist = lisp::eval(lisp::car(arg_list));
         PtrRef r2(ilist);
-        arg_list = (LList *)lcdr(arg_list);
+        arg_list = (LList *)lisp::cdr(arg_list);
 
-        if (lcar(arg_list) != do_symbol)
+        if (lisp::car(arg_list) != do_symbol)
         {
             lbreak("expecting do after 'for iterator in list'\n");
             exit(1);
         }
-        arg_list = (LList *)lcdr(arg_list);
+        arg_list = (LList *)lisp::cdr(arg_list);
 
         LObject *block = NULL;
         PtrRef r3(block);
@@ -2488,19 +2488,19 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         l_user_stack.push(bind_var->GetValue());  // save old symbol value
         while (ilist)
         {
-            bind_var->SetValue((LObject *)lcar(ilist));
-            for (block = arg_list; block; block = lcdr(block))
-                ret = lisp::eval(lcar(block));
-            ilist = lcdr(ilist);
+            bind_var->SetValue((LObject *)lisp::car(ilist));
+            for (block = arg_list; block; block = lisp::cdr(block))
+                ret = lisp::eval(lisp::car(block));
+            ilist = lisp::cdr(ilist);
         }
         bind_var->SetValue((LObject *)l_user_stack.pop(1)); // restore value
         break;
     }
     case SYS_FUNC_OPEN_FILE:
     {
-        LObject *str1 = lisp::eval(lcar(arg_list));
+        LObject *str1 = lisp::eval(lisp::car(arg_list));
         PtrRef r1(str1);
-        LObject *str2 = lisp::eval(lcar(lcdr(arg_list)));
+        LObject *str2 = lisp::eval(lisp::cadr(arg_list));
 
         bFILE *old_file = current_print_file;
         current_print_file = open_file(lstring_value(str1),
@@ -2510,8 +2510,8 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         {
             while (arg_list)
             {
-                ret = lisp::eval(lcar(arg_list));
-                arg_list = (LList *)lcdr(arg_list);
+                ret = lisp::eval(lisp::car(arg_list));
+                arg_list = (LList *)lisp::cdr(arg_list);
             }
         }
         delete current_print_file;
@@ -2520,79 +2520,79 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_BIT_AND:
     {
-        int32_t first = lnumber_value(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
+        int32_t first = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
         while (arg_list)
         {
-            first &= lnumber_value(lisp::eval(lcar(arg_list)));
-            arg_list = (LList *)lcdr(arg_list);
+            first &= lnumber_value(lisp::eval(lisp::car(arg_list)));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = LNumber::Create(first);
         break;
     }
     case SYS_FUNC_BIT_OR:
     {
-        int32_t first = lnumber_value(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
+        int32_t first = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
         while (arg_list)
         {
-            first |= lnumber_value(lisp::eval(lcar(arg_list)));
-            arg_list = (LList *)lcdr(arg_list);
+            first |= lnumber_value(lisp::eval(lisp::car(arg_list)));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = LNumber::Create(first);
         break;
     }
     case SYS_FUNC_BIT_XOR:
     {
-        int32_t first = lnumber_value(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
+        int32_t first = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
         while (arg_list)
         {
-            first ^= lnumber_value(lisp::eval(lcar(arg_list)));
-            arg_list = (LList *)lcdr(arg_list);
+            first ^= lnumber_value(lisp::eval(lisp::car(arg_list)));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = LNumber::Create(first);
         break;
     }
     case SYS_FUNC_MAKE_ARRAY:
     {
-        int32_t l = lnumber_value(lisp::eval(lcar(arg_list)));
+        int32_t l = lnumber_value(lisp::eval(lisp::car(arg_list)));
         if (l >= (2 << 16) || l <= 0)
         {
             lbreak("bad array size %d\n", l);
             exit(0);
         }
-        ret = LArray::Create(l, lcdr(arg_list));
+        ret = LArray::Create(l, lisp::cdr(arg_list));
         break;
     }
     case SYS_FUNC_AREF:
     {
-        int32_t x = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
-        ret = ((LArray *)lisp::eval(lcar(arg_list)))->Get(x);
+        int32_t x = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
+        ret = ((LArray *)lisp::eval(lisp::car(arg_list)))->Get(x);
         break;
     }
     case SYS_FUNC_IF_1PROGN:
-        if (lisp::eval(lcar(arg_list)))
-            ret = (LObject *)eval_block(lcar(lcdr(arg_list)));
+        if (lisp::eval(lisp::car(arg_list)))
+            ret = (LObject *)eval_block(lisp::cadr(arg_list));
         else
-            ret = lisp::eval(lcar(lcdr(lcdr(arg_list))));
+            ret = lisp::eval(lisp::caddr(arg_list));
         break;
     case SYS_FUNC_IF_2PROGN:
-        if (lisp::eval(lcar(arg_list)))
-            ret = lisp::eval(lcar(lcdr(arg_list)));
+        if (lisp::eval(lisp::car(arg_list)))
+            ret = lisp::eval(lisp::cadr(arg_list));
         else
-            ret = (LObject *)eval_block(lcar(lcdr(lcdr(arg_list))));
+            ret = (LObject *)eval_block(lisp::caddr(arg_list));
 
         break;
     case SYS_FUNC_IF_12PROGN:
-        if (lisp::eval(lcar(arg_list)))
-            ret = (LObject *)eval_block(lcar(lcdr(arg_list)));
+        if (lisp::eval(lisp::car(arg_list)))
+            ret = (LObject *)eval_block(lisp::cadr(arg_list));
         else
-            ret = (LObject *)eval_block(lcar(lcdr(lcdr(arg_list))));
+            ret = (LObject *)eval_block(lisp::caddr(arg_list));
         break;
     case SYS_FUNC_EQ0:
     {
-        LObject *v = lisp::eval(lcar(arg_list));
+        LObject *v = lisp::eval(lisp::car(arg_list));
         if (item_type(v) != L_NUMBER || (((LNumber *)v)->m_num != 0))
             ret = NULL;
         else
@@ -2602,17 +2602,17 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_PREPORT:
     {
 #ifdef L_PROFILE
-        char *s = lstring_value(lisp::eval(lcar(arg_list)));
+        char *s = lstring_value(lisp::eval(lisp::car(arg_list)));
         preport(s);
 #endif
         break;
     }
     case SYS_FUNC_SEARCH:
     {
-        LObject *arg1 = lisp::eval(lcar(arg_list));
+        LObject *arg1 = lisp::eval(lisp::car(arg_list));
         PtrRef r1(arg1); // protect this reference
-        arg_list = (LList *)lcdr(arg_list);
-        char *haystack = lstring_value(lisp::eval(lcar(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
+        char *haystack = lstring_value(lisp::eval(lisp::car(arg_list)));
         char *needle = lstring_value(arg1);
 
         char *find = strstr(haystack, needle);
@@ -2621,10 +2621,10 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_ELT:
     {
-        LObject *arg1 = lisp::eval(lcar(arg_list));
+        LObject *arg1 = lisp::eval(lisp::car(arg_list));
         PtrRef r1(arg1); // protect this reference
-        arg_list = (LList *)lcdr(arg_list);
-        int32_t x = lnumber_value(lisp::eval(lcar(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
+        int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
         char *st = lstring_value(arg1);
         if (x < 0 || x >= (int32_t)strlen(st))
         {
@@ -2637,30 +2637,30 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_LISTP:
     {
-        LObject *tmp = lisp::eval(lcar(arg_list));
+        LObject *tmp = lisp::eval(lisp::car(arg_list));
         ltype t = item_type(tmp);
         ret = (t == L_CONS_CELL) ? true_symbol : NULL;
         break;
     }
     case SYS_FUNC_NUMBERP:
     {
-        LObject *tmp = lisp::eval(lcar(arg_list));
+        LObject *tmp = lisp::eval(lisp::car(arg_list));
         ltype t = item_type(tmp);
         ret = (t == L_NUMBER || t == L_FIXED_POINT) ? true_symbol : NULL;
         break;
     }
     case SYS_FUNC_DO:
     {
-        LObject *init_var = lcar(arg_list);
+        LObject *init_var = lisp::car(arg_list);
         PtrRef r1(init_var);
         int ustack_start = l_user_stack.m_size; // restore stack at end
         LSymbol *sym = NULL;
         PtrRef r2(sym);
 
         // check to make sure iter vars are symbol and push old values
-        for (init_var = lcar(arg_list); init_var; init_var = lcdr(init_var))
+        for (init_var = lisp::car(arg_list); init_var; init_var = lisp::cdr(init_var))
         {
-            sym = (LSymbol *)lcar(lcar(init_var));
+            sym = (LSymbol *)lisp::caar(init_var);
             if (item_type(sym) != L_SYMBOL)
             {
                 lbreak("expecting symbol name for iteration var\n");
@@ -2671,35 +2671,35 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
 
         void **do_evaled = l_user_stack.sdata + l_user_stack.m_size;
         // push all of the init forms, so we can set the symbol
-        for (init_var = lcar(arg_list); init_var; init_var = lcdr(init_var))
-            l_user_stack.push(lisp::eval(lcar(lcdr(lcar((init_var))))));
+        for (init_var = lisp::car(arg_list); init_var; init_var = lisp::cdr(init_var))
+            l_user_stack.push(lisp::eval(lisp::cadar((init_var))));
 
         // now set all the symbols
-        for (init_var = lcar(arg_list); init_var; init_var = lcdr(init_var))
+        for (init_var = lisp::car(arg_list); init_var; init_var = lisp::cdr(init_var))
         {
-            sym = (LSymbol *)lcar(lcar(init_var));
+            sym = (LSymbol *)lisp::caar(init_var);
             sym->SetValue((LObject *)*do_evaled);
             do_evaled++;
         }
 
         for (int i = 0; !i; ) // set i to 1 when terminate conditions are met
         {
-            i = lisp::eval(lcar(lcar(lcdr(arg_list)))) != NULL;
+            i = lisp::eval(lisp::caadr(arg_list)) != NULL;
             if (!i)
             {
-                eval_block(lcdr(lcdr(arg_list)));
-                for (init_var = lcar(arg_list); init_var; init_var = lcdr(init_var))
-                    lisp::eval(lcar(lcdr(lcdr(lcar(init_var)))));
+                eval_block(lisp::cddr(arg_list));
+                for (init_var = lisp::car(arg_list); init_var; init_var = lisp::cdr(init_var))
+                    lisp::eval(lisp::caddar(init_var));
             }
         }
 
-        ret = lisp::eval(lcar(lcdr(lcar(lcdr(arg_list)))));
+        ret = lisp::eval(lisp::cadadr(arg_list));
 
         // restore old values for symbols
         do_evaled = l_user_stack.sdata + ustack_start;
-        for (init_var = lcar(arg_list); init_var; init_var = lcdr(init_var))
+        for (init_var = lisp::car(arg_list); init_var; init_var = lisp::cdr(init_var))
         {
-            sym = (LSymbol *)lcar(lcar(init_var));
+            sym = (LSymbol *)lisp::caar(init_var);
             sym->SetValue((LObject *)*do_evaled);
             do_evaled++;
         }
@@ -2712,9 +2712,9 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     case SYS_FUNC_SCHAR:
     {
-        char *s = lstring_value(lisp::eval(lcar(arg_list)));
-        arg_list = (LList *)lcdr(arg_list);
-        int32_t x = lnumber_value(lisp::eval(lcar(arg_list)));
+        char *s = lstring_value(lisp::eval(lisp::car(arg_list)));
+        arg_list = (LList *)lisp::cdr(arg_list);
+        int32_t x = lnumber_value(lisp::eval(lisp::car(arg_list)));
 
         if (x < 0 || x >= (int32_t)strlen(s))
         {
@@ -2726,29 +2726,29 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_SYMBOLP:
     {
-        LObject *tmp = lisp::eval(lcar(arg_list));
+        LObject *tmp = lisp::eval(lisp::car(arg_list));
         ret = (item_type(tmp) == L_SYMBOL) ? true_symbol : NULL;
         break;
     }
     case SYS_FUNC_NUM2STR:
     {
         char str[20];
-        sprintf(str, "%ld", (long int)lnumber_value(lisp::eval(lcar(arg_list))));
+        sprintf(str, "%ld", (long int)lnumber_value(lisp::eval(lisp::car(arg_list))));
         ret = LString::Create(str);
         break;
     }
     case SYS_FUNC_NCONC:
     {
-        LObject *l1 = lisp::eval(lcar(arg_list));
+        LObject *l1 = lisp::eval(lisp::car(arg_list));
         PtrRef r1(l1);
-        arg_list = (LList *)lcdr(arg_list);
+        arg_list = (LList *)lisp::cdr(arg_list);
         LObject *first = l1, *next;
         PtrRef r2(first);
 
         if (!l1)
         {
-            l1 = first = lisp::eval(lcar(arg_list));
-            arg_list = (LList *)lcdr(arg_list);
+            l1 = first = lisp::eval(lisp::car(arg_list));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
 
         if (item_type(l1) != L_CONS_CELL)
@@ -2763,50 +2763,50 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             while (next)
             {
                 l1 = next;
-                next = lcdr(next);
+                next = lisp::cdr(next);
             }
-            LObject *tmp = lisp::eval(lcar(arg_list));
+            LObject *tmp = lisp::eval(lisp::car(arg_list));
             ((LList *)l1)->m_cdr = tmp;
-            arg_list = (LList *)lcdr(arg_list);
+            arg_list = (LList *)lisp::cdr(arg_list);
         } while (arg_list);
         ret = first;
         break;
     }
     case SYS_FUNC_FIRST:
-        ret = lisp::eval(lcar(lcar(arg_list)));
+        ret = lisp::eval(lisp::caar(arg_list));
         break;
     case SYS_FUNC_SECOND:
-        ret = lisp::eval(lcar(lcdr(lcar(arg_list))));
+        ret = lisp::eval(lisp::cadar(arg_list));
         break;
     case SYS_FUNC_THIRD:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcar(arg_list)))));
+        ret = lisp::eval(lisp::caddar(arg_list));
         break;
     case SYS_FUNC_FOURTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcar(arg_list))))));
+        ret = lisp::eval(lisp::cadddr(lisp::car(arg_list)));
         break;
     case SYS_FUNC_FIFTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcdr(lcar(arg_list)))))));
+        ret = lisp::eval(lisp::cadddr(lisp::cdar(arg_list)));
         break;
     case SYS_FUNC_SIXTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcdr(lcdr(lcar(arg_list))))))));
+        ret = lisp::eval(lisp::cadddr(lisp::cddar(arg_list)));
         break;
     case SYS_FUNC_SEVENTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcar(arg_list)))))))));
+        ret = lisp::eval(lisp::cadddr(lisp::cdddar(arg_list)));
         break;
     case SYS_FUNC_EIGHTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcar(arg_list))))))))));
+        ret = lisp::eval(lisp::cadddr(lisp::cddddr(lisp::car(arg_list))));
         break;
     case SYS_FUNC_NINTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcar(arg_list)))))))))));
+        ret = lisp::eval(lisp::cadddr(lisp::cddddr(lisp::cdar(arg_list))));
         break;
     case SYS_FUNC_TENTH:
-        ret = lisp::eval(lcar(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcdr(lcar(arg_list))))))))))));
+        ret = lisp::eval(lisp::cadddr(lisp::cddddr(lisp::cddar(arg_list))));
         break;
     case SYS_FUNC_SUBSTR:
     {
-        int32_t x1 = lnumber_value(lisp::eval(lcar(arg_list)));
-        int32_t x2 = lnumber_value(lisp::eval(lcar(lcdr(arg_list))));
-        LObject *st = lisp::eval(lcar(lcar(lcdr(arg_list))));
+        int32_t x1 = lnumber_value(lisp::eval(lisp::car(arg_list)));
+        int32_t x2 = lnumber_value(lisp::eval(lisp::cadr(arg_list)));
+        LObject *st = lisp::eval(lisp::caadr(arg_list));
         PtrRef r1(st);
 
         if (x1 < 0 || x1 > x2 || x2 >= (int32_t)strlen(lstring_value(st)))
@@ -2826,13 +2826,13 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         PtrRef r1(r), r2(rstart);
         while (arg_list)
         {
-            LObject *q = lisp::eval(lcar(arg_list));
+            LObject *q = lisp::eval(lisp::car(arg_list));
             if (!rstart)
                 rstart = q;
-            while (r && lcdr(r))
-                r = lcdr(r);
-            lcdr(r) = q;
-            arg_list = (LList *)lcdr(arg_list);
+            while (r && lisp::cdr(r))
+                r = lisp::cdr(r);
+            lisp::cdr(r) = q;
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
         ret = rstart;
         break;
@@ -2888,9 +2888,9 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
     PtrRef r18(f_arg);
     PtrRef r19(arg_list);
 
-    for (f_arg = fun_arg_list; f_arg; f_arg = lcdr(f_arg))
+    for (f_arg = fun_arg_list; f_arg; f_arg = lisp::cdr(f_arg))
     {
-        LSymbol *s = (LSymbol *)lcar(f_arg);
+        LSymbol *s = (LSymbol *)lisp::car(f_arg);
         l_user_stack.push(s->m_value);
     }
 
@@ -2899,7 +2899,7 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
         int new_start = l_user_stack.m_size;
         int i = new_start;
         // now push all the values we wish to gather
-        for (f_arg = fun_arg_list; f_arg; f_arg = lcdr(f_arg))
+        for (f_arg = fun_arg_list; f_arg; f_arg = lisp::cdr(f_arg))
         {
             if (!arg_list)
             {
@@ -2907,13 +2907,13 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
                 lbreak("too few parameter to function\n");
                 exit(0);
             }
-            l_user_stack.push(lisp::eval(lcar(arg_list)));
-            arg_list = (LList *)lcdr(arg_list);
+            l_user_stack.push(lisp::eval(lisp::car(arg_list)));
+            arg_list = (LList *)lisp::cdr(arg_list);
         }
 
         // now store all the values and put them into the symbols
-        for (f_arg = fun_arg_list; f_arg; f_arg = lcdr(f_arg))
-            ((LSymbol *)lcar(f_arg))->SetValue((LObject *)l_user_stack.sdata[i++]);
+        for (f_arg = fun_arg_list; f_arg; f_arg = lisp::cdr(f_arg))
+            ((LSymbol *)lisp::car(f_arg))->SetValue((LObject *)l_user_stack.sdata[i++]);
 
         l_user_stack.m_size = new_start;
     }
@@ -2928,13 +2928,13 @@ LObject *LSymbol::EvalUserFunction(LList *arg_list)
     // now evaluate the function block
     while (block_list)
     {
-        ret = lisp::eval(lcar(block_list));
-        block_list = (LList *)lcdr(block_list);
+        ret = lisp::eval(lisp::car(block_list));
+        block_list = (LList *)lisp::cdr(block_list);
     }
 
     long cur_stack = stack_start;
-    for (f_arg = fun_arg_list; f_arg; f_arg = lcdr(f_arg))
-        ((LSymbol *)lcar(f_arg))->SetValue((LObject *)l_user_stack.sdata[cur_stack++]);
+    for (f_arg = fun_arg_list; f_arg; f_arg = lisp::cdr(f_arg))
+        ((LSymbol *)lisp::car(f_arg))->SetValue((LObject *)l_user_stack.sdata[cur_stack++]);
 
     l_user_stack.m_size = stack_start;
 
@@ -2995,7 +2995,7 @@ LObject *lisp::eval(LObject *obj)
             }
             break;
         case L_CONS_CELL:
-            ret = ((LSymbol *)lcar(obj))->EvalFunction(lcdr(obj));
+            ret = ((LSymbol *)lisp::car(obj))->EvalFunction(lisp::cdr(obj));
             break;
         default :
             fprintf(stderr, "shouldn't happen\n");

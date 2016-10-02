@@ -52,8 +52,8 @@ sequence::sequence(char *filename, void *pict_list, void *advance_list)
     int i;
     for (i=0; i<total; i++)
     {
-      seq[i]=cache.reg_object(filename,lcar(pict_list),SPEC_CHARACTER2,1);
-      pict_list=lcdr(pict_list);
+      seq[i]=cache.reg_object(filename,lisp::car(pict_list),SPEC_CHARACTER2,1);
+      pict_list=lisp::cdr(pict_list);
     }
   }
 }
