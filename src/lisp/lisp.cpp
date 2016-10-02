@@ -483,7 +483,7 @@ void *lpointer_value(void *lpointer)
     if (!lpointer)
         return nullptr;
     ASSERT_TYPE((LPointer *)lpointer, L_POINTER, "not a pointer");
-    return ((LPointer *)lpointer)->m_addr;
+    return ((LPointer const *)lpointer)->m_addr;
 }
 
 int32_t lnumber_value(void *lnumber)
@@ -491,13 +491,13 @@ int32_t lnumber_value(void *lnumber)
     switch (item_type(lnumber))
     {
     case L_NUMBER:
-        return ((LNumber *)lnumber)->m_num;
+        return ((LNumber const *)lnumber)->m_num;
     case L_FIXED_POINT:
-        return ((LFixedPoint *)lnumber)->m_fixed >> 16;
+        return ((LFixedPoint const *)lnumber)->m_fixed >> 16;
     case L_STRING:
         return (uint8_t)*lstring_value(lnumber);
     case L_CHARACTER:
-        return ((LChar *)lnumber)->m_ch;
+        return ((LChar const *)lnumber)->m_ch;
     default:
         lisp::print((LObject *)lnumber);
         lbreak(" is not a number\n");
@@ -544,20 +544,20 @@ uint16_t LChar::GetValue()
 
 long lfixed_point_value(void *c)
 {
-  switch (item_type(c))
-  {
-    case L_NUMBER :
-      return ((LNumber *)c)->m_num<<16; break;
-    case L_FIXED_POINT :
-      return (((LFixedPoint *)c)->m_fixed); break;
-    default :
+    switch (item_type(c))
     {
-      lisp::print((LObject *)c);
-      lbreak(" is not a number\n");
-      exit(0);
+        case L_NUMBER:
+            return ((LNumber const *)c)->m_num<<16; break;
+        case L_FIXED_POINT:
+            return (((LFixedPoint const *)c)->m_fixed); break;
+        default:
+        {
+            lisp::print((LObject *)c);
+            lbreak(" is not a number\n");
+            exit(0);
+        }
     }
-  }
-  return 0;
+    return 0;
 }
 
 void *lisp_eq(void *n1, void *n2)
@@ -1277,11 +1277,11 @@ void lisp::print(LObject *o)
         }
         break;
     case L_NUMBER:
-        sprintf(buf, "%ld", ((LNumber *)o)->m_num);
+        sprintf(buf, "%ld", ((LNumber const *)o)->m_num);
         lprint_string(buf);
         break;
     case L_SYMBOL:
-        lprint_string(((LSymbol *)o)->m_name->GetString());
+        lprint_string(((LSymbol const *)o)->m_name->GetString());
         break;
     case L_USER_FUNCTION:
     case L_SYS_FUNCTION:
@@ -1314,12 +1314,12 @@ void lisp::print(LObject *o)
     case L_CHARACTER:
         if (current_print_file)
         {
-            uint8_t ch = ((LChar *)o)->m_ch;
+            uint8_t ch = ((LChar const *)o)->m_ch;
             current_print_file->write(&ch, 1);
         }
         else
         {
-            uint16_t ch = ((LChar *)o)->m_ch;
+            uint16_t ch = ((LChar const *)o)->m_ch;
             dprintf("#\\");
             switch (ch)
             {
@@ -1333,7 +1333,7 @@ void lisp::print(LObject *o)
         }
         break;
     case L_OBJECT_VAR:
-        l_obj_print(((LObjectVar *)o)->m_index);
+        l_obj_print(((LObjectVar const *)o)->m_index);
         break;
     case L_1D_ARRAY:
         {

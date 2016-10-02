@@ -253,9 +253,9 @@ static inline LObject *&CDR(void *x)
     return static_cast<LList *>(x)->m_cdr;
 }
 
-static inline ltype item_type(void *x)
+static inline ltype item_type(void const *x)
 {
-    return x ? *static_cast<ltype *>(x) : ltype(L_CONS_CELL);
+    return x ? *static_cast<ltype const *>(x) : ltype(L_CONS_CELL);
 }
 
 struct lisp
