@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 2001 Anthony Kruize <trandor@labyrinth.net.au>
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ static SDL_AudioSpec audioObtained;
 //
 int sound_init( int argc, char **argv )
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     char *sfxdir, *datadir;
 
     // Disable sound if requested.
@@ -98,7 +98,7 @@ void sound_uninit()
     if (!sound_enabled)
         return;
 
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     Mix_CloseAudio();
 #endif
 }
@@ -113,7 +113,7 @@ sound_effect::sound_effect(char const *filename)
     if (!sound_enabled)
         return;
 
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     jFILE fp(filename, "rb");
     if (fp.open_failure())
         return;
@@ -142,7 +142,7 @@ sound_effect::~sound_effect()
     // Therefore with SDL_mixer, a sound that has not finished playing
     // on a level load will cut off in the middle. This is most noticable
     // for the button sound of the load savegame dialog.
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     Mix_FadeOutGroup(-1, 100);
     while (Mix_Playing(-1))
         SDL_Delay(10);
@@ -164,7 +164,7 @@ void sound_effect::play(int volume, int pitch, int panpot)
     if (!sound_enabled)
         return;
 
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     int channel = Mix_PlayChannel(-1, m_chunk, 0);
     if (channel > -1)
     {
@@ -179,7 +179,7 @@ void sound_effect::play(int volume, int pitch, int panpot)
 
 song::song(String const &filename)
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     data = NULL;
     m_name = filename;
     song_id = 0;
@@ -220,7 +220,7 @@ song::song(String const &filename)
 
 song::~song()
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     if(playing())
         stop();
     free(data);
@@ -232,7 +232,7 @@ song::~song()
 
 void song::play( unsigned char volume )
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     song_id = 1;
 
     Mix_PlayMusic(this->music, 0);
@@ -242,7 +242,7 @@ void song::play( unsigned char volume )
 
 void song::stop( long fadeout_time )
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     song_id = 0;
 
     Mix_FadeOutMusic(100);
@@ -251,7 +251,7 @@ void song::stop( long fadeout_time )
 
 int song::playing()
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     return Mix_PlayingMusic();
 #else
     return 0;
@@ -260,7 +260,7 @@ int song::playing()
 
 void song::set_volume( int volume )
 {
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     Mix_VolumeMusic(volume);
 #endif
 }

@@ -16,7 +16,7 @@
 #   include <SDL.h>
 #endif
 
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
 #   if defined HAVE_SDL_SDL_MIXER_H
 #      include <SDL/SDL_mixer.h>
 #   else
@@ -42,7 +42,7 @@ public:
     void play(int volume = 127, int pitch = 128, int panpot = 128);
 
 private:
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     Mix_Chunk* m_chunk;
 #endif
 };
@@ -60,7 +60,7 @@ public:
 
 private:
     String m_name;
-#if defined USE_SDL_MIXER
+#if defined LOL_USE_SDL_MIXER
     uint8_t *data;
     unsigned long song_id;
     Mix_Music* music;
