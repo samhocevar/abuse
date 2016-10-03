@@ -856,18 +856,18 @@ void *GameObject::float_tick()  // returns 1 if you hit something, 0 otherwise
 
       }
 
-      void *rlist=NULL;   // return list
+      LList *rlist = nullptr;   // return list
       PtrRef r1(rlist);
 
       if (hit_object)
       {
-    push_onto_list(lisp::make_ptr(hit_object),rlist);
-    push_onto_list(l_object,rlist);
+          push_onto_list(lisp::make_ptr(hit_object),rlist);
+          push_onto_list(l_object,rlist);
       } else
       {
-    push_onto_list(lisp::make_number(ly),rlist);
-    push_onto_list(lisp::make_number(lx),rlist);
-    push_onto_list(l_tile,rlist);
+          push_onto_list(lisp::make_number(ly),rlist);
+          push_onto_list(lisp::make_number(lx),rlist);
+          push_onto_list(l_tile,rlist);
       }
       push_onto_list(lisp::make_number(ret),rlist);
 

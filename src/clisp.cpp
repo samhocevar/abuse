@@ -52,40 +52,40 @@ extern int has_joystick;
 LSymbol *l_chat_input, *l_post_render;
 
 LSymbol *l_difficulty, *l_easy, *l_hard, *l_medium, *l_extreme,
-    *l_max_hp, *l_max_power,
-    *l_empty_cache;
+        *l_max_hp, *l_max_power, *l_empty_cache;
 
 // FIXME: port these to LSymbol
-void *l_main_menu, *l_logo, *l_state_art, *l_abilities, *l_state_sfx,
-     *l_song_list, *l_filename, *l_sfx_directory, *l_default_font,
-     *l_morph, *l_default_abilities, *l_default_ai_function,
-     *l_tile_files, *l_range, *l_hurt_all, *l_death_handler,
-     *l_title_screen, *l_console_font, *l_fields, *l_dist, *l_pushx, *l_pushy,
-     *l_object, *l_tile, *l_fire_object, *l_FIRE, *l_cop_dead_parts, *l_restart_player,
-     *l_help_screens, *l_player_draw, *l_sneaky_draw, *l_health_image, *l_fly_image,
-     *l_sneaky_image, *l_draw_fast, *l_player_tints, *l_save_order, *l_next_song,
-     *l_level_load_start,
-     *l_level_load_end,        *l_cdc_logo,
-     *l_keep_backup,
-     *l_switch_to_powerful,
-     *l_mouse_can_switch,
-     *l_ask_save_slot,
-     *l_get_local_input,
-     *l_player_text_color,
-     *l_level_loaded;        // called when a new level is loaded
+LSymbol *l_main_menu, *l_logo, *l_state_art, *l_abilities, *l_state_sfx,
+        *l_song_list, *l_filename, *l_sfx_directory, *l_default_font,
+        *l_morph, *l_default_abilities, *l_default_ai_function,
+        *l_tile_files, *l_range, *l_hurt_all, *l_death_handler,
+        *l_title_screen, *l_console_font, *l_fields, *l_dist, *l_pushx, *l_pushy,
+        *l_object, *l_tile, *l_fire_object, *l_FIRE, *l_cop_dead_parts, *l_restart_player,
+        *l_help_screens, *l_player_draw, *l_sneaky_draw, *l_health_image, *l_fly_image,
+        *l_sneaky_image, *l_draw_fast, *l_player_tints, *l_save_order, *l_next_song,
+        *l_level_load_start,
+        *l_level_load_end,
+        *l_cdc_logo,
+        *l_keep_backup,
+        *l_switch_to_powerful,
+        *l_mouse_can_switch,
+        *l_ask_save_slot,
+        *l_get_local_input,
+        *l_player_text_color,
+        *l_level_loaded;        // called when a new level is loaded
 
 
 char game_name[50];
 void *sensor_ai();
 
 // variables for the status bar
-void *l_statbar_ammo_x, *l_statbar_ammo_y,
-     *l_statbar_ammo_w, *l_statbar_ammo_h,
-     *l_statbar_ammo_bg_color,
-     *l_statbar_health_x, *l_statbar_health_y,
-     *l_statbar_health_w, *l_statbar_health_h,
-     *l_statbar_health_bg_color,
-     *l_statbar_logo_x, *l_statbar_logo_y;
+LSymbol *l_statbar_ammo_x, *l_statbar_ammo_y,
+        *l_statbar_ammo_w, *l_statbar_ammo_h,
+        *l_statbar_ammo_bg_color,
+        *l_statbar_health_x, *l_statbar_health_y,
+        *l_statbar_health_w, *l_statbar_health_h,
+        *l_statbar_health_bg_color,
+        *l_statbar_logo_x, *l_statbar_logo_y;
 
 uint8_t chatting_enabled = 0;
 
@@ -779,7 +779,7 @@ void *l_caller(long number, void *args)
             int32_t x2 = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             int32_t y2 = lnumber_value(lisp::eval(lisp::car(args)));
             g_current_level->foreground_intersect(x1, y1, x2, y2);
-            void *ret=NULL;
+            LList *ret = nullptr;
             push_onto_list(lisp::make_number(y2), ret);
             push_onto_list(lisp::make_number(x2), ret);
             return ret;
@@ -864,7 +864,7 @@ void *l_caller(long number, void *args)
                 joy_status(b1, b2, b3, xv, yv);
             else b1 = b2 = b3 = xv = yv = 0;
 
-            void *ret=NULL;
+            LList *ret = nullptr;
             PtrRef r2(ret);
             push_onto_list(lisp::make_number(b3), ret);
             push_onto_list(lisp::make_number(b2), ret);
@@ -875,7 +875,7 @@ void *l_caller(long number, void *args)
         } break;
         case 48:
         {
-            void *ret=NULL;
+            LList *ret = nullptr;
             {
         PtrRef r2(ret);
         push_onto_list(lisp::make_number((last_demo_mbut&4)==4), ret);
@@ -892,7 +892,7 @@ void *l_caller(long number, void *args)
             pos.x = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             pos.y = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             pos = the_game->MouseToGame(pos);
-            void *ret = NULL;
+            LList *ret = nullptr;
             {
                     PtrRef r2(ret);
                     push_onto_list(lisp::make_number(pos.y), ret);
@@ -906,7 +906,7 @@ void *l_caller(long number, void *args)
             pos.x = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             pos.y = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             pos = the_game->GameToMouse(pos, current_view);
-            void *ret = NULL;
+            LList *ret = nullptr;
             {
                 PtrRef r2(ret);
                 push_onto_list(lisp::make_number(pos.y), ret);
@@ -967,7 +967,7 @@ void *l_caller(long number, void *args)
             int tfiles, tdirs, i;
 
             get_directory(lstring_value(lisp::eval(lisp::car(args))), files, tfiles, dirs, tdirs);
-            void *fl=NULL, *dl=NULL, *rl=NULL;
+            LList *fl = nullptr, *dl = nullptr, *rl = nullptr;
             {
                 PtrRef r2(fl), r3(dl);
 
@@ -998,7 +998,7 @@ void *l_caller(long number, void *args)
             strcpy(name, lstring_value(lisp::eval(lisp::car(args))));  args = lisp::cdr(args);
             long first = lnumber_value(lisp::eval(lisp::car(args)));  args = lisp::cdr(args);
             long last = lnumber_value(lisp::eval(lisp::car(args)));
-            void *ret=NULL;
+            LList *ret = nullptr;
             PtrRef r2(ret);
 
             if (last>=first)

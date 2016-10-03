@@ -1144,16 +1144,14 @@ int end_of_program(char const *s)
 }
 
 
-void push_onto_list(void *object, void *&list)
+void push_onto_list(LObject *object, LList *&list)
 {
-  PtrRef r1(object), r2(list);
-  LList *c = lisp::make_list();
-  c->m_car = (LObject *)object;
-  c->m_cdr = (LObject *)list;
-  list=c;
+    PtrRef r1(object), r2(list);
+    LList *tmp = lisp::make_list();
+    tmp->m_car = (LObject *)object;
+    tmp->m_cdr = (LObject *)list;
+    list = tmp;
 }
-
-void *comp_optimize(void *list);
 
 LObject *lisp::compile(char const *&code)
 {
@@ -1204,52 +1202,49 @@ LObject *lisp::compile(char const *&code)
     ((LList *)cs)->m_cdr = (LObject *)c2;
     ret=cs;
   }
-  else if (token_buffer[0]=='(')                     // make a list of everything in ()
+  else if (token_buffer[0] == '(') // make a list of everything in ()
   {
-    void *first=NULL, *cur=NULL, *last=NULL;
-    PtrRef r1(first), r2(cur), r3(last);
-    int done=0;
-    do
-    {
-      char const *tmp=code;
-      if (!read_ltoken(tmp, token_buffer))           // check for the end of the list
-        lerror(NULL, "unexpected end of program");
-      if (token_buffer[0]==')')
-      {
-                done=1;
-                read_ltoken(code, token_buffer);                // read off the ')'
-      }
-      else
-      {
-                if (token_buffer[0]=='.' && !token_buffer[1])
-                {
-                  if (!first)
+        LList *first = nullptr, *cur = nullptr, *last = nullptr;
+        PtrRef r1(first), r2(cur), r3(last);
+        for (;;)
+        {
+            char const *parser = code;
+            if (!read_ltoken(parser, token_buffer)) // check for the end of the list
+                lerror(NULL, "unexpected end of program");
+
+            if (token_buffer[0] == ')')
+            {
+                read_ltoken(code, token_buffer); // read off the ')'
+                break;
+            }
+
+            if (token_buffer[0] == '.' && !token_buffer[1])
+            {
+                if (!first)
                     lerror(code, "token '.' not allowed here\n");
-                  else
-                  {
-                    void *tmp;
-                    read_ltoken(code, token_buffer);              // skip the '.'
-                    tmp = lisp::compile(code);
-                    ((LList *)last)->m_cdr = (LObject *)tmp;          // link the last cdr to
-                    last=NULL;
-                  }
-                } else if (!last && first)
-                  lerror(code, "illegal end of dotted list\n");
-                else
-                {
-                  void *tmp;
-                  cur = lisp::make_list();
-                  PtrRef r4(cur);
-                  if (!first) first=cur;
-                  tmp = lisp::compile(code);
-                  ((LList *)cur)->m_car = (LObject *)tmp;
-                  if (last)
-                    ((LList *)last)->m_cdr = (LObject *)cur;
-                  last=cur;
-                }
-      }
-    } while (!done);
-    ret=(LObject *)comp_optimize(first);
+
+                read_ltoken(code, token_buffer); // skip the '.'
+                void *tmp = lisp::compile(code);
+                last->m_cdr = (LObject *)tmp; // link the last cdr to
+                last = nullptr;
+            }
+            else if (!first || last)
+            {
+                cur = lisp::make_list();
+                PtrRef r4(cur);
+                if (!first)
+                    first = cur;
+                void *tmp = lisp::compile(code);
+                cur->m_car = (LObject *)tmp;
+                if (last)
+                    last->m_cdr = (LObject *)cur;
+                last = cur;
+            }
+            else
+                lerror(code, "illegal end of dotted list\n");
+        }
+
+        ret = (LList *)lisp::optimize(first);
 
   } else if (token_buffer[0]==')')
     lerror(code, "mismatched )");

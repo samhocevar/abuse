@@ -362,7 +362,7 @@ void CacheList::preload_cache_object(int type)
     LSpace *sp = LSpace::Current;
     LSpace::Current = &LSpace::Perm;
 
-    void *call_with=NULL;
+    LList *call_with = nullptr;
     push_onto_list(lisp::make_number(type),call_with);
 
     void *CacheList = ((LSymbol *)cache_fun)->EvalFunction(call_with);

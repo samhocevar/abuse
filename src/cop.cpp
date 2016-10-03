@@ -229,7 +229,7 @@ static int player_fire_weapon(GameObject *o, int type, GameObject *target, int a
     o->m_pos.x = x2;
   }
 
-  void *list=NULL;
+  LList *list = nullptr;
   PtrRef r1(list);
   push_onto_list(lisp::make_ptr(target),list);
   push_onto_list(lisp::make_number(angle),list);
@@ -656,7 +656,7 @@ void *cop_mover(int xm, int ym, int but)
 
     if ((but&2) && !o->lvars[is_teleporting] && o->state!=S_climbing && o->state!=S_climb_off)
     {
-      void *args=NULL;
+      LList *args = nullptr;
       PtrRef r1(args);
       view *v = o->m_controller;
 
@@ -755,7 +755,7 @@ void *top_draw()
         o->m_pos.x += 4;
       o->m_pos.y = bot->m_pos.y + 29 - bot->picture()->Size().y;
 
-      void *ret=NULL;
+      LList *ret = nullptr;
       PtrRef r1(ret);
 
       push_onto_list(lisp::make_number(bot->get_tint()),ret);

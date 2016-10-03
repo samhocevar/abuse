@@ -435,7 +435,7 @@ void view::add_chat_key(int key)  // return string if buf is complete
       current_object=m_focus;
 
       void *m = LSpace::Tmp.Mark();
-      void *list=NULL;
+      LList *list = nullptr;
       push_onto_list(lisp::make_str(m_chat_buf),list);
       ((LSymbol *)l_chat_input)->EvalFunction(list);
       LSpace::Tmp.Restore(m);

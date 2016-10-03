@@ -116,7 +116,7 @@ static void fire_at_player(GameObject *o, GameObject *b)
   if (can_see(o, o->m_pos.x, o->m_pos.y, firex, firey) && can_see(o, firex, firey, playerx, playery))
   {
     int angle = lisp::atan2(firey-playery,playerx-firex);
-    void *call_list=NULL;
+    LList *call_list = nullptr;
     PtrRef r1(call_list);
     push_onto_list(lisp::make_ptr(b),call_list);
     push_onto_list(lisp::make_number(angle),call_list);

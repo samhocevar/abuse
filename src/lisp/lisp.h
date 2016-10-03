@@ -205,6 +205,7 @@ struct lisp
     static LObjectVar *make_var(int index);
 
     static LObject *compile(char const *&s);
+    static LList *optimize(LList *code);
     static LObject *eval(LObject *);
     static void print(LObject *);
 
@@ -326,7 +327,7 @@ void *eval_block(void *list);
 void resize_tmp(size_t new_size);
 void resize_perm(size_t new_size);
 
-void push_onto_list(void *object, void *&list);
+void push_onto_list(LObject *object, LList *&list);
 LSymbol *add_c_object(void *symbol, int index);
 LSymbol *add_c_function(char const *name, short min_args, short max_args, short number);
 LSymbol *add_c_bool_fun(char const *name, short min_args, short max_args, short number);

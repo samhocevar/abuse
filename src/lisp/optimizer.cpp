@@ -12,6 +12,8 @@
 #   include "config.h"
 #endif
 
+#include "common.h"
+
 #ifdef NO_LIBS
 #   include "fakelib.h"
 #endif
@@ -29,102 +31,75 @@ static bool is_zero(LObject const *obj)
     return false;
 }
 
-void *comp_optimize(void *list)
+LList *lisp::optimize(LList *list)
 {
-  void *return_val=list;
-  PtrRef r1(list);
-  if (list)
-  {
-    if (lisp::car(list)==lisp::sym::if_)
+    if (!list)
+        return list;
+
+    LObject *eval1 = lisp::caddr(list);
+    LObject *eval2 = lisp::cadddr(list);
+    LList *ret = nullptr;
+
+    PtrRef r1(list), r2(eval1), r3(eval2), r4(ret);
+
+    if (lisp::car(list) == lisp::sym::eq &&
+        is_zero(lisp::cadr(list))) // simplify (eq 0 x) -> (eq0 x)
     {
-      void *eval1 = lisp::caddr(list);
-      PtrRef r2(eval1);
-      void *eval2 = lisp::cadddr(list);
-      PtrRef r3(eval2);
-
-      void *ret=nullptr;
-      PtrRef r4(ret);
-      if (lisp::car(list)==lisp::sym::eq && is_zero(lisp::cadr(list)))  //  simplify (eq 0 x) -> (eq0 x)
-      {
-    push_onto_list(lisp::caddr(list),ret);
-    push_onto_list(lisp::sym::eq0,ret);
-    return_val=comp_optimize(ret);
-      } else if (lisp::car(list)==lisp::sym::eq &&
-         is_zero(lisp::caddr(list))) //simplify (eq x 0)-> (eq0 x)
-      {
-    push_onto_list(lisp::cadr(list),ret);
-    push_onto_list(lisp::sym::eq0,ret);
-    return_val=comp_optimize(ret);
-      } else if (lisp::caadr(list)==lisp::sym::not_)  // simplify (if (not y) x z) -> (if y z x)
-      {
-    push_onto_list(lisp::caddr(list),ret);
-    push_onto_list(lisp::cadddr(list),ret);
-    push_onto_list(lisp::cadadr(list),ret);
-    push_onto_list(lisp::sym::if_,ret);
-    return_val=comp_optimize(ret);
-      }
-      else if (lisp::car(eval1)==lisp::sym::progn && (eval2==nullptr ||
-                         item_type(eval2)!=L_CONS_CELL))
-      {
-    push_onto_list(eval2,ret);
-    push_onto_list(lisp::cdr(eval1),ret);
-    push_onto_list(lisp::cadr(list),ret);
-    push_onto_list(lisp::sym::if_1progn,ret);
-    return_val=comp_optimize(ret);
-      } else if (lisp::car(eval1)==lisp::sym::progn && lisp::car(eval2)==lisp::sym::progn)
-      {
-    push_onto_list(lisp::cdr(eval2),ret);
-    push_onto_list(lisp::cdr(eval1),ret);
-    push_onto_list(lisp::cadr(list),ret);
-    push_onto_list(lisp::sym::if_12progn,ret);
-    return_val=comp_optimize(ret);
-      } else if (lisp::car(eval2)==lisp::sym::progn)
-      {
-    push_onto_list(lisp::cdr(eval2),ret);
-    push_onto_list(eval1,ret);
-    push_onto_list(lisp::cadr(list),ret);
-    push_onto_list(lisp::sym::if_2progn,ret);
-    return_val=comp_optimize(ret);
-      }
-
+        push_onto_list(lisp::caddr(list), ret);
+        push_onto_list(lisp::sym::eq0, ret);
+        return optimize(ret);
     }
-  }
-  return return_val;
-}
 
-void lisp::init_constants()
-{
-    // This needs to be defined first
-    LSymbol *tmp = lisp::make_sym(":UNDEFINED");
-    lisp::obj::undefined = tmp;
-    // Collection problems result if we don't do this
-    tmp->m_function = nullptr;
-    tmp->m_value = nullptr;
+    if (lisp::car(list) == lisp::sym::eq &&
+        is_zero(lisp::caddr(list))) // simplify (eq x 0)-> (eq0 x)
+    {
+        push_onto_list(lisp::cadr(list), ret);
+        push_onto_list(lisp::sym::eq0, ret);
+        return optimize(ret);
+    }
 
-    sym::true_ = lisp::make_sym("T");
+    if (lisp::car(list) == lisp::sym::if_ &&
+        lisp::caadr(list) == lisp::sym::not_) // simplify (if (not y) x z) -> (if y z x)
+    {
+        push_onto_list(lisp::caddr(list), ret);
+        push_onto_list(lisp::cadddr(list), ret);
+        push_onto_list(lisp::cadadr(list), ret);
+        push_onto_list(lisp::sym::if_, ret);
+        return optimize(ret);
+    }
 
-    sym::list = lisp::make_sym("list");
-    sym::string = lisp::make_sym("string");
-    sym::quote = lisp::make_sym("quote");
-    sym::backquote = lisp::make_sym("backquote");
-    sym::comma = lisp::make_sym("comma");
-    sym::in = lisp::make_sym("in");
-    sym::do_ = lisp::make_sym("do");
-    sym::aref = lisp::make_sym("aref");
-    colon_initial_contents = lisp::make_sym(":initial-contents");
-    colon_initial_element = lisp::make_sym(":initial-element");
+    if (lisp::car(list) == lisp::sym::if_ &&
+        lisp::car(eval1) == lisp::sym::progn &&
+        (eval2 == nullptr || item_type(eval2) != L_CONS_CELL))
+    {
+        push_onto_list(eval2, ret);
+        push_onto_list(lisp::cdr(eval1), ret);
+        push_onto_list(lisp::cadr(list), ret);
+        push_onto_list(lisp::sym::if_1progn, ret);
+        return optimize(ret);
+    }
 
-    sym::if_1progn = lisp::make_sym("if-1progn");
-    sym::if_2progn = lisp::make_sym("if-2progn");
-    sym::if_12progn = lisp::make_sym("if-12progn");
-    sym::if_ = lisp::make_sym("if");
-    sym::progn = lisp::make_sym("progn");
-    sym::not_ = lisp::make_sym("not");
-    sym::eq = lisp::make_sym("eq");
-    sym::zero = lisp::make_sym("0");
-    sym::eq0 = lisp::make_sym("eq0");
-    sym::car = lisp::make_sym("car");
-    sym::cdr = lisp::make_sym("cdr");
-    load_warning = lisp::make_sym("load_warning");
+    if (lisp::car(list) == lisp::sym::if_ &&
+        lisp::car(eval1) == lisp::sym::progn &&
+        lisp::car(eval2) == lisp::sym::progn)
+    {
+        push_onto_list(lisp::cdr(eval2), ret);
+        push_onto_list(lisp::cdr(eval1), ret);
+        push_onto_list(lisp::cadr(list), ret);
+        push_onto_list(lisp::sym::if_12progn, ret);
+        return optimize(ret);
+    }
+
+    if (lisp::car(list) == lisp::sym::if_ &&
+        lisp::car(eval2) == lisp::sym::progn)
+    {
+        push_onto_list(lisp::cdr(eval2), ret);
+        push_onto_list(eval1, ret);
+        push_onto_list(lisp::cadr(list), ret);
+        push_onto_list(lisp::sym::if_2progn, ret);
+        return optimize(ret);
+    }
+
+    return list;
 }
 

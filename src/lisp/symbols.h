@@ -9,7 +9,7 @@
 
 #pragma once
 
-extern void *colon_initial_contents, *colon_initial_element, *load_warning;
+extern LSymbol *colon_initial_contents, *colon_initial_element, *load_warning;
 
 struct func
 {
