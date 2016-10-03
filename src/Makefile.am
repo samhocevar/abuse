@@ -104,7 +104,6 @@ libabuse_a_SOURCES = \
     lisp/lisp.cpp lisp/lisp.h \
     lisp/lisp_opt.cpp lisp/lisp_opt.h \
     lisp/lisp_gc.cpp lisp/lisp_gc.h \
-    lisp/trig.cpp \
     lisp/stack.h lisp/symbols.h \
     \
     net/gserver.cpp net/gserver.h \

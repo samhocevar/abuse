@@ -16,12 +16,9 @@
 #define Cell void
 #define MAX_LISP_TOKEN_LEN 200
 
-#define FIXED_TRIG_SIZE 360               // 360 degrees stored in table
-extern int32_t sin_table[FIXED_TRIG_SIZE];   // this should be filled in by external module
-#define TBS 1662                          // atan table granularity
-extern uint16_t atan_table[TBS];
 #define NILP(x) ((x)==NULL)
 #define DEFINEDP(x) ((x)!=l_undefined)
+
 class bFILE;
 extern bFILE *current_print_file;
 
@@ -227,6 +224,11 @@ struct lisp
     static LObject *eval(LObject *);
     static void print(LObject *);
 
+    // Maths functions
+    static int32_t atan2(int32_t dy, int32_t dx);
+    static int32_t sin(int32_t x);
+    static int32_t cos(int32_t x);
+
     // Garbage collect temporary or permanent spaces
     static void collect_space(LSpace *which_space, int grow);
 
@@ -325,10 +327,6 @@ LUserFunction *new_lisp_user_function(LList *arg_list, LList *block_list);
 LSysFunction *new_user_lisp_function(int min_args, int max_args, int fun_number);
 
 int end_of_program(char *s);
-
-int32_t lisp_atan2(int32_t dy, int32_t dx);
-int32_t lisp_sin(int32_t x);
-int32_t lisp_cos(int32_t x);
 
 extern "C" {
 void lbreak(const char *format, ...);

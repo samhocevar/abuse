@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -113,7 +113,7 @@ static void fire_at_player(GameObject *o, GameObject *b)
           playery = b->m_pos.y - 15 + b->m_vel.y * 2;
   if (can_see(o, o->m_pos.x, o->m_pos.y, firex, firey) && can_see(o, firex, firey, playerx, playery))
   {
-    int angle=lisp_atan2(firey-playery,playerx-firex);
+    int angle = lisp::atan2(firey-playery,playerx-firex);
     void *call_list=NULL;
     PtrRef r1(call_list);
     push_onto_list(LPointer::Create(b),call_list);

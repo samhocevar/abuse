@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -159,12 +159,12 @@ void *top_ai()
     int best_diff=200,best_num=0;
     int iy=f[1],ix=f[6*2];
 
-    int best_angle = lisp_atan2(q->m_pos.y - iy - v->pointer_y, v->pointer_x - q->m_pos.x - ix);
+    int best_angle = lisp::atan2(q->m_pos.y - iy - v->pointer_y, v->pointer_x - q->m_pos.x - ix);
     for (i=0; i<24; i++,f+=2)             // check all the angles to see which would best fit animation wise
     {
-      int this_angle=lisp_atan2(f[1]-iy,f[0]-ix);
-      int this_diff=angle_diff(this_angle,best_angle);
-      if (this_diff<best_diff)
+      int this_angle = lisp::atan2(f[1] - iy, f[0] - ix);
+      int this_diff = angle_diff(this_angle, best_angle);
+      if (this_diff < best_diff)
       {
         best_diff=this_diff;
         best_num=i;
@@ -176,10 +176,10 @@ void *top_ai()
     // if the pointer is too close to the player go with the angle shown, not the angle through the pointer
     if (lol::abs(q->m_pos.y - fb[1] - v->pointer_y) < 45
          && lol::abs(v->pointer_x - q->m_pos.x + fb[0]) < 40)
-      o->lvars[point_angle]=lisp_atan2(fb[1]-iy,fb[0]-ix);
+      o->lvars[point_angle] = lisp::atan2(fb[1] - iy, fb[0] - ix);
     else
-      o->lvars[point_angle] = lisp_atan2(q->m_pos.y - fb[1] - v->pointer_y,
-                                         v->pointer_x - (q->m_pos.x + fb[0]));
+      o->lvars[point_angle] = lisp::atan2(q->m_pos.y - fb[1] - v->pointer_y,
+                                           v->pointer_x - (q->m_pos.x + fb[0]));
 
 
     if (q->direction<0)
@@ -893,8 +893,8 @@ void *sgun_ai()
   int32_t ang=o->lvars[sgb_angle];
   int32_t mag=o->lvars[sgb_speed];
 
-  int32_t xvel = lisp_cos(ang) * mag;
-  int32_t yvel = -lisp_sin(ang) * mag;
+  int32_t xvel = lisp::cos(ang) * mag;
+  int32_t yvel = -lisp::sin(ang) * mag;
   current_object->m_vel = ivec2(xvel >> 16, yvel >> 16);
   current_object->set_fxvel((xvel&0xffff)>>8);
   current_object->set_fyvel((yvel&0xffff)>>8);
@@ -914,7 +914,7 @@ void *sgun_ai()
     o->lvars[sgb_lifetime]=0;
     GameObject *n=create(S_EXPLODE3, o->m_pos.x + rand(4), o->m_pos.y + rand(4));
     g_current_level->add_object(n);
-     who->do_damage(5, o, o->m_pos.x, o->m_pos.y, (lisp_cos(ang) * 10) >> 16, (lisp_sin(ang) * 10) >> 16);
+     who->do_damage(5, o, o->m_pos.x, o->m_pos.y, (lisp::cos(ang) * 10) >> 16, (lisp::sin(ang) * 10) >> 16);
   }
   return true_symbol;
 }

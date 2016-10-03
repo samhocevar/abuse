@@ -614,108 +614,21 @@ void *lisp_equal(void *n1, void *n2)
     }
 }
 
-int32_t lisp_cos(int32_t x)
+int32_t lisp::cos(int32_t x)
 {
-  x=(x+FIXED_TRIG_SIZE/4)%FIXED_TRIG_SIZE;
-  if (x<0) return sin_table[FIXED_TRIG_SIZE+x];
-  else return sin_table[x];
+    return int32_t(65535.9f * lol::cos(x * (lol::F_PI / 180)));
 }
 
-int32_t lisp_sin(int32_t x)
+int32_t lisp::sin(int32_t x)
 {
-  x=x%FIXED_TRIG_SIZE;
-  if (x<0) return sin_table[FIXED_TRIG_SIZE+x];
-  else return sin_table[x];
+    return int32_t(65535.9f * lol::sin(x * (lol::F_PI / 180)));
 }
 
-int32_t lisp_atan2(int32_t dy, int32_t dx)
+int32_t lisp::atan2(int32_t dy, int32_t dx)
 {
-  if (dy==0)
-  {
-    if (dx>0) return 0;
-    else return 180;
-  } else if (dx==0)
-  {
-    if (dy>0) return 90;
-    else return 270;
-  } else
-  {
-    if (dx>0)
-    {
-      if (dy>0)
-      {
-    if (lol::abs(dx)>lol::abs(dy))
-    {
-      int32_t a=dx*29/dy;
-      if (a>=TBS) return 0;
-      else return 45-atan_table[a];
-    }
-    else
-    {
-      int32_t a=dy*29/dx;
-      if (a>=TBS) return 90;
-      else return 45+atan_table[a];
-    }
-      } else
-      {
-    if (lol::abs(dx)>lol::abs(dy))
-    {
-      int32_t a=dx*29/lol::abs(dy);
-      if (a>=TBS)
-        return 0;
-      else
-        return 315+atan_table[a];
-    }
-    else
-    {
-      int32_t a=lol::abs(dy)*29/dx;
-      if (a>=TBS)
-        return 260;
-      else
-        return 315-atan_table[a];
-    }
-      }
-    } else
-    {
-      if (dy>0)
-      {
-    if (lol::abs(dx)>lol::abs(dy))
-    {
-      int32_t a=-dx*29/dy;
-      if (a>=TBS)
-        return 135+45;
-      else
-        return 135+atan_table[a];
-    }
-    else
-    {
-      int32_t a=dy*29/-dx;
-      if (a>=TBS)
-        return 135-45;
-      else
-        return 135-atan_table[a];
-    }
-      } else
-      {
-    if (lol::abs(dx)>lol::abs(dy))
-    {
-      int32_t a=-dx*29/lol::abs(dy);
-      if (a>=TBS)
-        return 225-45;
-      else return 225-atan_table[a];
-    }
-    else
-    {
-      int32_t a=lol::abs(dy)*29/lol::abs(dx);
-      if (a>=TBS)
-        return 225+45;
-      else return 225+atan_table[a];
-    }
-      }
-    }
-  }
+    // We want 0—360 but atan2 provides -180—180 so we call atan2(-dy,-dx)
+    return 180 + int32_t((180 / lol::F_PI) * lol::atan2(-dy / 65535.f, -dx / 65535.f));
 }
-
 
 /*
 LSymbol *find_symbol(char const *name)
@@ -2350,16 +2263,16 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         // Deprecated and useless
         break;
     case SYS_FUNC_COS:
-        ret = LFixedPoint::Create(lisp_cos(lnumber_value(lisp::eval(lisp::car(arg_list)))));
+        ret = LFixedPoint::Create(lisp::cos(lnumber_value(lisp::eval(lisp::car(arg_list)))));
         break;
     case SYS_FUNC_SIN:
-        ret = LFixedPoint::Create(lisp_sin(lnumber_value(lisp::eval(lisp::car(arg_list)))));
+        ret = LFixedPoint::Create(lisp::sin(lnumber_value(lisp::eval(lisp::car(arg_list)))));
         break;
     case SYS_FUNC_ATAN2:
     {
         int32_t y = (lnumber_value(lisp::eval(lisp::car(arg_list))));
         int32_t x = (lnumber_value(lisp::eval(lisp::cadr(arg_list))));
-        ret = LNumber::Create(lisp_atan2(y, x));
+        ret = LNumber::Create(lisp::atan2(y, x));
         break;
     }
     case SYS_FUNC_ENUM:

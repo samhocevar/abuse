@@ -3109,7 +3109,7 @@ GameObject *Level::find_object_in_angle(int32_t x, int32_t y, int32_t start_angl
   int32_t closest_distance=0xfffffff,distance;
   for (GameObject *o = first_active; o; o = o->next_active)
   {
-    int32_t angle = lisp_atan2(o->m_pos.y - y, o->m_pos.x - x);
+    int32_t angle = lisp::atan2(o->m_pos.y - y, o->m_pos.x - x);
     if (((start_angle<=end_angle && (angle>=start_angle && angle<=end_angle))
     || (start_angle>end_angle && (angle>=start_angle || angle<=end_angle)))
     && o!=exclude)

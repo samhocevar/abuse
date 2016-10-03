@@ -1494,14 +1494,14 @@ long c_caller(long number, void *args)
             GameObject *o = (GameObject *)lpointer_value(lisp::car(args));
             int32_t x = o->m_pos.x-current_object->m_pos.x,
                 y=-(o->m_pos.y-o->picture()->Size().y/2-(current_object->m_pos.y-(current_object->picture()->Size().y/2)));
-            return lisp_atan2(y, x);
+            return lisp::atan2(y, x);
         } break;
         case 154:
         {
             int32_t ang = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
             int32_t mag = lfixed_point_value(lisp::car(args));
-            int32_t xvel = (lisp_cos(ang)>>8)*(mag>>8);
-            int32_t yvel=-(lisp_sin(ang)>>8)*(mag>>8);
+            int32_t xvel = (lisp::cos(ang)>>8)*(mag>>8);
+            int32_t yvel=-(lisp::sin(ang)>>8)*(mag>>8);
             current_object->m_vel = ivec2(xvel >> 16, yvel >> 16);
             current_object->set_fxvel((xvel&0xffff)>>8);
             current_object->set_fyvel((yvel&0xffff)>>8);
