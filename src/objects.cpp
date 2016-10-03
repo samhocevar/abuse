@@ -872,9 +872,9 @@ void *GameObject::float_tick()  // returns 1 if you hit something, 0 otherwise
       push_onto_list(LNumber::Create(ret),rlist);
 
       return rlist;
-    } else return true_symbol;
+    } else return lisp::sym::true_;
   }
-  return true_symbol;
+  return lisp::sym::true_;
 }
 
 int GameObject::tick()      // returns blocked status

@@ -16,8 +16,8 @@
 #define Cell void
 #define MAX_LISP_TOKEN_LEN 200
 
-#define NILP(x) ((x)==NULL)
-#define DEFINEDP(x) ((x)!=l_undefined)
+#define NILP(x) ((x) == nullptr)
+#define DEFINEDP(x) ((x) != lisp::obj::undefined)
 
 class bFILE;
 extern bFILE *current_print_file;
@@ -283,6 +283,39 @@ struct lisp
     static inline LObject *&cddadr(void *c) { return cdr(cdadr(c)); }
     static inline LObject *&cdddar(void *c) { return cdr(cddar(c)); }
     static inline LObject *&cddddr(void *c) { return cdr(cdddr(c)); }
+
+    // Predefined objects
+    struct obj
+    {
+        static LObject *undefined;
+    };
+
+    // Predefined symbols
+    struct sym
+    {
+        static LSymbol *true_;
+        static LSymbol *list;
+        static LSymbol *string;
+        static LSymbol *quote;
+        static LSymbol *backquote;
+        static LSymbol *comma;
+        static LSymbol *do_;
+        static LSymbol *in;
+        static LSymbol *aref;
+        static LSymbol *if_;
+        static LSymbol *progn;
+        static LSymbol *car;
+        static LSymbol *cdr;
+
+        static LSymbol *eq;
+        static LSymbol *zero;
+        static LSymbol *eq0;
+
+        static LSymbol *if_1progn;
+        static LSymbol *if_2progn;
+        static LSymbol *if_12progn;
+        static LSymbol *not_;
+    };
 
 private:
     // Symbol tree

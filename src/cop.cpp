@@ -198,7 +198,7 @@ void *top_ai()
       }
     }
   }
-  return true_symbol;
+  return lisp::sym::true_;
 }
 
 
@@ -709,7 +709,7 @@ void *ladder_ai()
       }
     }
   }
-  return true_symbol;
+  return lisp::sym::true_;
 }
 
 
@@ -917,7 +917,7 @@ void *sgun_ai()
     g_current_level->add_object(n);
      who->do_damage(5, o, o->m_pos.x, o->m_pos.y, (lisp::cos(ang) * 10) >> 16, (lisp::sin(ang) * 10) >> 16);
   }
-  return true_symbol;
+  return lisp::sym::true_;
 }
 
 
@@ -943,7 +943,7 @@ void *mover_ai()
       obj->m_pos = d->m_pos - (d->m_pos - o->m_pos) * (int)o->aistate() / (int)o->aitype();
     }
   }
-  return true_symbol;
+  return lisp::sym::true_;
 }
 
 
@@ -970,7 +970,7 @@ void *respawn_ai()
      o->set_aistate_time(0);
    }
  }
- return true_symbol;
+ return lisp::sym::true_;
 }
 
 static int compare_players(const void *a, const void *b)

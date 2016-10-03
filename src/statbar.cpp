@@ -46,7 +46,7 @@ void status_bar::load()
   char sbname[100];
   char iname[20];
   void *l_name = lisp::make_sym("sbar_file");
-  if (symbol_value(l_name)!=l_undefined)
+  if (symbol_value(l_name)!=lisp::obj::undefined)
     strcpy(sbname,lstring_value(symbol_value(l_name)));
   else strcpy(sbname,"art/statbar.spe");
 

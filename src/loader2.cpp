@@ -410,7 +410,7 @@ void load_data(int argc, char **argv)
   for (i=1; i<argc; i++)
   {
     if (!strcmp(argv[i],"-ec"))
-      l_empty_cache->SetValue(true_symbol);
+      l_empty_cache->SetValue(lisp::sym::true_);
     if (!strcmp(argv[i],"-t"))
     {
       i++;

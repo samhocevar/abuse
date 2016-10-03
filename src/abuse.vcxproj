@@ -205,6 +205,7 @@
     <ClCompile Include="lisp/gc.cpp" />
     <ClCompile Include="lisp/lisp.cpp" />
     <ClCompile Include="lisp/optimizer.cpp" />
+    <ClCompile Include="lisp/symbols.cpp" />
     <ClCompile Include="net/engine.cpp" />
     <ClCompile Include="net/fileman.cpp" />
     <ClCompile Include="net/gclient.cpp" />

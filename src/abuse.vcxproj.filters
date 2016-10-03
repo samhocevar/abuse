@@ -10,6 +10,9 @@
     <ClCompile Include="lisp\optimizer.cpp">
       <Filter>lisp</Filter>
     </ClCompile>
+    <ClCompile Include="lisp\symbols.cpp">
+      <Filter>lisp</Filter>
+    </ClCompile>
     <ClCompile Include="net\engine.cpp">
       <Filter>net</Filter>
     </ClCompile>

@@ -54,5 +54,5 @@ void *sensor_ai()
         o->set_aistate(0);
     } else o->set_aistate(o->aistate()-1);
   }
-  return true_symbol;
+  return lisp::sym::true_;
 }

@@ -138,14 +138,14 @@ void *ant_ai()
     if (o->state==dead)
       return NULL;
     else o->set_state(dead);
-    return true_symbol;
+    return lisp::sym::true_;
   }
 
 
   if (o->state==flinch_up || o->state==flinch_down)
   {
     o->next_picture();
-    return true_symbol;
+    return lisp::sym::true_;
   }
 
 
@@ -437,7 +437,7 @@ void *ant_ai()
 
 
 
-  return true_symbol;
+  return lisp::sym::true_;
 }
 
 

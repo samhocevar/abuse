@@ -607,7 +607,7 @@ void *l_caller(long number, void *args)
             GameObject *hit = current_object->bmove(whit, o ? o : current_object);
             if (hit)
                 return LPointer::Create(hit);
-            return whit ? nullptr : true_symbol;
+            return whit ? nullptr : lisp::sym::true_;
         }
 
         case 3:
@@ -830,9 +830,9 @@ void *l_caller(long number, void *args)
         case 39:
         {
             if (current_object->total_objects()==0)
-                return true_symbol;
+                return lisp::sym::true_;
             else if (current_object->get_object(0)->aistate())
-                return true_symbol;
+                return lisp::sym::true_;
             else return NULL;
         } break;
         case 40: top_draw(); break;

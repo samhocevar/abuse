@@ -622,8 +622,8 @@ LSymbol *new_lisp_symbol(char *name)
 
     s->m_type = L_SYMBOL;
     s->m_name = LString::Create(name);
-    s->m_value = l_undefined;
-    s->m_function = l_undefined;
+    s->m_value = lisp::obj::undefined;
+    s->m_function = lisp::obj::undefined;
 #ifdef L_PROFILE
     s->time_taken = 0;
 #endif
@@ -722,7 +722,7 @@ void *lisp_atom(void *i)
 {
   if (item_type(i)==(ltype)L_CONS_CELL)
     return NULL;
-  else return true_symbol;
+  else return lisp::sym::true_;
 }
 
 uint16_t LChar::GetValue()
@@ -751,25 +751,25 @@ long lfixed_point_value(void *c)
 
 void *lisp_eq(void *n1, void *n2)
 {
-  if (!n1 && !n2) return true_symbol;
+  if (!n1 && !n2) return lisp::sym::true_;
   else if ((n1 && !n2) || (n2 && !n1)) return NULL;
   {
     int t1=*((ltype *)n1), t2=*((ltype *)n2);
     if (t1!=t2) return NULL;
     else if (t1==L_NUMBER)
     { if (((LNumber *)n1)->m_num==((LNumber *)n2)->m_num)
-        return true_symbol;
+        return lisp::sym::true_;
       else return NULL;
     } else if (t1==L_CHARACTER)
     {
       if (((LChar *)n1)->m_ch==((LChar *)n2)->m_ch)
-        return true_symbol;
+        return lisp::sym::true_;
       else return NULL;
     }
     else if (n1==n2)
-      return true_symbol;
+      return lisp::sym::true_;
     else if (t1==L_POINTER)
-      if (n1==n2) return true_symbol;
+      if (n1==n2) return lisp::sym::true_;
   }
   return NULL;
 }
@@ -788,7 +788,7 @@ LObject *LArray::Get(int x)
 void *lisp_equal(void *n1, void *n2)
 {
     if(!n1 && !n2) // if both nil, then equal
-        return true_symbol;
+        return lisp::sym::true_;
 
     if(!n1 || !n2) // one nil, nope
         return NULL;
@@ -801,7 +801,7 @@ void *lisp_equal(void *n1, void *n2)
     {
     case L_STRING :
         if (!strcmp(lstring_value(n1), lstring_value(n2)))
-            return true_symbol;
+            return lisp::sym::true_;
         return NULL;
     case L_CONS_CELL :
         while (n1 && n2) // loop through the list and compare each element
@@ -815,7 +815,7 @@ void *lisp_equal(void *n1, void *n2)
         }
         if (n1 || n2)
             return NULL;   // if one is longer than the other
-        return true_symbol;
+        return lisp::sym::true_;
     default :
         return lisp_eq(n1, n2);
     }
@@ -904,8 +904,8 @@ LSymbol *lisp::find_sym(char const *name, bool create)
     p->m_name = LString::Create(name);
 
     // If constant, set the value to ourself
-    p->m_value = (name[0] == ':') ? p : l_undefined;
-    p->m_function = l_undefined;
+    p->m_value = (name[0] == ':') ? p : lisp::obj::undefined;
+    p->m_function = lisp::obj::undefined;
 #ifdef L_PROFILE
     p->time_taken = 0;
 #endif
@@ -1007,7 +1007,7 @@ LSymbol *add_sys_function(char const *name, short min_args, short max_args, shor
 {
   need_perm_space("add_sys_function");
   LSymbol *s = lisp::make_sym(name);
-  if (s->m_function!=l_undefined)
+  if (s->m_function!=lisp::obj::undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
     exit(0);
@@ -1020,7 +1020,7 @@ LSymbol *add_c_object(void *symbol, int index)
 {
   need_perm_space("add_c_object");
   LSymbol *s=(LSymbol *)symbol;
-  if (s->m_value!=l_undefined)
+  if (s->m_value!=lisp::obj::undefined)
   {
     lbreak("add_c_object -> symbol %s already has a value\n", lstring_value(s->GetName()));
     exit(0);
@@ -1034,7 +1034,7 @@ LSymbol *add_c_function(char const *name, short min_args, short max_args, short 
   total_user_functions++;
   need_perm_space("add_c_function");
   LSymbol *s = lisp::make_sym(name);
-  if (s->m_function!=l_undefined)
+  if (s->m_function!=lisp::obj::undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
     exit(0);
@@ -1048,7 +1048,7 @@ LSymbol *add_c_bool_fun(char const *name, short min_args, short max_args, short 
   total_user_functions++;
   need_perm_space("add_c_bool_fun");
   LSymbol *s = lisp::make_sym(name);
-  if (s->m_function!=l_undefined)
+  if (s->m_function!=lisp::obj::undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
     exit(0);
@@ -1063,7 +1063,7 @@ LSymbol *add_lisp_function(char const *name, short min_args, short max_args, sho
   total_user_functions++;
   need_perm_space("add_c_bool_fun");
   LSymbol *s = lisp::make_sym(name);
-  if (s->m_function!=l_undefined)
+  if (s->m_function!=lisp::obj::undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
     exit(0);
@@ -1165,13 +1165,13 @@ LObject *lisp::compile(char const *&code)
   if (!strcmp(token_buffer, "nil"))
     return NULL;
   else if (toupper(token_buffer[0])=='T' && !token_buffer[1])
-    return true_symbol;
+    return lisp::sym::true_;
   else if (token_buffer[0]=='\'')                    // short hand for quote function
   {
     LObject *cs = LList::Create(), *c2=NULL, *tmp;
     PtrRef r1(cs), r2(c2);
 
-    ((LList *)cs)->m_car=quote_symbol;
+    ((LList *)cs)->m_car=lisp::sym::quote;
     c2 = LList::Create();
     tmp = compile(code);
     ((LList *)c2)->m_car = (LObject *)tmp;
@@ -1184,7 +1184,7 @@ LObject *lisp::compile(char const *&code)
     LObject *cs = LList::Create(), *c2=NULL, *tmp;
     PtrRef r1(cs), r2(c2);
 
-    ((LList *)cs)->m_car=backquote_symbol;
+    ((LList *)cs)->m_car=lisp::sym::backquote;
     c2 = LList::Create();
     tmp = compile(code);
     ((LList *)c2)->m_car = (LObject *)tmp;
@@ -1196,7 +1196,7 @@ LObject *lisp::compile(char const *&code)
     LObject *cs = LList::Create(), *c2=NULL, *tmp;
     PtrRef r1(cs), r2(c2);
 
-    ((LList *)cs)->m_car=comma_symbol;
+    ((LList *)cs)->m_car=lisp::sym::comma;
     c2 = LList::Create();
     tmp = compile(code);
     ((LList *)c2)->m_car = (LObject *)tmp;
@@ -1552,7 +1552,7 @@ LObject *LSymbol::EvalFunction(void *arg_list)
         if (t == L_C_FUNCTION)
             ret = LNumber::Create(c_caller(((LSysFunction *)fun)->fun_number, first));
         else if (c_caller(((LSysFunction *)fun)->fun_number, first))
-            ret = true_symbol;
+            ret = lisp::sym::true_;
         else
             ret = NULL;
         break;
@@ -1681,7 +1681,7 @@ void *concatenate(void *prog_list)
   void *rtype = lisp::eval(lisp::car(prog_list));
 
   long len=0;                                // determin the length of the resulting string
-  if (rtype==string_symbol)
+  if (rtype==lisp::sym::string)
   {
     int elements = ((LList *)el_list)->GetLength(); // see how many things we need to concat
     if (!elements) ret = LString::Create("");
@@ -1771,7 +1771,7 @@ void *backquote_eval(void *args)
     return args;
   else if (args==NULL)
     return NULL;
-  else if ((LSymbol *) (((LList *)args)->m_car)==comma_symbol)
+  else if ((LSymbol *) (((LList *)args)->m_car)==lisp::sym::comma)
     return lisp::eval(lisp::cadr(args));
   else
   {
@@ -1781,7 +1781,7 @@ void *backquote_eval(void *args)
     {
       if (item_type(args)==L_CONS_CELL)
       {
-    if (lisp::car(args)==comma_symbol)               // dot list with a comma?
+    if (lisp::car(args)==lisp::sym::comma)               // dot list with a comma?
     {
       tmp = lisp::eval(lisp::cadr(args));
       ((LList *)last)->m_cdr = (LObject *)tmp;
@@ -2000,7 +2000,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
             switch (item_type(((LSymbol *)i)->m_value))
             {
             case L_NUMBER:
-                if (x == L_NUMBER && ((LSymbol *)i)->m_value != l_undefined)
+                if (x == L_NUMBER && ((LSymbol *)i)->m_value != lisp::obj::undefined)
                     ((LSymbol *)i)->SetNumber(lnumber_value(set_to));
                 else
                     ((LSymbol *)i)->SetValue((LNumber *)set_to);
@@ -2017,7 +2017,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         {
 #ifdef TYPE_CHECKING
             LObject *car = ((LList *)i)->m_car;
-            if (car == car_symbol)
+            if (car == lisp::sym::car)
             {
                 car = lisp::eval(lisp::cadr(i));
                 if (!car || item_type(car) != L_CONS_CELL)
@@ -2028,7 +2028,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                 }
                 ((LList *)car)->m_car = set_to;
             }
-            else if (car == cdr_symbol)
+            else if (car == lisp::sym::cdr)
             {
                 car = lisp::eval(lisp::cadr(i));
                 if (!car || item_type(car) != L_CONS_CELL)
@@ -2039,7 +2039,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                 }
                 ((LList *)car)->m_cdr = set_to;
             }
-            else if (car != aref_symbol)
+            else if (car != lisp::sym::aref)
             {
                 lbreak("expected (aref, car, cdr, or symbol) in setq\n");
                 exit(0);
@@ -2088,7 +2088,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_NOT:
     case SYS_FUNC_NULL:
         if (lisp::eval(lisp::car(arg_list)) == NULL)
-            ret = true_symbol;
+            ret = lisp::sym::true_;
         else
             ret = NULL;
         break;
@@ -2176,7 +2176,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LObject *l = arg_list;
         PtrRef r1(l);
-        ret = true_symbol;
+        ret = lisp::sym::true_;
         while (l)
         {
             if (!lisp::eval(lisp::car(l)))
@@ -2198,7 +2198,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         {
             if (lisp::eval(lisp::car(l)))
             {
-                ret = true_symbol;
+                ret = lisp::sym::true_;
                 l = NULL; // short-circuit
             }
             else
@@ -2301,16 +2301,16 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
                     fun_number == SYS_FUNC_LT ? n1 < n2 :
                     fun_number == SYS_FUNC_GE ? n1 >= n2 :
                     fun_number == SYS_FUNC_LE ? n1 <= n2 : false;
-        ret = test ? true_symbol : nullptr;
+        ret = test ? lisp::sym::true_ : nullptr;
         break;
     }
     case SYS_FUNC_TMP_SPACE:
         tmp_space();
-        ret = true_symbol;
+        ret = lisp::sym::true_;
         break;
     case SYS_FUNC_PERM_SPACE:
         perm_space();
-        ret = true_symbol;
+        ret = lisp::sym::true_;
         break;
     case SYS_FUNC_SYMBOL_NAME:
     {
@@ -2323,13 +2323,13 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         trace_level++;
         if (arg_list)
             trace_print_level = lnumber_value(lisp::eval(lisp::car(arg_list)));
-        ret = true_symbol;
+        ret = lisp::sym::true_;
         break;
     case SYS_FUNC_UNTRACE:
         if (trace_level > 0)
         {
             trace_level--;
-            ret = true_symbol;
+            ret = lisp::sym::true_;
         }
         else
             ret = NULL;
@@ -2576,7 +2576,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         }
         arg_list = (LList *)lisp::cdr(arg_list);
 
-        if (lisp::car(arg_list) != in_symbol)
+        if (lisp::car(arg_list) != lisp::sym::in)
         {
             lbreak("expecting in after 'for iterator'\n");
             exit(1);
@@ -2587,7 +2587,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         PtrRef r2(ilist);
         arg_list = (LList *)lisp::cdr(arg_list);
 
-        if (lisp::car(arg_list) != do_symbol)
+        if (lisp::car(arg_list) != lisp::sym::do_)
         {
             lbreak("expecting do after 'for iterator in list'\n");
             exit(1);
@@ -2708,7 +2708,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         if (item_type(v) != L_NUMBER || (((LNumber *)v)->m_num != 0))
             ret = NULL;
         else
-            ret = true_symbol;
+            ret = lisp::sym::true_;
         break;
     }
     case SYS_FUNC_PREPORT:
@@ -2751,14 +2751,14 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LObject *tmp = lisp::eval(lisp::car(arg_list));
         ltype t = item_type(tmp);
-        ret = (t == L_CONS_CELL) ? true_symbol : NULL;
+        ret = (t == L_CONS_CELL) ? lisp::sym::true_ : NULL;
         break;
     }
     case SYS_FUNC_NUMBERP:
     {
         LObject *tmp = lisp::eval(lisp::car(arg_list));
         ltype t = item_type(tmp);
-        ret = (t == L_NUMBER || t == L_FIXED_POINT) ? true_symbol : NULL;
+        ret = (t == L_NUMBER || t == L_FIXED_POINT) ? lisp::sym::true_ : NULL;
         break;
     }
     case SYS_FUNC_DO:
@@ -2839,7 +2839,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     case SYS_FUNC_SYMBOLP:
     {
         LObject *tmp = lisp::eval(lisp::car(arg_list));
-        ret = (item_type(tmp) == L_SYMBOL) ? true_symbol : NULL;
+        ret = (item_type(tmp) == L_SYMBOL) ? lisp::sym::true_ : NULL;
         break;
     }
     case SYS_FUNC_NUM2STR:
@@ -3077,7 +3077,7 @@ LObject *lisp::eval(LObject *obj)
             ret = obj;
             break;
         case L_SYMBOL:
-            if (obj == true_symbol)
+            if (obj == lisp::sym::true_)
                 ret = obj;
             else
             {
@@ -3167,7 +3167,7 @@ LString *LSymbol::GetName()
 void LSymbol::SetNumber(long num)
 {
     ASSERT_TYPE(this, L_SYMBOL, "not a symbol");
-    if (m_value != l_undefined && item_type(m_value) == L_NUMBER)
+    if (m_value != lisp::obj::undefined && item_type(m_value) == L_NUMBER)
         ((LNumber *)m_value)->m_num = num;
     else
         m_value = LNumber::Create(num);
