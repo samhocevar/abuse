@@ -20,6 +20,15 @@
 #include "lisp/gc.h"
 #include "lisp/symbols.h"
 
+static bool is_zero(LObject const *obj)
+{
+    if (obj == lisp::sym::zero)
+        return true;
+    if (item_type(obj) == ltype(L_NUMBER) && ((LNumber const *)obj)->m_num == 0)
+        return true;
+    return false;
+}
+
 void *comp_optimize(void *list)
 {
   void *return_val=list;
@@ -35,13 +44,13 @@ void *comp_optimize(void *list)
 
       void *ret=nullptr;
       PtrRef r4(ret);
-      if (lisp::car(list)==lisp::sym::eq && (lisp::cadr(list))==lisp::sym::zero)  //  simplify (eq 0 x) -> (eq0 x)
+      if (lisp::car(list)==lisp::sym::eq && is_zero(lisp::cadr(list)))  //  simplify (eq 0 x) -> (eq0 x)
       {
     push_onto_list(lisp::caddr(list),ret);
     push_onto_list(lisp::sym::eq0,ret);
     return_val=comp_optimize(ret);
       } else if (lisp::car(list)==lisp::sym::eq &&
-         (lisp::caddr(list)==lisp::sym::zero)) //simplify (eq x 0)-> (eq0 x)
+         is_zero(lisp::caddr(list))) //simplify (eq x 0)-> (eq0 x)
       {
     push_onto_list(lisp::cadr(list),ret);
     push_onto_list(lisp::sym::eq0,ret);
