@@ -1011,11 +1011,11 @@ part_frame *CacheList::part(int id)
 
 LObject *CacheList::lblock(int id)
 {
-  CacheItem *me = list + id;
+    CacheItem *me = list + id;
 
-  ASSERT(id < total && id >= 0 && me->file_number >= 0, "bad id");
+    ASSERT(id < total && id >= 0 && me->file_number >= 0, "bad id");
 
-  return (LObject *)me->data;
+    return (LObject *)me->data;
 }
 
 CacheList cache;

@@ -38,7 +38,7 @@ size_t block_size(LObject *level)  // return size needed to recreate this block
             for (; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 ;
             if (b)
-                ret += block_size((LObject *)b);
+                ret += block_size(b);
             for (b = level; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 ret += block_size(lisp::car(b));
             return ret;
@@ -79,7 +79,7 @@ void write_level(bFILE *fp, LObject *level)
              * to reflect that. */
             fp->write_uint32(b ? -(int32_t)count : count);
             if (b)
-                write_level(fp, (LObject *)b);
+                write_level(fp, b);
 
             for (b = level; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 write_level(fp, lisp::car(b));
@@ -102,10 +102,7 @@ void write_level(bFILE *fp, LObject *level)
         {
             uintptr_t p = (uintptr_t)level;
             for (size_t i = 0; i < sizeof(uintptr_t); i++)
-            {
-                fp->write_uint8((uint8_t)p);
-                p >>= 8;
-            }
+                fp->write_uint8(uint8_t(p >> (8 * i)));
         }
     }
 }
@@ -133,7 +130,7 @@ LObject *load_block(bFILE *fp)
                     first = c;
                 last = c;
             }
-            last->m_cdr = (t < 0) ? (LObject *)load_block(fp) : NULL;
+            last->m_cdr = (t < 0) ? load_block(fp) : NULL;
 
             last = first;
             for (size_t count = lol::abs(t); count--; last = (LList *)last->m_cdr)
@@ -153,16 +150,13 @@ LObject *load_block(bFILE *fp)
         return lisp::make_number(fp->read_uint32());
     case L_SYMBOL:
         {
-            uintptr_t ret = 0, mul = 1;
+            uintptr_t ret = 0;
             for (size_t i = 0; i < sizeof(uintptr_t); i++)
-            {
-                ret |= mul * fp->read_uint8();
-                mul *= 8;
-            }
+                ret |= fp->read_uint8() << (8 * i);
             return (LObject *)ret;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 

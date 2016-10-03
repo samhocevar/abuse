@@ -207,7 +207,7 @@ void CharacterType::add_var(LObject *symbol, LObject *name)
   LSymbol *s=(LSymbol *)symbol;
   if (DEFINEDP(s->m_value) && (item_type(s->m_value)!=L_OBJECT_VAR))
   {
-    lisp::print((LObject *)symbol);
+    lisp::print(symbol);
     lbreak("symbol already has a value, cannot instantiate an object varible");
     exit(0);
   } else if (DEFINEDP(s->m_value))

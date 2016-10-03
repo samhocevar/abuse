@@ -90,7 +90,7 @@ char *men_str(LObject *arg)
     { return lstring_value(lisp::car(arg)); } break;
     default :
     {
-      lisp::print((LObject *)arg);
+      lisp::print(arg);
       printf(" is not a valid menu option\n");
       exit(0);
     }
@@ -373,7 +373,7 @@ void show_sell(int abortable)
     AImage blank(ivec2(2, 2)); blank.clear();
     wm->SetMouseShape(blank.copy(), ivec2(0, 0));      // don't show mouse
 
-    LObject *tmp = (LObject *)ss->GetValue();
+    LObject *tmp = ss->GetValue();
     int quit=0;
     while (tmp && !quit)
     {
@@ -383,12 +383,12 @@ void show_sell(int abortable)
       Event ev;
       do
       { wm->flush_screen();
-    wm->get_event(ev);
+        wm->get_event(ev);
       } while (ev.type!=EV_KEY);
       if (ev.key==JK_ESC && abortable)
         quit=1;
       fade_out(16);
-      tmp = (LObject *)lisp::cdr(tmp);
+      tmp = lisp::cdr(tmp);
     }
     wm->SetMouseShape(cache.img(c_normal)->copy(), ivec2(1, 1));
   }

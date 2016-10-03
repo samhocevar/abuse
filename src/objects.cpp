@@ -1184,7 +1184,7 @@ int GameObject::move(int cx, int cy, int button)
 
     if (item_type(r)!=L_NUMBER)
     {
-      lisp::print((LObject *)r);
+      lisp::print(r);
       lbreak("Object %s did not return a number from its mover function!\n"
          "It should return a number to indicate its blocked status to the\n"
          "ai function.", object_names[otype]);
