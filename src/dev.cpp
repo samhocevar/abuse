@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -48,7 +48,7 @@ char backw_on=0, forew_on=0, show_menu_on=0, ledit_on=0, pmenu_on=0, omenu_on=0,
 
 char const *symbol_str(char const *name)
 {
-  LSymbol *sym = LSymbol::FindOrCreate(name);
+  LSymbol *sym = lisp::make_sym(name);
   if (sym->GetValue() && item_type(sym->GetValue())==L_STRING)
     return lstring_value(sym->GetValue());
 
@@ -72,13 +72,13 @@ char const *symbol_str(char const *name)
 
 
   // check again to see if the symbol is there
-  sym = LSymbol::FindOrCreate(name);
+  sym = lisp::make_sym(name);
   if (sym->GetValue() && item_type(sym->GetValue())==L_STRING)
     return lstring_value(sym->GetValue());
 
 
   // check to see if there is a missing symbol definition
-  sym = LSymbol::FindOrCreate("missing_sym");
+  sym = lisp::make_sym("missing_sym");
   if (sym->GetValue() && item_type(sym->GetValue())==L_STRING)
     return lstring_value(sym->GetValue());
 

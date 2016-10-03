@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -44,7 +44,7 @@ int compile_error=0;
 
 static int32_t c_state(char const *name)
 {
-  void *sym = LSymbol::Find(name);
+  void *sym = lisp::find_sym(name);
   if (sym)
   {
     if (item_type(((LSymbol *)sym)->m_value)!=L_NUMBER)
@@ -124,7 +124,7 @@ void compiled_init()
   S_LINK_SND=    c_state("LINK_OBJECT_SND");
   S_DELETE_SND=  c_state("DEL_OBJECT_SND");
 
-  void *b = LSymbol::FindOrCreate("bad_guy_list");
+  void *b = lisp::make_sym("bad_guy_list");
   if (b && DEFINEDP(symbol_value(b)))
   {
     b=symbol_value(b);
@@ -140,7 +140,7 @@ void compiled_init()
     }
   }
 
-  void *v = LSymbol::FindOrCreate("last_save_game")->GetValue();
+  void *v = lisp::make_sym("last_save_game")->GetValue();
   if (DEFINEDP(v))
     last_save_game_number=lnumber_value(v);
   else last_save_game_number=0;

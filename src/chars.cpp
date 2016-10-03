@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -298,15 +298,15 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
     var_index=NULL;
     tiv=0;
 
-    LSymbol *l_abil =   LSymbol::FindOrCreate("abilities");
-    LSymbol *l_funs =   LSymbol::FindOrCreate("funs");
-    LSymbol *l_states = LSymbol::FindOrCreate("states");
-    LSymbol *l_flags =  LSymbol::FindOrCreate("flags");
-    LSymbol *l_range =  LSymbol::FindOrCreate("range");
-    LSymbol *l_draw_range = LSymbol::FindOrCreate("draw_range");
-    LSymbol *l_fields = LSymbol::FindOrCreate("fields");
-    LSymbol *l_logo =   LSymbol::FindOrCreate("logo");
-    LSymbol *l_vars =   LSymbol::FindOrCreate("vars");
+    LSymbol *l_abil =   lisp::make_sym("abilities");
+    LSymbol *l_funs =   lisp::make_sym("funs");
+    LSymbol *l_states = lisp::make_sym("states");
+    LSymbol *l_flags =  lisp::make_sym("flags");
+    LSymbol *l_range =  lisp::make_sym("range");
+    LSymbol *l_draw_range = lisp::make_sym("draw_range");
+    LSymbol *l_fields = lisp::make_sym("fields");
+    LSymbol *l_logo =   lisp::make_sym("logo");
+    LSymbol *l_vars =   lisp::make_sym("vars");
 
     memset(fun_table,0,sizeof(fun_table));     // destory all hopes of fun
     fields=NULL;
@@ -333,7 +333,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             PtrRef r4(l);
             for (int i=0; i<TOTAL_ABILITIES; i++)
             {
-                Cell *ab = l->Assoc(LSymbol::FindOrCreate(ability_names[i]));
+                Cell *ab = l->Assoc(lisp::make_sym(ability_names[i]));
                 PtrRef r5(ab);
                 if (!NILP(ab))
                     abil[i] = lnumber_value(lisp::eval(lisp::cadr(ab)));
@@ -344,7 +344,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             PtrRef r4(l);
             for (int i=0; i<TOTAL_OFUNS; i++)
             {
-                Cell *ab = l->Assoc(LSymbol::FindOrCreate(ofun_names[i]));
+                Cell *ab = l->Assoc(lisp::make_sym(ofun_names[i]));
                 PtrRef r5(ab);
                 if (!NILP(ab) && lisp::cadr(ab))
                     fun_table[i]=lisp::cadr(ab);
@@ -356,7 +356,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             for (int i=0; i<TOTAL_CFLAGS; i++)
             {
 
-                Cell *ab = l->Assoc(LSymbol::FindOrCreate(cflag_names[i]));
+                Cell *ab = l->Assoc(lisp::make_sym(cflag_names[i]));
                 PtrRef r5(ab);
                 if (!NILP(ab) && lisp::eval(lisp::cadr(ab)))
                     cflags|=(1<<i);

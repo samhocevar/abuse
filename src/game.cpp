@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -1099,7 +1099,7 @@ void do_title()
         current_song->play(music_volume);
     }
 
-    void *logo_snd = LSymbol::FindOrCreate("LOGO_SND")->GetValue();
+    void *logo_snd = lisp::make_sym("LOGO_SND")->GetValue();
 
     if(DEFINEDP(logo_snd) && (sound_avail & SFX_INITIALIZED))
         cache.sfx(lnumber_value(logo_snd))->play(sfx_volume);
@@ -1116,8 +1116,8 @@ void do_title()
     Timer tmp; tmp.Wait(0.4f);
     fade_out(32);
 
-    void *space_snd = LSymbol::FindOrCreate("SPACE_SND")->GetValue();
-    char *str = lstring_value(lisp::eval(LSymbol::FindOrCreate("plot_start")));
+    void *space_snd = lisp::make_sym("SPACE_SND")->GetValue();
+    char *str = lstring_value(lisp::eval(lisp::make_sym("plot_start")));
 
     bFILE *fp = open_file("art/smoke.spe", "rb");
     if(!fp->open_failure())
@@ -2121,7 +2121,7 @@ void check_for_lisp(int argc, char **argv)
     {
         if(!strcmp(argv[i], "-lisp"))
         {
-            Lisp::Init();
+            lisp::init();
             char const *eof_char = "Ctrl-D";
             fprintf(stderr,
                     " CLIVE (C) 1995 Jonathan Clark, all rights reserved\n"
@@ -2372,7 +2372,7 @@ private:
         }
 
         game_net_init(m_argc, m_argv);
-        Lisp::Init();
+        lisp::init();
 
         dev_init(m_argc, m_argv);
 
@@ -2486,12 +2486,12 @@ private:
 
         if (!(main_net_cfg && main_net_cfg->restart_state()))
         {
-            LSymbol *end_msg = LSymbol::FindOrCreate("end_msg");
+            LSymbol *end_msg = lisp::make_sym("end_msg");
             if (DEFINEDP(end_msg->GetValue()))
                 printf("%s\n", lstring_value(end_msg->GetValue()));
         }
 
-        Lisp::Uninit();
+        lisp::uninit();
 
         base->packet.packet_reset();
     }

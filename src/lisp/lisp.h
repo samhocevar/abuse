@@ -126,10 +126,6 @@ private:
 
 struct LSymbol : LObject
 {
-    /* Factories */
-    static LSymbol *Find(char const *name);
-    static LSymbol *FindOrCreate(char const *name);
-
     /* Methods */
     LObject *EvalFunction(void *arg_list);
     LObject *EvalUserFunction(LList *arg_list);
@@ -150,10 +146,6 @@ struct LSymbol : LObject
     LObject *m_function;
     LString *m_name;
     LSymbol *m_left, *m_right; // tree structure
-
-    /* Static members */
-    static LSymbol *root;
-    static size_t count;
 };
 
 struct LSysFunction : LObject
@@ -217,25 +209,6 @@ struct LFixedPoint : LObject
     int32_t m_fixed;
 };
 
-class Lisp
-{
-public:
-    static void Init();
-    static void Uninit();
-
-    static void InitConstants();
-
-    // Collect temporary or permanent spaces
-    static void CollectSpace(LSpace *which_space, int grow);
-
-private:
-    static LArray *CollectArray(LArray *x);
-    static LList *CollectList(LList *x);
-    static LObject *CollectObject(LObject *x);
-    static void CollectSymbols(LSymbol *root);
-    static void CollectStacks();
-};
-
 static inline ltype item_type(void const *x)
 {
     return x ? *static_cast<ltype const *>(x) : ltype(L_CONS_CELL);
@@ -243,9 +216,19 @@ static inline ltype item_type(void const *x)
 
 struct lisp
 {
+    static void init();
+    static void uninit();
+    static void init_constants();
+
+    static LSymbol *find_sym(char const *name, bool create = false);
+    static LSymbol *make_sym(char const *name);
+
     static LObject *compile(char const *&s);
     static LObject *eval(LObject *);
     static void print(LObject *);
+
+    // Garbage collect temporary or permanent spaces
+    static void collect_space(LSpace *which_space, int grow);
 
     // Use this object when a reference to null has to be provided
     // (the caller must not try to write to it)
@@ -298,6 +281,18 @@ struct lisp
     static inline LObject *&cddadr(void *c) { return cdr(cdadr(c)); }
     static inline LObject *&cdddar(void *c) { return cdr(cddar(c)); }
     static inline LObject *&cddddr(void *c) { return cdr(cdddr(c)); }
+
+private:
+    // Symbol tree
+    static LSymbol *symbol_root;
+    static size_t symbol_count;
+
+    // Garbage collector
+    static LArray *collect_array(LArray *x);
+    static LList *collect_list(LList *x);
+    static LObject *collect_object(LObject *x);
+    static void collect_symbols(LSymbol *root);
+    static void collect_stacks();
 };
 
 void perm_space();

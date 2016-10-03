@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -360,8 +360,8 @@ void load_data(int argc, char **argv)
 
   char const *ff;
   // FIXME: unnecessary duplicate call
-  if (DEFINEDP(LSymbol::FindOrCreate("frame_file")->GetValue()))
-    ff = lstring_value(LSymbol::FindOrCreate("frame_file")->GetValue());
+  if (DEFINEDP(lisp::make_sym("frame_file")->GetValue()))
+    ff = lstring_value(lisp::make_sym("frame_file")->GetValue());
   else
     ff = "art/frame.spe";
 

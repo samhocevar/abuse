@@ -43,19 +43,19 @@ static void ***reg_ptr_list = NULL;
 static uint8_t *cstart, *cend, *collected_start, *collected_end;
 static int gcdepth, maxgcdepth;
 
-LArray *Lisp::CollectArray(LArray *x)
+LArray *lisp::collect_array(LArray *x)
 {
     size_t s = x->m_len;
     LArray *a = LArray::Create(s, NULL);
     LObject **src = x->GetData();
     LObject **dst = a->GetData();
     for (size_t i = 0; i < s; i++)
-        dst[i] = CollectObject(src[i]);
+        dst[i] = collect_object(src[i]);
 
     return a;
 }
 
-LList *Lisp::CollectList(LList *x)
+LList *lisp::collect_list(LList *x)
 {
     LList *prev = NULL, *first = NULL;
 
@@ -68,7 +68,7 @@ LList *Lisp::CollectList(LList *x)
         ((LRedirect *)old_x)->m_type = L_COLLECTED_OBJECT;
         ((LRedirect *)old_x)->m_ref = p;
 
-        p->m_car = CollectObject(old_car);
+        p->m_car = collect_object(old_car);
 
         if (prev)
             prev->m_cdr = p;
@@ -77,12 +77,12 @@ LList *Lisp::CollectList(LList *x)
         prev = p;
     }
     if (x)
-        prev->m_cdr = CollectObject(x);
+        prev->m_cdr = collect_object(x);
 
     return first; // we already set the collection pointers
 }
 
-LObject *Lisp::CollectObject(LObject *x)
+LObject *lisp::collect_object(LObject *x)
 {
     LObject *ret = x;
 
@@ -106,8 +106,8 @@ LObject *Lisp::CollectObject(LObject *x)
         case L_USER_FUNCTION:
         {
             LUserFunction *fun = (LUserFunction *)x;
-            LList *arg = (LList *)CollectObject(fun->arg_list);
-            LList *block = (LList *)CollectObject(fun->block_list);
+            LList *arg = (LList *)collect_object(fun->arg_list);
+            LList *block = (LList *)collect_object(fun->block_list);
             ret = new_lisp_user_function(arg, block);
             break;
         }
@@ -136,13 +136,13 @@ LObject *Lisp::CollectObject(LObject *x)
             ret = LPointer::Create(lpointer_value(x));
             break;
         case L_1D_ARRAY:
-            ret = CollectArray((LArray *)x);
+            ret = collect_array((LArray *)x);
             break;
         case L_FIXED_POINT:
             ret = LFixedPoint::Create(lfixed_point_value(x));
             break;
         case L_CONS_CELL:
-            ret = CollectList((LList *)x);
+            ret = collect_list((LList *)x);
             break;
         case L_OBJECT_VAR:
             ret = LObjectVar::Create(((LObjectVar *)x)->m_index);
@@ -166,10 +166,10 @@ LObject *Lisp::CollectObject(LObject *x)
             if (item_type(x) != L_CONS_CELL)
             {
                 if (cell)
-                    lisp::cdr(cell) = CollectObject(lisp::cdr(cell));
+                    lisp::cdr(cell) = collect_object(lisp::cdr(cell));
                 break;
             }
-            lisp::car(x) = CollectObject(lisp::car(x));
+            lisp::car(x) = collect_object(lisp::car(x));
         }
     }
 
@@ -177,40 +177,40 @@ LObject *Lisp::CollectObject(LObject *x)
     return ret;
 }
 
-void Lisp::CollectSymbols(LSymbol *root)
+void lisp::collect_symbols(LSymbol *root)
 {
     if (!root)
         return;
 
-    root->m_value = CollectObject(root->m_value);
-    root->m_function = CollectObject(root->m_function);
-    root->m_name = (LString *)CollectObject(root->m_name);
-    CollectSymbols(root->m_left);
-    CollectSymbols(root->m_right);
+    root->m_value = collect_object(root->m_value);
+    root->m_function = collect_object(root->m_function);
+    root->m_name = (LString *)collect_object(root->m_name);
+    collect_symbols(root->m_left);
+    collect_symbols(root->m_right);
 }
 
-void Lisp::CollectStacks()
+void lisp::collect_stacks()
 {
     void **d = l_user_stack.sdata;
     for (size_t i = 0; i < l_user_stack.m_size; i++, d++)
-        *d = CollectObject((LObject *)*d);
+        *d = collect_object((LObject *)*d);
 
     void ***d2 = PtrRef::stack.sdata;
     for (size_t i = 0; i < PtrRef::stack.m_size; i++, d2++)
     {
         void **ptr = *d2;
-        *ptr = CollectObject((LObject *)*ptr);
+        *ptr = collect_object((LObject *)*ptr);
     }
 
     void ***d3 = reg_ptr_list;
     for (size_t i = 0; i < reg_ptr_total; i++, d3++)
     {
         void **ptr = *d3;
-        *ptr = CollectObject((LObject *)*ptr);
+        *ptr = collect_object((LObject *)*ptr);
     }
 }
 
-void Lisp::CollectSpace(LSpace *which_space, int grow)
+void lisp::collect_space(LSpace *which_space, int grow)
 {
     LSpace *sp = LSpace::Current;
 
@@ -231,8 +231,8 @@ void Lisp::CollectSpace(LSpace *which_space, int grow)
     collected_start = new_data;
     collected_end = new_data + LSpace::Gc.m_size;
 
-    CollectSymbols(LSymbol::root);
-    CollectStacks();
+    collect_symbols(symbol_root);
+    collect_stacks();
 
     free(which_space->m_data);
     which_space->m_data = new_data;

@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -155,9 +155,9 @@ void show_end2()
   int ship=cache.reg("art/fore/endgame.spe","ship",SPEC_IMAGE,1);
 
 
-  int explo_snd = lnumber_value(LSymbol::FindOrCreate("P_EXPLODE_SND")->GetValue());
-  int space_snd = lnumber_value(LSymbol::FindOrCreate("SPACE_SND")->GetValue());
-  int zip_snd = lnumber_value(LSymbol::FindOrCreate("SHIP_ZIP_SND")->GetValue());
+  int explo_snd = lnumber_value(lisp::make_sym("P_EXPLODE_SND")->GetValue());
+  int space_snd = lnumber_value(lisp::make_sym("SPACE_SND")->GetValue());
+  int zip_snd = lnumber_value(lisp::make_sym("SHIP_ZIP_SND")->GetValue());
 
 
   mask_line *p=make_mask_lines(cache.img(mask),cache.img(planet)->Size().x);
@@ -375,7 +375,7 @@ void show_end2()
   for (i=0; i<32; i++)
     cmap[i] = g_palette->FindClosest(u8vec3(i * 256 / 32, i * 256 / 32, i * 256 / 32));
 
-  void *end_plot = LSymbol::FindOrCreate("plot_end")->GetValue();
+  void *end_plot = lisp::make_sym("plot_end")->GetValue();
 
 
   t.Get();
@@ -431,10 +431,10 @@ void share_end()
 
   AImage *im=cache.img(cache.reg("art/fore/endgame.spe","tbc",SPEC_IMAGE,1));
 
-  void *to_be = LSymbol::FindOrCreate("to_be_continued")->GetValue();
+  void *to_be = lisp::make_sym("to_be_continued")->GetValue();
   PtrRef r1(to_be);
 
-  void *mid_plot = LSymbol::FindOrCreate("plot_middle")->GetValue();
+  void *mid_plot = lisp::make_sym("plot_middle")->GetValue();
   PtrRef r2(mid_plot);
 
   int dx=(xres+1)/2-im->Size().x/2,dy=(yres+1)/2-im->Size().y/2;
@@ -490,7 +490,7 @@ void show_end()
 
   int dx=(xres+1)/2-320/2,dy=(yres+1)/2-200/2;
 
-  void *end_plot = LSymbol::FindOrCreate("plot_end")->GetValue();
+  void *end_plot = lisp::make_sym("plot_end")->GetValue();
   PtrRef r2(end_plot);
 
 

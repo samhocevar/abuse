@@ -20,7 +20,7 @@
 #include "lisp/lisp_gc.h"
 
 LObject *l_undefined;
-LSymbol *true_symbol = NULL, *list_symbol, *string_symbol, *quote_symbol,
+LSymbol *true_symbol = nullptr, *list_symbol, *string_symbol, *quote_symbol,
      *backquote_symbol, *comma_symbol, *do_symbol, *in_symbol, *aref_symbol,
      *if_symbol, *progn_symbol, *car_symbol, *cdr_symbol;
 
@@ -42,7 +42,7 @@ void *comp_optimize(void *list)
       void *eval2 = lisp::cadddr(list);
       PtrRef r3(eval2);
 
-      void *ret=NULL;
+      void *ret=nullptr;
       PtrRef r4(ret);
       if (lisp::car(list)==eq_symbol && (lisp::cadr(list))==zero_symbol)  //  simplify (eq 0 x) -> (eq0 x)
       {
@@ -63,7 +63,7 @@ void *comp_optimize(void *list)
     push_onto_list(if_symbol,ret);
     return_val=comp_optimize(ret);
       }
-      else if (lisp::car(eval1)==progn_symbol && (eval2==NULL ||
+      else if (lisp::car(eval1)==progn_symbol && (eval2==nullptr ||
                          item_type(eval2)!=L_CONS_CELL))
       {
     push_onto_list(eval2,ret);
@@ -92,39 +92,39 @@ void *comp_optimize(void *list)
   return return_val;
 }
 
-void Lisp::InitConstants()
+void lisp::init_constants()
 {
     // This needs to be defined first
-    LSymbol *tmp = LSymbol::FindOrCreate(":UNDEFINED");
+    LSymbol *tmp = lisp::make_sym(":UNDEFINED");
     l_undefined = tmp;
     // Collection problems result if we don't do this
-    tmp->m_function = NULL;
-    tmp->m_value = NULL;
+    tmp->m_function = nullptr;
+    tmp->m_value = nullptr;
 
-    true_symbol = LSymbol::FindOrCreate("T");
+    true_symbol = lisp::make_sym("T");
 
-    list_symbol = LSymbol::FindOrCreate("list");
-    string_symbol = LSymbol::FindOrCreate("string");
-    quote_symbol = LSymbol::FindOrCreate("quote");
-    backquote_symbol = LSymbol::FindOrCreate("backquote");
-    comma_symbol = LSymbol::FindOrCreate("comma");
-    in_symbol = LSymbol::FindOrCreate("in");
-    do_symbol = LSymbol::FindOrCreate("do");
-    aref_symbol = LSymbol::FindOrCreate("aref");
-    colon_initial_contents = LSymbol::FindOrCreate(":initial-contents");
-    colon_initial_element = LSymbol::FindOrCreate(":initial-element");
+    list_symbol = lisp::make_sym("list");
+    string_symbol = lisp::make_sym("string");
+    quote_symbol = lisp::make_sym("quote");
+    backquote_symbol = lisp::make_sym("backquote");
+    comma_symbol = lisp::make_sym("comma");
+    in_symbol = lisp::make_sym("in");
+    do_symbol = lisp::make_sym("do");
+    aref_symbol = lisp::make_sym("aref");
+    colon_initial_contents = lisp::make_sym(":initial-contents");
+    colon_initial_element = lisp::make_sym(":initial-element");
 
-    if_1progn = LSymbol::FindOrCreate("if-1progn");
-    if_2progn = LSymbol::FindOrCreate("if-2progn");
-    if_12progn = LSymbol::FindOrCreate("if-12progn");
-    if_symbol = LSymbol::FindOrCreate("if");
-    progn_symbol = LSymbol::FindOrCreate("progn");
-    not_symbol = LSymbol::FindOrCreate("not");
-    eq_symbol = LSymbol::FindOrCreate("eq");
-    zero_symbol = LSymbol::FindOrCreate("0");
-    eq0_symbol = LSymbol::FindOrCreate("eq0");
-    car_symbol = LSymbol::FindOrCreate("car");
-    cdr_symbol = LSymbol::FindOrCreate("cdr");
-    load_warning = LSymbol::FindOrCreate("load_warning");
+    if_1progn = lisp::make_sym("if-1progn");
+    if_2progn = lisp::make_sym("if-2progn");
+    if_12progn = lisp::make_sym("if-12progn");
+    if_symbol = lisp::make_sym("if");
+    progn_symbol = lisp::make_sym("progn");
+    not_symbol = lisp::make_sym("not");
+    eq_symbol = lisp::make_sym("eq");
+    zero_symbol = lisp::make_sym("0");
+    eq0_symbol = lisp::make_sym("eq0");
+    car_symbol = lisp::make_sym("car");
+    cdr_symbol = lisp::make_sym("cdr");
+    load_warning = lisp::make_sym("load_warning");
 }
 

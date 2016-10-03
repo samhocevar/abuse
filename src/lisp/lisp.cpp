@@ -60,8 +60,8 @@ LSpace *LSpace::Current;
 
 bFILE *current_print_file = NULL;
 
-LSymbol *LSymbol::root = NULL;
-size_t LSymbol::count = 0;
+LSymbol *lisp::symbol_root = nullptr;
+size_t lisp::symbol_count = 0;
 
 LObject *lisp::null = nullptr;
 
@@ -205,10 +205,10 @@ void *LSpace::Alloc(size_t size)
     if (size > GetFree())
     {
         if (this == &LSpace::Perm || this == &LSpace::Tmp)
-            Lisp::CollectSpace(this, 0);
+            lisp::collect_space(this, 0);
 
         if (size > GetFree())
-            Lisp::CollectSpace(this, 1);
+            lisp::collect_space(this, 1);
 
         if (size > GetFree())
         {
@@ -752,23 +752,15 @@ LSymbol *make_find_symbol(char const *name)    // find a symbol, if it doesn't e
 
 */
 
-LSymbol *LSymbol::Find(char const *name)
+LSymbol *lisp::make_sym(char const *name)
 {
-    LSymbol *p = root;
-    while (p)
-    {
-        int cmp = strcmp(name, p->m_name->GetString());
-        if (cmp == 0)
-            return p;
-        p = (cmp < 0) ? p->m_left : p->m_right;
-    }
-    return NULL;
+    return find_sym(name, true);
 }
 
-LSymbol *LSymbol::FindOrCreate(char const *name)
+LSymbol *lisp::find_sym(char const *name, bool create)
 {
-    LSymbol *p = root;
-    LSymbol **parent = &root;
+    LSymbol *p = symbol_root;
+    LSymbol **parent = &symbol_root;
     while (p)
     {
         int cmp = strcmp(name, p->m_name->GetString());
@@ -777,6 +769,9 @@ LSymbol *LSymbol::FindOrCreate(char const *name)
         parent = (cmp < 0) ? &p->m_left : &p->m_right;
         p = *parent;
     }
+
+    if (!create)
+        return nullptr;
 
     // Make sure all symbols get defined in permanant space
     LSpace *sp = LSpace::Current;
@@ -796,7 +791,7 @@ LSymbol *LSymbol::FindOrCreate(char const *name)
 #endif
     p->m_left = p->m_right = NULL;
     *parent = p;
-    count++;
+    symbol_count++;
 
     LSpace::Current = sp;
     return p;
@@ -891,7 +886,7 @@ void LSymbol::SetFunction(LObject *function)
 LSymbol *add_sys_function(char const *name, short min_args, short max_args, short number)
 {
   need_perm_space("add_sys_function");
-  LSymbol *s = LSymbol::FindOrCreate(name);
+  LSymbol *s = lisp::make_sym(name);
   if (s->m_function!=l_undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
@@ -918,7 +913,7 @@ LSymbol *add_c_function(char const *name, short min_args, short max_args, short 
 {
   total_user_functions++;
   need_perm_space("add_c_function");
-  LSymbol *s = LSymbol::FindOrCreate(name);
+  LSymbol *s = lisp::make_sym(name);
   if (s->m_function!=l_undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
@@ -932,7 +927,7 @@ LSymbol *add_c_bool_fun(char const *name, short min_args, short max_args, short 
 {
   total_user_functions++;
   need_perm_space("add_c_bool_fun");
-  LSymbol *s = LSymbol::FindOrCreate(name);
+  LSymbol *s = lisp::make_sym(name);
   if (s->m_function!=l_undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
@@ -947,7 +942,7 @@ LSymbol *add_lisp_function(char const *name, short min_args, short max_args, sho
 {
   total_user_functions++;
   need_perm_space("add_c_bool_fun");
-  LSymbol *s = LSymbol::FindOrCreate(name);
+  LSymbol *s = lisp::make_sym(name);
   if (s->m_function!=l_undefined)
   {
     lbreak("add_sys_fucntion -> symbol %s already has a function\n", name);
@@ -1177,7 +1172,7 @@ LObject *lisp::compile(char const *&code)
     {
       LObject *cs = LList::Create(), *c2=NULL, *tmp;
       PtrRef r4(cs), r5(c2);
-      tmp = LSymbol::FindOrCreate("function");
+      tmp = lisp::make_sym("function");
       ((LList *)cs)->m_car = (LObject *)tmp;
       c2 = LList::Create();
       tmp = lisp::compile(code);
@@ -1191,7 +1186,7 @@ LObject *lisp::compile(char const *&code)
       exit(0);
     }
   } else {
-    ret = LSymbol::FindOrCreate(token_buffer);
+    ret = lisp::make_sym(token_buffer);
   }
   return ret;
 }
@@ -2705,7 +2700,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     }
     case SYS_FUNC_GC:
-        Lisp::CollectSpace(LSpace::Current, 0);
+        lisp::collect_space(LSpace::Current, 0);
         break;
     case SYS_FUNC_SCHAR:
     {
@@ -2992,16 +2987,16 @@ LObject *lisp::eval(LObject *obj)
     }
 
 /*  l_user_stack.push(ret);
-  Lisp::CollectSpace(&LSpace::Perm);
+  lisp::collect_space(&LSpace::Perm);
   ret=l_user_stack.pop(1);  */
     --evaldepth;
 
     return ret;
 }
 
-void Lisp::Init()
+void lisp::init()
 {
-    LSymbol::root = NULL;
+    symbol_root = nullptr;
     total_user_functions = 0;
 
     LSpace::Tmp.m_free = LSpace::Tmp.m_data = (uint8_t *)malloc(0x1000);
@@ -3016,7 +3011,7 @@ void Lisp::Init()
 
     LSpace::Current = &LSpace::Perm;
 
-    InitConstants();
+    init_constants();
 
     for(size_t i = 0; i < sizeof(sys_funcs) / sizeof(*sys_funcs); i++)
         add_sys_function(sys_funcs[i].name,
@@ -3024,17 +3019,18 @@ void Lisp::Init()
     clisp_init();
     LSpace::Current = &LSpace::Tmp;
     dprintf("Lisp: %d symbols defined, %d system functions, "
-            "%d pre-compiled functions\n", LSymbol::count,
+            "%d pre-compiled functions\n", symbol_count,
             sizeof(sys_funcs) / sizeof(*sys_funcs), total_user_functions);
 }
 
-void Lisp::Uninit()
+void lisp::uninit()
 {
     free(LSpace::Tmp.m_data);
     free(LSpace::Perm.m_data);
-    DeleteAllSymbols(LSymbol::root);
-    LSymbol::root = NULL;
-    LSymbol::count = 0;
+
+    DeleteAllSymbols(symbol_root);
+    symbol_root = nullptr;
+    symbol_count = 0;
 }
 
 void LSpace::Clear()

@@ -355,7 +355,7 @@ void fade_in(AImage *im, int steps);
 
 void show_sell(int abortable)
 {
-  LSymbol *ss = LSymbol::FindOrCreate("sell_screens");
+  LSymbol *ss = lisp::make_sym("sell_screens");
   if (!DEFINEDP(ss->GetValue()))
   {
     LSpace *sp = LSpace::Current;
@@ -650,7 +650,7 @@ void main_menu()
             {
                 if (!current_demo)
                 {
-                    LSymbol *d = LSymbol::FindOrCreate("demos");
+                    LSymbol *d = lisp::make_sym("demos");
                     if (DEFINEDP(d->GetValue()))
                         current_demo = d->GetValue();
                 }

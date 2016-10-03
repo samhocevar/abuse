@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -62,7 +62,7 @@ public:
 
 static char const *lang_string(char const *symbol)
 {
-    LSymbol *v = LSymbol::Find(symbol);
+    LSymbol *v = lisp::find_sym(symbol);
     if (!v || !DEFINEDP(v->GetValue()))
         return "Language symbol missing!";
     return lstring_value(v->GetValue());
@@ -74,7 +74,7 @@ void gamma_correct(Palette *&pal, int force_menu)
     int abort=0;
 
     // see if user has already done this routine
-    LSymbol *gs = LSymbol::Find("darkest_gray");
+    LSymbol *gs = lisp::find_sym("darkest_gray");
 
     if(old_pal)
     {
@@ -162,7 +162,7 @@ void gamma_correct(Palette *&pal, int force_menu)
                 fclose(fp);
                 LSpace *sp = LSpace::Current;
                 LSpace::Current = &LSpace::Perm;
-                LSymbol::FindOrCreate("darkest_gray")->SetNumber(dg);
+                lisp::make_sym("darkest_gray")->SetNumber(dg);
 
                 LSpace::Current = sp;
             }
