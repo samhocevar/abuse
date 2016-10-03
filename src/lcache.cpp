@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -126,7 +126,7 @@ LObject *load_block(bFILE *fp)
             LList *last = NULL, *first = NULL;
             for (size_t count = lol::abs(t); count--; )
             {
-                LList *c = LList::Create();
+                LList *c = lisp::make_list();
                 if (first)
                     last->m_cdr = c;
                 else
@@ -141,16 +141,16 @@ LObject *load_block(bFILE *fp)
             return first;
         }
     case L_CHARACTER:
-        return LChar::Create(fp->read_uint16());
+        return lisp::make_char(fp->read_uint16());
     case L_STRING:
         {
             size_t count = fp->read_uint32();
-            LString *s = LString::Create(count);
+            LString *s = lisp::make_str(count);
             fp->read(s->GetString(), count);
             return s;
         }
     case L_NUMBER:
-        return LNumber::Create(fp->read_uint32());
+        return lisp::make_number(fp->read_uint32());
     case L_SYMBOL:
         {
             uintptr_t ret = 0, mul = 1;

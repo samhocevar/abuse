@@ -71,18 +71,12 @@ struct LObject
 
 struct LObjectVar : LObject
 {
-    /* Factories */
-    static LObjectVar *Create(int index);
-
     /* Members */
     int m_index;
 };
 
 struct LList : LObject
 {
-    /* Factories */
-    static LList *Create();
-
     /* Methods */
     size_t GetLength();
     LList *Assoc(LObject *item);
@@ -93,9 +87,6 @@ struct LList : LObject
 
 struct LNumber : LObject
 {
-    /* Factories */
-    static LNumber *Create(long num);
-
     /* Members */
     long m_num;
 };
@@ -108,11 +99,6 @@ struct LRedirect : LObject
 
 struct LString : LObject
 {
-    /* Factories */
-    static LString *Create(char const *string);
-    static LString *Create(char const *string, int length);
-    static LString *Create(int length);
-
     /* Methods */
     char *GetString();
 
@@ -162,9 +148,6 @@ struct LUserFunction : LObject
 
 struct LArray : LObject
 {
-    /* Factories */
-    static LArray *Create(size_t len, void *rest);
-
     /* Methods */
     inline LObject **GetData() { return m_data; }
     LObject *Get(int x);
@@ -178,9 +161,6 @@ private:
 
 struct LChar : LObject
 {
-    /* Factories */
-    static LChar *Create(uint16_t ch);
-
     /* Methods */
     uint16_t GetValue();
 
@@ -190,18 +170,12 @@ struct LChar : LObject
 
 struct LPointer : LObject
 {
-    /* Factories */
-    static LPointer *Create(void *addr);
-
     /* Members */
     void *m_addr;
 };
 
 struct LFixedPoint : LObject
 {
-    /* Factories */
-    static LFixedPoint *Create(int32_t x);
-
     /* Members */
     int32_t m_fixed;
 };
@@ -217,8 +191,18 @@ struct lisp
     static void uninit();
     static void init_constants();
 
-    static LSymbol *find_sym(char const *name, bool create = false);
     static LSymbol *make_sym(char const *name);
+    static LSymbol *find_sym(char const *name, bool create = false);
+    static LList *make_list();
+    static LArray *make_array(size_t len, void *rest);
+    static LNumber *make_number(long num);
+    static LString *make_str(char const *string);
+    static LString *make_str(char const *string, int length);
+    static LString *make_str(int length);
+    static LChar *make_char(uint16_t ch);
+    static LPointer *make_ptr(void *addr);
+    static LFixedPoint *make_fp(int32_t x);
+    static LObjectVar *make_var(int index);
 
     static LObject *compile(char const *&s);
     static LObject *eval(LObject *);

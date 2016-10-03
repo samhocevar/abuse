@@ -606,32 +606,32 @@ void *l_caller(long number, void *args)
             GameObject *o = (GameObject *)lpointer_value(lisp::eval(lisp::car(args)));
             GameObject *hit = current_object->bmove(whit, o ? o : current_object);
             if (hit)
-                return LPointer::Create(hit);
+                return lisp::make_ptr(hit);
             return whit ? nullptr : lisp::sym::true_;
         }
 
         case 3:
-            return LPointer::Create(current_object);
+            return lisp::make_ptr(current_object);
 
         case 4:
             if (player_list->next)
-                return LPointer::Create(g_current_level->attacker(current_object));
-            return LPointer::Create(player_list->m_focus);
+                return lisp::make_ptr(g_current_level->attacker(current_object));
+            return lisp::make_ptr(player_list->m_focus);
 
         case 5:
-            return LPointer::Create(g_current_level->find_closest(current_object->m_pos.x,
+            return lisp::make_ptr(g_current_level->find_closest(current_object->m_pos.x,
                                                                   current_object->m_pos.y,
                                                                   lnumber_value(eval_nth(0)),
                                                                   current_object));
 
         case 6:
-            return LPointer::Create(g_current_level->find_xclosest(current_object->m_pos.x,
+            return lisp::make_ptr(g_current_level->find_xclosest(current_object->m_pos.x,
                                                                    current_object->m_pos.y,
                                                                    lnumber_value(eval_nth(0)),
                                                                    current_object));
 
         case 7:
-            return LPointer::Create(g_current_level->find_xrange(current_object->m_pos.x,
+            return lisp::make_ptr(g_current_level->find_xrange(current_object->m_pos.x,
                                                                  current_object->m_pos.y,
                                                                  lnumber_value(eval_nth(0)),
                                                                  lnumber_value(eval_nth(1))));
@@ -650,23 +650,23 @@ void *l_caller(long number, void *args)
                 else // 22
                     g_current_level->add_object_after(o, current_object);
             }
-            return LPointer::Create(o);
+            return lisp::make_ptr(o);
         }
 
         case 9:
-            return LPointer::Create(the_game->first_view->m_focus);
+            return lisp::make_ptr(the_game->first_view->m_focus);
 
         case 10: {
             view *v = ((GameObject *)lpointer_value(eval_nth(0)))->m_controller->next;
-            return v ? LPointer::Create(v->m_focus) : nullptr;
+            return v ? lisp::make_ptr(v->m_focus) : nullptr;
         }
 
         case 11:
-            return LPointer::Create
+            return lisp::make_ptr
                 ((void *)current_object->get_object(lnumber_value(eval_nth(0))));
 
         case 12:
-            return LPointer::Create
+            return lisp::make_ptr
                 ((void *)current_object->get_light(lnumber_value(eval_nth(0))));
 
         case 13: {
@@ -687,7 +687,7 @@ void *l_caller(long number, void *args)
             int r2 = lnumber_value(eval_nth(3));
             int r3 = lnumber_value(eval_nth(4));
             ivec2 shift(lnumber_value(eval_nth(5)), lnumber_value(eval_nth(6)));
-            return LPointer::Create(AddLightSource(t, pos, r2, r3, shift));
+            return lisp::make_ptr(AddLightSource(t, pos, r2, r3, shift));
         }
 
         case 15:
@@ -710,10 +710,10 @@ void *l_caller(long number, void *args)
                 LSpace::Tmp.Clear();
                 lisp::eval(lisp::car(args));
             }
-            return LFixedPoint::Create((long)(t.Get() * (1 << 16)));
+            return lisp::make_fp((long)(t.Get() * (1 << 16)));
         } break;
         case 18:
-        { return LString::Create(object_names[current_object->otype]); } break;
+        { return lisp::make_str(object_names[current_object->otype]); } break;
         case 19:
         { return current_object->float_tick(); } break;
         case 20:
@@ -727,7 +727,7 @@ void *l_caller(long number, void *args)
             GameObject *find = g_current_level->find_object_in_area(current_object->m_pos.x,
                                                     current_object->m_pos.y,
                                                     x1, y1, x2, y2, list, current_object);
-            if (find) return LPointer::Create(find);
+            if (find) return lisp::make_ptr(find);
             else return NULL;
         } break;
 
@@ -741,7 +741,7 @@ void *l_caller(long number, void *args)
             GameObject *find = g_current_level->find_object_in_angle(current_object->m_pos.x,
                                                         current_object->m_pos.y,
                                                         a1, a2, list, current_object);
-            if (find) return LPointer::Create(find);
+            if (find) return lisp::make_ptr(find);
             else return NULL;
         } break;
         case 23:         // def_character
@@ -770,7 +770,7 @@ void *l_caller(long number, void *args)
             object_names[total_objects] = strdup(lstring_value(sym->GetName()));
             figures[total_objects]=new CharacterType((LList *)lisp::cdr(args), sym);
             total_objects++;
-            return LNumber::Create(total_objects-1);
+            return lisp::make_number(total_objects-1);
         } break;
         case 24:
         {
@@ -780,8 +780,8 @@ void *l_caller(long number, void *args)
             int32_t y2 = lnumber_value(lisp::eval(lisp::car(args)));
             g_current_level->foreground_intersect(x1, y1, x2, y2);
             void *ret=NULL;
-            push_onto_list(LNumber::Create(y2), ret);
-            push_onto_list(LNumber::Create(x2), ret);
+            push_onto_list(lisp::make_number(y2), ret);
+            push_onto_list(lisp::make_number(x2), ret);
             return ret;
         } break;
         case 25:
@@ -798,7 +798,7 @@ void *l_caller(long number, void *args)
         } break;
         case 26:
         {
-            return LString::Create(g_current_level->GetName().C());
+            return lisp::make_str(g_current_level->GetName().C());
         } break;
         case 27: return ant_ai(); break;
         case 28: return sensor_ai(); break;
@@ -843,7 +843,7 @@ void *l_caller(long number, void *args)
         {
             char nm[50];
             last_savegame_name(nm);
-            return LString::Create(nm);
+            return lisp::make_str(nm);
         } break;
         case 45:
         {
@@ -851,11 +851,11 @@ void *l_caller(long number, void *args)
             sprintf(nm, "save%04d.pcx", load_game(1, symbol_str("LOAD")));
 //      get_savegame_name(nm);
             the_game->reset_keymap();
-            return LString::Create(nm);
+            return lisp::make_str(nm);
         } break;
         case 46:
         {
-            return LString::Create(start_argv[lnumber_value(lisp::eval(lisp::car(args)))]);
+            return lisp::make_str(start_argv[lnumber_value(lisp::eval(lisp::car(args)))]);
         } break;
         case 47:
         {
@@ -866,11 +866,11 @@ void *l_caller(long number, void *args)
 
             void *ret=NULL;
             PtrRef r2(ret);
-            push_onto_list(LNumber::Create(b3), ret);
-            push_onto_list(LNumber::Create(b2), ret);
-            push_onto_list(LNumber::Create(b1), ret);
-            push_onto_list(LNumber::Create(yv), ret);
-            push_onto_list(LNumber::Create(xv), ret);
+            push_onto_list(lisp::make_number(b3), ret);
+            push_onto_list(lisp::make_number(b2), ret);
+            push_onto_list(lisp::make_number(b1), ret);
+            push_onto_list(lisp::make_number(yv), ret);
+            push_onto_list(lisp::make_number(xv), ret);
             return ret;
         } break;
         case 48:
@@ -878,11 +878,11 @@ void *l_caller(long number, void *args)
             void *ret=NULL;
             {
         PtrRef r2(ret);
-        push_onto_list(LNumber::Create((last_demo_mbut&4)==4), ret);
-        push_onto_list(LNumber::Create((last_demo_mbut&2)==2), ret);
-        push_onto_list(LNumber::Create((last_demo_mbut&1)==1), ret);
-        push_onto_list(LNumber::Create(last_demo_mpos.y), ret);
-        push_onto_list(LNumber::Create(last_demo_mpos.x), ret);
+        push_onto_list(lisp::make_number((last_demo_mbut&4)==4), ret);
+        push_onto_list(lisp::make_number((last_demo_mbut&2)==2), ret);
+        push_onto_list(lisp::make_number((last_demo_mbut&1)==1), ret);
+        push_onto_list(lisp::make_number(last_demo_mpos.y), ret);
+        push_onto_list(lisp::make_number(last_demo_mpos.x), ret);
             }
             return ret;
         } break;
@@ -895,8 +895,8 @@ void *l_caller(long number, void *args)
             void *ret = NULL;
             {
                     PtrRef r2(ret);
-                    push_onto_list(LNumber::Create(pos.y), ret);
-                    push_onto_list(LNumber::Create(pos.x), ret);
+                    push_onto_list(lisp::make_number(pos.y), ret);
+                    push_onto_list(lisp::make_number(pos.x), ret);
             }
             return ret;
         } break;
@@ -909,19 +909,19 @@ void *l_caller(long number, void *args)
             void *ret = NULL;
             {
                 PtrRef r2(ret);
-                push_onto_list(LNumber::Create(pos.y), ret);
-                push_onto_list(LNumber::Create(pos.x), ret);
+                push_onto_list(lisp::make_number(pos.y), ret);
+                push_onto_list(lisp::make_number(pos.x), ret);
             }
             return ret;
         } break;
-        case 51:   return LPointer::Create(wm->font()); break;
+        case 51:   return lisp::make_ptr(wm->font()); break;
         case 52:
         {
             view *c = current_object->m_controller;
             if (!c)
                 lbreak("object is not a player, cannot return name");
             else
-                return LString::Create(c->name);
+                return lisp::make_str(c->name);
         } break;
         case 54:
         {
@@ -932,7 +932,7 @@ void *l_caller(long number, void *args)
             /* FIXME: maybe retrieve the PS3 account name etc.? */
             char const *cd = "Player";
 #endif
-            return LString::Create(cd);
+            return lisp::make_str(cd);
         } break;
         case 55:
 #if !defined __CELLOS_LV2__
@@ -959,7 +959,7 @@ void *l_caller(long number, void *args)
                 }
                 *tp = 0;
             }
-            return LString::Create(tmp);
+            return lisp::make_str(tmp);
         } break;
         case 58:
         {
@@ -971,10 +971,10 @@ void *l_caller(long number, void *args)
             {
                 PtrRef r2(fl), r3(dl);
 
-                for (i = tfiles-1; i>=0; i--) { push_onto_list(LString::Create(files[i]), fl); free(files[i]); }
+                for (i = tfiles-1; i>=0; i--) { push_onto_list(lisp::make_str(files[i]), fl); free(files[i]); }
                 free(files);
 
-                for (i = tdirs-1; i>=0; i--) { push_onto_list(LString::Create(dirs[i]), dl); free(dirs[i]); }
+                for (i = tdirs-1; i>=0; i--) { push_onto_list(lisp::make_str(dirs[i]), dl); free(dirs[i]); }
                 free(dirs);
 
                 push_onto_list(dl, rl);
@@ -990,7 +990,7 @@ void *l_caller(long number, void *args)
         {
                 long x;
                 sscanf(lstring_value(lisp::eval(lisp::car(args))), "%lx", &x);
-                return LPointer::Create((void *)(intptr_t)x);
+                return lisp::make_ptr((void *)(intptr_t)x);
         } break;
         case 64:
         {
@@ -1006,14 +1006,14 @@ void *l_caller(long number, void *args)
                 for (long i = last; i >= first; --i)
                 {
                     sprintf(name2, "%s%04ld.pcx", name, i);
-                    push_onto_list(LString::Create(name2), ret);
+                    push_onto_list(lisp::make_str(name2), ret);
                 }
             } else
             {
                 for (long i = last; i <= first; ++i)
                 {
                     sprintf(name2, "%s%04ld.pcx", name, i);
-                    push_onto_list(LString::Create(name2), ret);
+                    push_onto_list(lisp::make_str(name2), ret);
                 }
             }
             return ret;

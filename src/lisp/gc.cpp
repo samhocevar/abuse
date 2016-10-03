@@ -45,7 +45,7 @@ static int gcdepth, maxgcdepth;
 LArray *lisp::collect_array(LArray *x)
 {
     size_t s = x->m_len;
-    LArray *a = LArray::Create(s, NULL);
+    LArray *a = lisp::make_array(s, NULL);
     LObject **src = x->GetData();
     LObject **dst = a->GetData();
     for (size_t i = 0; i < s; i++)
@@ -60,7 +60,7 @@ LList *lisp::collect_list(LList *x)
 
     for (; x && item_type(x) == L_CONS_CELL; )
     {
-        LList *p = LList::Create();
+        LList *p = lisp::make_list();
         LObject *old_car = x->m_car;
         LObject *old_x = x;
         x = (LList *)lisp::cdr(x);
@@ -95,7 +95,7 @@ LObject *lisp::collect_object(LObject *x)
             lbreak("error: collecting corrupted cell\n");
             break;
         case L_NUMBER:
-            ret = LNumber::Create(((LNumber *)x)->m_num);
+            ret = lisp::make_number(((LNumber *)x)->m_num);
             break;
         case L_SYS_FUNCTION:
             ret = new_lisp_sys_function(((LSysFunction *)x)->min_args,
@@ -111,10 +111,10 @@ LObject *lisp::collect_object(LObject *x)
             break;
         }
         case L_STRING:
-            ret = LString::Create(lstring_value(x));
+            ret = lisp::make_str(lstring_value(x));
             break;
         case L_CHARACTER:
-            ret = LChar::Create(((LChar *)x)->m_ch);
+            ret = lisp::make_char(((LChar *)x)->m_ch);
             break;
         case L_C_FUNCTION:
             ret = new_lisp_c_function(((LSysFunction *)x)->min_args,
@@ -132,19 +132,19 @@ LObject *lisp::collect_object(LObject *x)
                                          ((LSysFunction *)x)->fun_number);
             break;
         case L_POINTER:
-            ret = LPointer::Create(lpointer_value(x));
+            ret = lisp::make_ptr(lpointer_value(x));
             break;
         case L_1D_ARRAY:
             ret = collect_array((LArray *)x);
             break;
         case L_FIXED_POINT:
-            ret = LFixedPoint::Create(lfixed_point_value(x));
+            ret = lisp::make_fp(lfixed_point_value(x));
             break;
         case L_CONS_CELL:
             ret = collect_list((LList *)x);
             break;
         case L_OBJECT_VAR:
-            ret = LObjectVar::Create(((LObjectVar *)x)->m_index);
+            ret = lisp::make_var(((LObjectVar *)x)->m_index);
             break;
         case L_COLLECTED_OBJECT:
             ret = ((LRedirect *)x)->m_ref;

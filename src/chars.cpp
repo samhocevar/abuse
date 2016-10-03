@@ -175,7 +175,7 @@ void *l_obj_get(long number) // exten lisp function switches on number
         lbreak("access : variable does not exists for this class\n");
         return 0;
     }
-    return LNumber::Create(current_object->lvars[t->var_index[number]]);
+    return lisp::make_number(current_object->lvars[t->var_index[number]]);
 }
 
 void l_obj_set(long number, void *arg)  // exten lisp function switches on number

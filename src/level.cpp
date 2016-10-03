@@ -1457,7 +1457,7 @@ void Level::level_loaded_notify()
 
     void *arg_list=NULL;
     PtrRef r1(arg_list);
-    push_onto_list(LString::Create(n),arg_list);
+    push_onto_list(lisp::make_str(n),arg_list);
     ((LSymbol *)l_level_loaded)->EvalFunction(arg_list);
 
     LSpace::Current = sp;

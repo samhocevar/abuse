@@ -477,29 +477,29 @@ void GameObject::do_damage(int amount, GameObject *from, int32_t hitx, int32_t h
 
     void *m = LSpace::Tmp.Mark();
 
-    am = LList::Create();
+    am = lisp::make_list();
     PtrRef r1(am);
-    am->m_car = LNumber::Create(amount);
+    am->m_car = lisp::make_number(amount);
 
-    frm = LList::Create();
+    frm = lisp::make_list();
     PtrRef r2(frm);
-    frm->m_car = LPointer::Create(from);
+    frm->m_car = lisp::make_ptr(from);
 
-    hx = LList::Create();
+    hx = lisp::make_list();
     PtrRef r3(hx);
-    hx->m_car = LNumber::Create(hitx);
+    hx->m_car = lisp::make_number(hitx);
 
-    hy = LList::Create();
+    hy = lisp::make_list();
     PtrRef r4(hy);
-    hy->m_car = LNumber::Create(hity);
+    hy->m_car = lisp::make_number(hity);
 
-    px = LList::Create();
+    px = lisp::make_list();
     PtrRef r5(px);
-    px->m_car = LNumber::Create(push_xvel);
+    px->m_car = lisp::make_number(push_xvel);
 
-    py = LList::Create();
+    py = lisp::make_list();
     PtrRef r6(py);
-    py->m_car = LNumber::Create(push_yvel);
+    py->m_car = lisp::make_number(push_yvel);
 
     px->m_cdr = py;
     hy->m_cdr = px;
@@ -861,15 +861,15 @@ void *GameObject::float_tick()  // returns 1 if you hit something, 0 otherwise
 
       if (hit_object)
       {
-    push_onto_list(LPointer::Create(hit_object),rlist);
+    push_onto_list(lisp::make_ptr(hit_object),rlist);
     push_onto_list(l_object,rlist);
       } else
       {
-    push_onto_list(LNumber::Create(ly),rlist);
-    push_onto_list(LNumber::Create(lx),rlist);
+    push_onto_list(lisp::make_number(ly),rlist);
+    push_onto_list(lisp::make_number(lx),rlist);
     push_onto_list(l_tile,rlist);
       }
-      push_onto_list(LNumber::Create(ret),rlist);
+      push_onto_list(lisp::make_number(ret),rlist);
 
       return rlist;
     } else return lisp::sym::true_;
@@ -1158,17 +1158,17 @@ int GameObject::move(int cx, int cy, int button)
     current_object=this;
 
     // make a list of the parameters, and call the lisp function
-    lcx = LList::Create();
+    lcx = lisp::make_list();
     PtrRef r1(lcx);
-    lcx->m_car = LNumber::Create(cx);
+    lcx->m_car = lisp::make_number(cx);
 
-    lcy = LList::Create();
+    lcy = lisp::make_list();
     PtrRef r2(lcy);
-    lcy->m_car = LNumber::Create(cy);
+    lcy->m_car = lisp::make_number(cy);
 
-    lb = LList::Create();
+    lb = lisp::make_list();
     PtrRef r3(lb);
-    lb->m_car = LNumber::Create(button);
+    lb->m_car = lisp::make_number(button);
 
     lcx->m_cdr = lcy;
     lcy->m_cdr = lb;
