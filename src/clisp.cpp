@@ -192,12 +192,11 @@ void clisp_init() // called by lisp_init, defines symbols and functions
     l_chat_input = lisp::make_sym("chat_input");
     l_player_text_color = lisp::make_sym("player_text_color");
 
-    int i;
-    for (i = 0; i<MAX_STATE; i++)
+    for (int i = 0; i < MAX_STATE; ++i)
         lisp::make_sym(state_names[i])->SetNumber(i);
-    for (i = 0; i<TOTAL_ABILITIES; i++)
+    for (int i = 0; i < TOTAL_ABILITIES; ++i)
         lisp::make_sym(ability_names[i])->SetNumber(i);
-    for (i = 0; i<TOTAL_CFLAGS; i++)
+    for (int i = 0; i < TOTAL_CFLAGS; ++i)
         lisp::make_sym(cflag_names[i])->SetNumber(i);
 
     l_song_list = lisp::make_sym("song_list");
@@ -945,19 +944,19 @@ void *l_caller(long number, void *args)
             void *fn = lisp::eval(lisp::car(args)); args = lisp::cdr(args);
             char tmp[200];
             {
-        PtrRef r2(fn);
-        char *slash = lstring_value(lisp::eval(lisp::car(args)));
-        char *filename = lstring_value(fn);
+                PtrRef r2(fn);
+                char *slash = lstring_value(lisp::eval(lisp::car(args)));
+                char *filename = lstring_value(fn);
 
-        char *s = filename, *tp;
+                char *s = filename, *tp;
 
-        for (tp = tmp; *s; s++, tp++)
-        {
-            if (*s=='/' || *s=='\\')
-            *tp=*slash;
-            else *tp=*s;
-        }
-        *tp = 0;
+                for (tp = tmp; *s; s++, tp++)
+                {
+                    if (*s=='/' || *s=='\\')
+                    *tp=*slash;
+                    else *tp=*s;
+                }
+                *tp = 0;
             }
             return LString::Create(tmp);
         } break;
@@ -969,16 +968,16 @@ void *l_caller(long number, void *args)
             get_directory(lstring_value(lisp::eval(lisp::car(args))), files, tfiles, dirs, tdirs);
             void *fl=NULL, *dl=NULL, *rl=NULL;
             {
-        PtrRef r2(fl), r3(dl);
+                PtrRef r2(fl), r3(dl);
 
-        for (i = tfiles-1; i>=0; i--) { push_onto_list(LString::Create(files[i]), fl); free(files[i]); }
-        free(files);
+                for (i = tfiles-1; i>=0; i--) { push_onto_list(LString::Create(files[i]), fl); free(files[i]); }
+                free(files);
 
-        for (i = tdirs-1; i>=0; i--) { push_onto_list(LString::Create(dirs[i]), dl); free(dirs[i]); }
-        free(dirs);
+                for (i = tdirs-1; i>=0; i--) { push_onto_list(LString::Create(dirs[i]), dl); free(dirs[i]); }
+                free(dirs);
 
-        push_onto_list(dl, rl);
-        push_onto_list(fl, rl);
+                push_onto_list(dl, rl);
+                push_onto_list(fl, rl);
             }
 
             return rl;
@@ -998,20 +997,19 @@ void *l_caller(long number, void *args)
             strcpy(name, lstring_value(lisp::eval(lisp::car(args))));  args = lisp::cdr(args);
             long first = lnumber_value(lisp::eval(lisp::car(args)));  args = lisp::cdr(args);
             long last = lnumber_value(lisp::eval(lisp::car(args)));
-            long i;
             void *ret=NULL;
             PtrRef r2(ret);
 
             if (last>=first)
             {
-                for (i = last; i>=first; i--)
+                for (long i = last; i >= first; --i)
                 {
                     sprintf(name2, "%s%04ld.pcx", name, i);
                     push_onto_list(LString::Create(name2), ret);
                 }
             } else
             {
-                for (i = last; i<=first; i++)
+                for (long i = last; i <= first; ++i)
                 {
                     sprintf(name2, "%s%04ld.pcx", name, i);
                     push_onto_list(LString::Create(name2), ret);
@@ -1357,13 +1355,13 @@ long c_caller(long number, void *args)
             LSymbol *sym=NULL;
             if (lisp::cdr(args))
             {
-        sym = (LSymbol *)lisp::car(args);
-        if (item_type(sym)!=L_SYMBOL)
-        {
-            lbreak("expecting first arg to def-character to be a symbol!\n");
-            exit(0);
-        }
-        args = lisp::cdr(args);
+                sym = (LSymbol *)lisp::car(args);
+                if (item_type(sym)!=L_SYMBOL)
+                {
+                    lbreak("expecting first arg to def-character to be a symbol!\n");
+                    exit(0);
+                }
+                args = lisp::cdr(args);
             }
 
             LSpace *sp = LSpace::Current;
@@ -1385,19 +1383,19 @@ long c_caller(long number, void *args)
                 cache.sfx(id)->play(127);
             else
             {
-        int vol = lnumber_value(lisp::car(a)); a = lisp::cdr(a);
-        if (a)
-        {
-            int32_t x = lnumber_value(lisp::car(a)); a = lisp::cdr(a);
-            if (!a)
-            {
-                lisp::print((LObject *)args);
-                lbreak("expecting y after x in play_sound\n");
-                exit(1);
-            }
-            int32_t y = lnumber_value(lisp::car(a));
-            the_game->play_sound(id, vol, x, y);
-        } else cache.sfx(id)->play(vol);
+                int vol = lnumber_value(lisp::car(a)); a = lisp::cdr(a);
+                if (a)
+                {
+                    int32_t x = lnumber_value(lisp::car(a)); a = lisp::cdr(a);
+                    if (!a)
+                    {
+                        lisp::print((LObject *)args);
+                        lbreak("expecting y after x in play_sound\n");
+                        exit(1);
+                    }
+                    int32_t y = lnumber_value(lisp::car(a));
+                    the_game->play_sound(id, vol, x, y);
+                } else cache.sfx(id)->play(vol);
             }
 
         } break;
@@ -1415,8 +1413,8 @@ long c_caller(long number, void *args)
             int32_t x = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
             if (x<0 || x>=total_weapons)
             {
-        lbreak("weapon out of range (%d)\n", x);
-        exit(0);
+                lbreak("weapon out of range (%d)\n", x);
+                exit(0);
             }
             return weapon_types[x];
         } break;
@@ -1437,11 +1435,11 @@ long c_caller(long number, void *args)
             if (!v) dprintf("Can't add weapons for non-players\n");
             else
             {
-        int32_t x = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
-        int32_t y = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
-        if (x<0 || x>=total_weapons)
-        { lbreak("weapon out of range (%d)\n", x); exit(0); }
-        v->add_ammo(x, y);
+                int32_t x = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
+                int32_t y = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
+                if (x<0 || x>=total_weapons)
+                { lbreak("weapon out of range (%d)\n", x); exit(0); }
+                v->add_ammo(x, y);
             }
         } break;
         case 145:
@@ -1477,10 +1475,10 @@ long c_caller(long number, void *args)
             int a = lnumber_value(lisp::car(args));
             if (a<0 || a>=TOTAL_ABILITIES)
             {
-        lisp::print((LObject *)args);
-        lbreak("bad ability number for get_ability, should be 0..%d, not %d\n",
-                TOTAL_ABILITIES, a);
-        exit(0);
+                lisp::print((LObject *)args);
+                lbreak("bad ability number for get_ability, should be 0..%d, not %d\n",
+                        TOTAL_ABILITIES, a);
+                exit(0);
             }
             return get_ability(current_object->otype, (ability)a);
         } break;
@@ -1523,11 +1521,11 @@ long c_caller(long number, void *args)
             if (ang1>ang2)
             {
                 if (ang<ang1 && ang>ang2)
-            return 0;
-        else if (ang>=ang1)
-            f = (ang-ang1)*tframes/(359-ang1+ang2+1);
-        else
-            f = (359-ang1+ang)*tframes/(359-ang1+ang2+1);
+                    return 0;
+                else if (ang>=ang1)
+                    f = (ang-ang1)*tframes/(359-ang1+ang2+1);
+                else
+                    f = (359-ang1+ang)*tframes/(359-ang1+ang2+1);
             } else if (ang<ang1 || ang>ang2)
                 return 0;
             else f = (ang-ang1)*tframes/(ang2-ang1+1);
@@ -1571,9 +1569,9 @@ long c_caller(long number, void *args)
             int b = lnumber_value(lisp::car(a));
             if (r<0 || b<0 || g<0 || r>255 || g>255 || b>255)
             {
-        lisp::print((LObject *)args);
-        lbreak("color out of range (0..255) in color lookup\n");
-        exit(0);
+                lisp::print((LObject *)args);
+                lbreak("color out of range (0..255) in color lookup\n");
+                exit(0);
             }
             return color_table->Lookup(u8vec3(r >> 3, g >> 3, b >> 3));
         } break;
@@ -1687,21 +1685,21 @@ long c_caller(long number, void *args)
             bFILE *fp = open_file(lstring_value(lisp::car(args)), "rb");
             if (fp->open_failure())
             {
-        delete fp;
-                lbreak("load_palette: could not open file %s for reading", lstring_value(lisp::car(args)));
-        exit(1);
+                delete fp;
+                        lbreak("load_palette: could not open file %s for reading", lstring_value(lisp::car(args)));
+                exit(1);
             } else
             {
-        SpecDir sd(fp);
-        SpecEntry *se = sd.find(SPEC_PALETTE);
-        if (!se) lbreak("File %s has no palette!\n", lstring_value(lisp::car(args)));
-        else
-        {
-            if (g_palette)
-                delete g_palette;
-            g_palette = new Palette(se, fp);
-        }
-        delete fp;
+                SpecDir sd(fp);
+                SpecEntry *se = sd.find(SPEC_PALETTE);
+                if (!se) lbreak("File %s has no palette!\n", lstring_value(lisp::car(args)));
+                else
+                {
+                    if (g_palette)
+                        delete g_palette;
+                    g_palette = new Palette(se, fp);
+                }
+                delete fp;
             }
         } break;
         case 198:
@@ -1709,20 +1707,20 @@ long c_caller(long number, void *args)
             bFILE *fp = open_file(lstring_value(lisp::car(args)), "rb");
             if (fp->open_failure())
             {
-        delete fp;
-                lbreak("load_color_filter: could not open file %s for reading", lstring_value(lisp::car(args)));
-        exit(1);
+                delete fp;
+                        lbreak("load_color_filter: could not open file %s for reading", lstring_value(lisp::car(args)));
+                exit(1);
             } else
             {
-        SpecDir sd(fp);
-        SpecEntry *se = sd.find(SPEC_COLOR_TABLE);
-        if (!se) lbreak("File %s has no color filter!", lstring_value(lisp::car(args)));
-        else
-        {
-            delete color_table;
-            color_table = new ColorFilter(se, fp);
-        }
-        delete fp;
+                SpecDir sd(fp);
+                SpecEntry *se = sd.find(SPEC_COLOR_TABLE);
+                if (!se) lbreak("File %s has no color filter!", lstring_value(lisp::car(args)));
+                else
+                {
+                    delete color_table;
+                    color_table = new ColorFilter(se, fp);
+                }
+                delete fp;
             }
         } break;
         case 199:
@@ -1921,10 +1919,10 @@ long c_caller(long number, void *args)
             if (!v) lbreak("object has no view: local_player");
             else
             {
-        int32_t x = lnumber_value(lisp::car(args));
-        if (x<0 || x>=total_weapons)
-        { lbreak("weapon out of range (%d)\n", x); exit(0); }
-        v->current_weapon = x;
+                int32_t x = lnumber_value(lisp::car(args));
+                if (x<0 || x>=total_weapons)
+                { lbreak("weapon out of range (%d)\n", x); exit(0); }
+                v->current_weapon = x;
             }
         } break;
         case 231:
@@ -2033,16 +2031,16 @@ long c_caller(long number, void *args)
         {
             if ((sound_avail&MUSIC_INITIALIZED))
             {
-        char *fn = lstring_value(lisp::car(args));
-        if (current_song)
-        {
-            if (current_song->playing())
-            current_song->stop();
-            delete current_song;
-        }
-        current_song = new song(fn);
-        current_song->play(music_volume);
-        dprintf("Playing %s at volume %d\n", fn, music_volume);
+                char *fn = lstring_value(lisp::car(args));
+                if (current_song)
+                {
+                    if (current_song->playing())
+                    current_song->stop();
+                    delete current_song;
+                }
+                current_song = new song(fn);
+                current_song->play(music_volume);
+                dprintf("Playing %s at volume %d\n", fn, music_volume);
             }
         } break;
         case 250:
@@ -2239,12 +2237,10 @@ long c_caller(long number, void *args)
         {
             if (main_net_cfg && (main_net_cfg->state==net_configuration::CLIENT || main_net_cfg->state==net_configuration::SERVER))
             {
-        view *v = player_list;
-        for (; v; v = v->next)
-              if (v->kills>=main_net_cfg->kills)
-                  return 1;
-
-
+                view *v = player_list;
+                for (; v; v = v->next)
+                    if (v->kills>=main_net_cfg->kills)
+                        return 1;
             } else return 0;
         } break;
         case 294:
@@ -2252,16 +2248,16 @@ long c_caller(long number, void *args)
             view *v = player_list;
             for (; v; v = v->next)
             {
-        v->tkills+=v->kills;
+                v->tkills+=v->kills;
 
                 v->kills = 0;
-        GameObject *o = current_object;
-        current_object = v->m_focus;
+                GameObject *o = current_object;
+                current_object = v->m_focus;
 
-        ((LSymbol *)l_restart_player)->EvalFunction(NULL);
-        v->reset_player();
-        v->m_focus->set_aistate(0);
-        current_object = o;
+                ((LSymbol *)l_restart_player)->EvalFunction(NULL);
+                v->reset_player();
+                v->m_focus->set_aistate(0);
+                current_object = o;
             }
 
         } break;
@@ -2305,20 +2301,5 @@ long c_caller(long number, void *args)
             return 0;
     }
     return 0;
-}
-
-int get_lprop_number(void *symbol, int def)  // returns def if symbol undefined or not number type
-{
-    void *v = symbol_value(symbol);
-    if (v)
-    {
-        switch (item_type(v))
-        {
-            case L_FIXED_POINT:
-            case L_NUMBER:
-            { return lnumber_value(v); } break;
-            default: return def;
-        }
-    } else return def;
 }
 
