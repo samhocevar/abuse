@@ -646,8 +646,8 @@ LList *lisp::make_list()
 
     LList *c = (LList *)LSpace::Current->Alloc(size);
     c->m_type = L_CONS_CELL;
-    c->m_car = NULL;
-    c->m_cdr = NULL;
+    c->m_car = nullptr;
+    c->m_cdr = nullptr;
     return c;
 }
 
@@ -1155,41 +1155,23 @@ LObject *lisp::compile(char const *&code)
     if (toupper(token_buffer[0]) == 'T' && !token_buffer[1])
         return lisp::sym::true_;
 
-    if (token_buffer[0] == '\'') // short hand for quote function
+    if (token_buffer[0] == '\'' || // shorthand for quote function
+        token_buffer[0] == '`'  || // shorthand for backquote function
+        token_buffer[0] == ',')    // shorthand for comma function
     {
-        LList *ret = lisp::make_list(), *tmp = lisp::make_list();
-        PtrRef r1(ret), r2(tmp);
+        LSymbol *sym = token_buffer[0] == '\'' ? lisp::sym::quote
+                     : token_buffer[0] == '`'  ? lisp::sym::backquote
+                     : /*                 ',' */ lisp::sym::comma;
+        LList *ret = nullptr, *l = nullptr;
+        PtrRef r1(ret), r2(l);
 
-        tmp->m_car = compile(code);
-        tmp->m_cdr = nullptr;
+        l = lisp::make_list();
+        LObject *tmp = compile(code);
+        l->m_car = tmp;
+        l->m_cdr = nullptr;
         ret = lisp::make_list();
-        ret->m_car = lisp::sym::quote;
-        ret->m_cdr = tmp;
-        return ret;
-    }
-
-    if (token_buffer[0] == '`') // short hand for backquote function
-    {
-        LList *ret = lisp::make_list(), *tmp = lisp::make_list();
-        PtrRef r1(ret), r2(tmp);
-
-        tmp = lisp::make_list();
-        tmp->m_car = compile(code);
-        tmp->m_cdr = nullptr;
-        ret->m_car = lisp::sym::backquote;
-        ret->m_cdr = tmp;
-        return ret;
-    }
-
-    if (token_buffer[0] == ',') // short hand for comma function
-    {
-        LList *ret = lisp::make_list(), *tmp = lisp::make_list();
-        PtrRef r1(ret), r2(tmp);
-
-        tmp->m_car = compile(code);
-        tmp->m_cdr = nullptr;
-        ret->m_car = lisp::sym::comma;
-        ret->m_cdr = tmp;
+        ret->m_car = sym;
+        ret->m_cdr = l;
         return ret;
     }
 
@@ -1215,7 +1197,8 @@ LObject *lisp::compile(char const *&code)
                     lerror(code, "token '.' not allowed here\n");
 
                 read_ltoken(code, token_buffer); // skip the '.'
-                last->m_cdr = lisp::compile(code); // link the last cdr to
+                LObject *tmp = lisp::compile(code);
+                last->m_cdr = tmp; // link the last cdr to
                 last = nullptr;
             }
             else if (!first || last)
@@ -1224,7 +1207,8 @@ LObject *lisp::compile(char const *&code)
                 PtrRef r4(cur);
                 if (!first)
                     first = cur;
-                cur->m_car = lisp::compile(code);
+                LObject *tmp = lisp::compile(code);
+                cur->m_car = tmp;
                 if (last)
                     last->m_cdr = cur;
                 last = cur;
@@ -1286,12 +1270,16 @@ LObject *lisp::compile(char const *&code)
 
         if (token_buffer[1] == 0) // short hand for function
         {
-            LList *ret = lisp::make_list(), *tmp = lisp::make_list();
-            PtrRef r4(ret), r5(tmp);
-            tmp->m_car = lisp::compile(code);
-            tmp->m_cdr = nullptr;
+            LList *ret = nullptr, *l = nullptr;
+            PtrRef r4(ret), r5(l);
+
+            l = lisp::make_list();
+            LObject *tmp = lisp::compile(code);
+            l->m_car = tmp;
+            l->m_cdr = nullptr;
+            ret = lisp::make_list();
             ret->m_car = lisp::make_sym("function");
-            ret->m_cdr = tmp;
+            ret->m_cdr = l;
             return ret;
         }
 
@@ -1455,8 +1443,7 @@ LObject *LSymbol::EvalFunction(LObject *arg_list)
     ASSERT_TYPE(this, L_SYMBOL, "EVAL: not a function name (not symbol either)");
 
     LObject *fun = m_function;
-    PtrRef ref2(fun);
-    PtrRef ref3(arg_list);
+    PtrRef ref2(fun), ref3(arg_list);
 
     // make sure the arguments given to the function are the correct number
     ltype t = item_type(fun);
@@ -1529,14 +1516,15 @@ LObject *LSymbol::EvalFunction(LObject *arg_list)
         PtrRef r1(first), r2(cur), r3(arg_list);
         while (arg_list)
         {
-            LList *tmp = lisp::make_list();
+            LList *l2 = lisp::make_list();
             if (first)
-                cur->m_cdr = tmp;
+                cur->m_cdr = l2;
             else
-                first = tmp;
-            cur = tmp;
+                first = l2;
+            cur = l2;
 
-            cur->m_car = lisp::eval(lisp::car(arg_list));
+            LObject *tmp = lisp::eval(lisp::car(arg_list));
+            cur->m_car = tmp;
             arg_list = lisp::cdr(arg_list);
         }
         if (t == L_C_FUNCTION)
@@ -1624,9 +1612,9 @@ LObject *mapcar(LObject *arg_list)
 
   do
   {
-    na_list=NULL;          // create a cons list with all of the parameters for the function
+    na_list = nullptr; // create a cons list with all of the parameters for the function
 
-    LList *first=NULL;                       // save the start of the list
+    LList *first = nullptr; // save the start of the list
     for (i=0; !stop &&i<num_args; i++)
     {
       if (!na_list)
@@ -1664,9 +1652,9 @@ LObject *mapcar(LObject *arg_list)
 
 LObject *concatenate(LObject *prog_list)
 {
-  LObject *el_list=lisp::cdr(prog_list);
+  LObject *el_list = lisp::cdr(prog_list);
   PtrRef ref1(prog_list), ref2(el_list);
-  LObject *ret=NULL;
+  LObject *ret = nullptr;
   LObject *rtype = lisp::eval(lisp::car(prog_list));
 
   long len=0;                                // determin the length of the resulting string
@@ -1774,7 +1762,8 @@ LObject *backquote_eval(LObject *args)
 
         if (lisp::car(args) == lisp::sym::comma) // dot list with a comma?
         {
-            last->m_cdr = lisp::eval(lisp::cadr(args));
+            LObject *tmp = lisp::eval(lisp::cadr(args));
+            last->m_cdr = tmp;
             break;
         }
 
@@ -1784,7 +1773,8 @@ LObject *backquote_eval(LObject *args)
         else
             first = cur;
         last = cur;
-        cur->m_car = backquote_eval(lisp::car(args));
+        LObject *tmp = backquote_eval(lisp::car(args));
+        cur->m_car = tmp;
         args = lisp::cdr(args);
     }
 
@@ -1794,7 +1784,7 @@ LObject *backquote_eval(LObject *args)
 /* PtrRef check: OK */
 LObject *LSysFunction::EvalFunction(LList *arg_list)
 {
-    LObject *ret = NULL;
+    LObject *ret = nullptr;
 
     PtrRef ref1(arg_list);
 
@@ -1834,13 +1824,13 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     }
     case SYS_FUNC_LIST:
     {
-        LList *cur = NULL, *last = NULL, *first = NULL;
+        LList *cur = nullptr, *last = nullptr, *first = nullptr;
         PtrRef r1(cur), r2(first), r3(last);
         while (arg_list)
         {
             cur = lisp::make_list();
-            LObject *val = lisp::eval(lisp::car(arg_list));
-            cur->m_car = val;
+            LObject *tmp = lisp::eval(lisp::car(arg_list));
+            cur->m_car = tmp;
             if (last)
                 last->m_cdr = cur;
             else
@@ -1855,10 +1845,10 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LList *c = lisp::make_list();
         PtrRef r1(c);
-        LObject *val = lisp::eval(lisp::car(arg_list));
-        c->m_car = val;
-        val = lisp::eval(lisp::cadr(arg_list));
-        c->m_cdr = val;
+        LObject *tmp = lisp::eval(lisp::car(arg_list));
+        c->m_car = tmp;
+        tmp = lisp::eval(lisp::cadr(arg_list));
+        c->m_cdr = tmp;
         ret = c;
         break;
     }
@@ -2073,13 +2063,12 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         break;
     case SYS_FUNC_ACONS:
     {
-        LObject *i1 = lisp::eval(lisp::car(arg_list));
-        PtrRef r1(i1);
-        LObject *i2 = lisp::eval(lisp::cadr(arg_list));
-        PtrRef r2(i2);
         LList *cs = lisp::make_list();
-        cs->m_car = i1;
-        cs->m_cdr = i2;
+        PtrRef r1(cs);
+        LObject *tmp = lisp::eval(lisp::car(arg_list));
+        cs->m_car = tmp;
+        tmp = lisp::eval(lisp::cadr(arg_list));
+        cs->m_cdr = tmp;
         ret = cs;
         break;
     }
@@ -2172,16 +2161,16 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LObject *l = arg_list;
         PtrRef r1(l);
-        ret = NULL;
+        ret = nullptr;
         while (l)
         {
             if (lisp::eval(lisp::car(l)))
             {
                 ret = lisp::sym::true_;
-                l = NULL; // short-circuit
+                break;
             }
-            else
-                l = lisp::cdr(l);
+
+            l = lisp::cdr(l);
         }
         break;
     }
@@ -2224,7 +2213,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
     {
         LList *block_list = (LList *)lisp::car(arg_list);
         PtrRef r1(block_list);
-        ret = NULL;
+        ret = nullptr;
         PtrRef r2(ret); // Required to protect from the last eval call
         while (block_list)
         {
@@ -2239,7 +2228,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         LObject *selector = lisp::eval(lisp::car(arg_list));
         LObject *sel = lisp::cdr(arg_list);
         PtrRef r1(selector), r2(sel);
-        ret = NULL;
+        ret = nullptr;
         PtrRef r3(ret); // Required to protect from the last eval call
         while (sel)
         {
@@ -2573,7 +2562,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         }
         arg_list = (LList *)lisp::cdr(arg_list);
 
-        LObject *block = NULL;
+        LObject *block = nullptr;
         PtrRef r3(block);
         PtrRef r4(ret); // Required to protect from the last SetValue call
         l_user_stack.push(bind_var->GetValue());  // save old symbol value
@@ -2745,7 +2734,7 @@ LObject *LSysFunction::EvalFunction(LList *arg_list)
         LObject *init_var = lisp::car(arg_list);
         PtrRef r1(init_var);
         int ustack_start = l_user_stack.m_size; // restore stack at end
-        LSymbol *sym = NULL;
+        LSymbol *sym = nullptr;
         PtrRef r2(sym);
 
         // check to make sure iter vars are symbol and push old values
