@@ -104,9 +104,8 @@
     <ClInclude Include="imlib/video.h" />
     <ClInclude Include="imlib/visobj.h" />
     <ClInclude Include="imlib/window.h" />
+    <ClInclude Include="lisp/gc.h" />
     <ClInclude Include="lisp/lisp.h" />
-    <ClInclude Include="lisp/lisp_gc.h" />
-    <ClInclude Include="lisp/lisp_opt.h" />
     <ClInclude Include="lisp/stack.h" />
     <ClInclude Include="lisp/symbols.h" />
     <ClInclude Include="net/engine.h" />
@@ -203,9 +202,9 @@
     <ClCompile Include="imlib/transimage.cpp" />
     <ClCompile Include="imlib/video.cpp" />
     <ClCompile Include="imlib/window.cpp" />
+    <ClCompile Include="lisp/gc.cpp" />
     <ClCompile Include="lisp/lisp.cpp" />
-    <ClCompile Include="lisp/lisp_gc.cpp" />
-    <ClCompile Include="lisp/lisp_opt.cpp" />
+    <ClCompile Include="lisp/optimizer.cpp" />
     <ClCompile Include="net/engine.cpp" />
     <ClCompile Include="net/fileman.cpp" />
     <ClCompile Include="net/gclient.cpp" />

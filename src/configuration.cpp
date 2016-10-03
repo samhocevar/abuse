@@ -17,6 +17,7 @@
 #include "common.h"
 
 #include "lisp/lisp.h"
+#include "lisp/symbols.h"
 
 #include "imlib/keys.h"
 #include "imlib/window.h"

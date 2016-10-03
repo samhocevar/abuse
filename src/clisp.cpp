@@ -21,7 +21,8 @@
 #include "common.h"
 
 #include "lisp/lisp.h"
-#include "lisp/lisp_gc.h"
+#include "lisp/gc.h"
+#include "lisp/symbols.h"
 
 #include "imlib/pcxread.h"
 #include "imlib/dprint.h"

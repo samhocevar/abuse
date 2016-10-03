@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <ClCompile Include="lisp\gc.cpp">
+      <Filter>lisp</Filter>
+    </ClCompile>
     <ClCompile Include="lisp\lisp.cpp">
       <Filter>lisp</Filter>
     </ClCompile>
-    <ClCompile Include="lisp\lisp_gc.cpp">
-      <Filter>lisp</Filter>
-    </ClCompile>
-    <ClCompile Include="lisp\lisp_opt.cpp">
+    <ClCompile Include="lisp\optimizer.cpp">
       <Filter>lisp</Filter>
     </ClCompile>
     <ClCompile Include="net\engine.cpp">
@@ -184,13 +184,10 @@
     <clCompile Include="view.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lisp\lisp_opt.h">
+    <ClInclude Include="lisp\gc.h">
       <Filter>lisp</Filter>
     </ClInclude>
     <ClInclude Include="lisp\lisp.h">
-      <Filter>lisp</Filter>
-    </ClInclude>
-    <ClInclude Include="lisp\lisp_gc.h">
       <Filter>lisp</Filter>
     </ClInclude>
     <ClInclude Include="lisp\symbols.h">

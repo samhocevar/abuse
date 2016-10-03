@@ -16,8 +16,10 @@
 
 #include "common.h"
 
-#include "imlib/specs.h"
 #include "lisp/lisp.h"
+#include "lisp/symbols.h"
+
+#include "imlib/specs.h"
 #include "imlib/dprint.h"
 
 #include "loader2.h"

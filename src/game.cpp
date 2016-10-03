@@ -25,7 +25,8 @@
 #include "loldebug.h"
 
 #include "lisp/lisp.h"
-#include "lisp/lisp_gc.h"
+#include "lisp/gc.h"
+#include "lisp/symbols.h"
 
 #include "imlib/scroller.h"
 #include "imlib/dprint.h"

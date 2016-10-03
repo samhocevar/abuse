@@ -15,6 +15,7 @@
 #include "common.h"
 
 #include "lisp/lisp.h"
+#include "lisp/symbols.h"
 
 #include "statbar.h"
 #include "view.h"

@@ -15,6 +15,7 @@
 #include <cstring>
 
 #include "lisp/lisp.h"
+#include "lisp/symbols.h"
 
 using namespace std;
 

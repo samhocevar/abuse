@@ -16,9 +16,11 @@
 
 #include "common.h"
 
-#include "ant.h"
 #include "lisp/lisp.h"
-#include "lisp/lisp_gc.h"
+#include "lisp/gc.h"
+#include "lisp/symbols.h"
+
+#include "ant.h"
 #include "compiled.h"
 #include "objects.h"
 #include "level.h"

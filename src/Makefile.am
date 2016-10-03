@@ -102,8 +102,8 @@ libabuse_a_SOURCES = \
     imlib/jdir.h imlib/visobj.h \
     \
     lisp/lisp.cpp lisp/lisp.h \
-    lisp/lisp_opt.cpp lisp/lisp_opt.h \
-    lisp/lisp_gc.cpp lisp/lisp_gc.h \
+    lisp/optimizer.cpp \
+    lisp/gc.cpp lisp/gc.h \
     lisp/stack.h lisp/symbols.h \
     \
     net/gserver.cpp net/gserver.h \

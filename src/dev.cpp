@@ -18,7 +18,7 @@
 #include "common.h"
 
 #include "lisp/lisp.h"
-#include "lisp/lisp_gc.h"
+#include "lisp/gc.h"
 
 #include "imlib/input.h"
 #include "imlib/dprint.h"

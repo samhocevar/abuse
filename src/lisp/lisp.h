@@ -344,5 +344,3 @@ extern void l_obj_print(long number);  // exten lisp function switches on number
 static inline LObject *symbol_value(void *sym) { return ((LSymbol *)sym)->GetValue(); }
 static inline char *lstring_value(void *str) { return ((LString *)str)->GetString(); }
 
-#include "lisp_opt.h"
-

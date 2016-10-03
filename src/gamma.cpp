@@ -17,6 +17,7 @@
 #include "common.h"
 
 #include "lisp/lisp.h"
+#include "lisp/symbols.h"
 
 #include "imlib/window.h"
 #include "imlib/scroller.h"
