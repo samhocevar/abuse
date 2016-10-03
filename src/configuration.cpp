@@ -46,10 +46,10 @@ static int binding_for_player( int player )
     LSymbol *f = lisp::find_sym(tmp);
     if( !NILP(f) && DEFINEDP(f->GetValue()))
     {
-        void *what = f->GetValue();
-        if(what == lisp::make_sym("keyboard"))
+        LObject *what = f->GetValue();
+        if (what == lisp::make_sym("keyboard"))
             return 1;
-        else if(what == lisp::make_sym("joystick"))
+        else if (what == lisp::make_sym("joystick"))
             return 2;
     }
     return 0;
@@ -63,7 +63,7 @@ int get_key_binding(char const *dir, int i)
     Cell *f = find_symbol( tmp );
     if( NILP(f) || !DEFINEDP( symbol_value( f ) ) )
         return 0;
-    void *k = symbol_value( f );
+    LObject *k = symbol_value( f );
 
     if( item_type( k ) != L_SYMBOL )
         return 0;

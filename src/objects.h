@@ -98,9 +98,9 @@ public :
 
   void load(int type, bFILE *fp, unsigned char *state_remap);
   int tick();  // should be called from decide, does the physics on the people, returns blocked status
-  void *float_tick();  // returns T or blocked structure =
-                       // (block_flags 'tile tilex tiley)
-                       // (block_flags 'object obj)
+  LObject *float_tick(); // returns T or blocked structure =
+                         // (block_flags 'tile tilex tiley)
+                         // (block_flags 'object obj)
 
   void next_sequence();
 

@@ -13,7 +13,7 @@
 #include "lisp/stack.h"
 
 // Stack user progs can push data and have it GCed
-extern GrowStack<void> l_user_stack;
+extern GrowStack<LObject> l_user_stack;
 
 // This pointer reference stack lists all pointers to temporary lisp
 // objects. This allows the pointers to be automatically modified if an
@@ -23,12 +23,12 @@ class PtrRef
 public:
     template<typename T> inline PtrRef(T *&ref)
     {
-        stack.push((void **)&ref);
+        stack.push((LObject **)&ref);
     }
 
     template<typename T> inline PtrRef(T * const &ref)
     {
-        stack.push((void **)&ref);
+        stack.push((LObject **)&ref);
     }
 
     inline ~PtrRef()
@@ -37,6 +37,6 @@ public:
     }
 
     // Stack of user pointers, user pointers get remapped on GC
-    static GrowStack<void *> stack;
+    static GrowStack<LObject *> stack;
 };
 

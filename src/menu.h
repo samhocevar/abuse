@@ -12,6 +12,8 @@
 
 #include "imlib/fonts.h"
 
-int menu(void *args, JCFont *font);             // reurns -1 on esc
+int menu(LObject *args, JCFont *font);             // reurns -1 on esc
 void main_menu();
+
+extern LObject *current_demo;
 

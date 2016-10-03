@@ -136,7 +136,7 @@ inline int angle_diff(int a1, int a2)
   return 0;
 }
 
-void *top_ai()
+LObject *top_ai()
 {
   GameObject *o=current_object;
   if (o->total_objects())            // make sure we are linked to the main character
@@ -247,12 +247,12 @@ static int player_fire_weapon(GameObject *o, int type, GameObject *target, int a
 
 
 
-void *laser_ufun(void *args)
+LObject *laser_ufun(LObject *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=lisp::car(args);  args=lisp::cdr(args);
-  void *ret=NULL;
+  LObject *signal=lisp::car(args);  args=lisp::cdr(args);
+  LObject *ret=NULL;
 
   if (signal==l_FIRE)
   {
@@ -289,12 +289,12 @@ static int ammo_type(int otype)
 }
 
 
-void *top_ufun(void *args)                       // generic top character ai GRENADE && FIREBOMB
+LObject *top_ufun(LObject *args)                       // generic top character ai GRENADE && FIREBOMB
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=lisp::car(args);  args=lisp::cdr(args);
-  void *ret=NULL;
+  LObject *signal=lisp::car(args);  args=lisp::cdr(args);
+  LObject *ret=NULL;
 
   if (signal==l_FIRE)
   {
@@ -316,12 +316,13 @@ void *top_ufun(void *args)                       // generic top character ai GRE
 
 static int climb_handler(GameObject *, int xm, int ym, int but);
 
-void *plaser_ufun(void *args)
+LObject *plaser_ufun(LObject *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=lisp::car(args);  args=lisp::cdr(args);
-  void *ret=NULL;
+  LObject *signal = lisp::car(args);
+  args = lisp::cdr(args);
+  LObject *ret = nullptr;
 
   if (signal==l_FIRE)
   {
@@ -340,12 +341,12 @@ void *plaser_ufun(void *args)
   return ret;
 }
 
-void *lsaber_ufun(void *args)
+LObject *lsaber_ufun(LObject *args)
 {
   GameObject *o=current_object;
   PtrRef r1(args);
-  void *signal=lisp::car(args);  args=lisp::cdr(args);
-  void *ret=NULL;
+  LObject *signal=lisp::car(args);  args=lisp::cdr(args);
+  LObject *ret=NULL;
 
   if (signal==l_FIRE)
   {
@@ -367,12 +368,13 @@ void *lsaber_ufun(void *args)
 
 
 
-void *player_rocket_ufun(void *args)
+LObject *player_rocket_ufun(LObject *args)
 {
-  GameObject *o=current_object;
+  GameObject *o = current_object;
   PtrRef r1(args);
-  void *signal=lisp::car(args);  args=lisp::cdr(args);
-  void *ret=NULL;
+  LObject *signal = lisp::car(args);
+  args = lisp::cdr(args);
+  LObject *ret = nullptr;
   int xd,yd,cl=0xfffffff,d;
   if (signal==l_FIRE)
   {
@@ -601,7 +603,7 @@ static int climb_handler(GameObject *o, int xm, int ym, int but)
 }
 
 
-void *cop_mover(int xm, int ym, int but)
+LObject *cop_mover(int xm, int ym, int but)
 {
 
   int ret=0;
@@ -664,7 +666,7 @@ void *cop_mover(int xm, int ym, int but)
       push_onto_list(l_FIRE,args);
 
       current_object=top;
-      void *ret = ((LSymbol *)figures[top->otype]->get_fun(OFUN_USER_FUN))->EvalFunction(args);
+      LObject *ret = ((LSymbol *)figures[top->otype]->get_fun(OFUN_USER_FUN))->EvalFunction(args);
       current_object=o;
       v->add_ammo(v->current_weapon,lnumber_value(ret));
     }
@@ -688,7 +690,7 @@ void *cop_mover(int xm, int ym, int but)
 
 
 
-void *ladder_ai()
+LObject *ladder_ai()
 {
   view *f=player_list;
   GameObject *o=current_object;
@@ -714,7 +716,7 @@ void *ladder_ai()
 
 
 
-void *player_draw(int just_fired_var, int num)
+LObject *player_draw(int just_fired_var, int num)
 {
   GameObject *o=current_object;
   if (num==0)
@@ -739,7 +741,7 @@ void *player_draw(int just_fired_var, int num)
 }
 
 
-void *top_draw()
+LObject *top_draw()
 {
   GameObject *o=current_object;
   if (o->total_objects())
@@ -781,7 +783,7 @@ void *top_draw()
 
 
 
-void *bottom_draw()
+LObject *bottom_draw()
 {
   GameObject *o=current_object;
 
@@ -879,7 +881,7 @@ void *bottom_draw()
 
 
 
-void *sgun_ai()
+LObject *sgun_ai()
 {
   GameObject *o=current_object;
 
@@ -922,7 +924,7 @@ void *sgun_ai()
 
 
 
-void *mover_ai()
+LObject *mover_ai()
 {
   GameObject *o=current_object;
   if (o->total_objects()==2)
@@ -947,7 +949,7 @@ void *mover_ai()
 }
 
 
-void *respawn_ai()
+LObject *respawn_ai()
 {
  GameObject *o=current_object;
  int x=o->total_objects();
@@ -986,7 +988,7 @@ static int compare_players(const void *a, const void *b)
   else return 0;
 }
 
-void *score_draw()
+LObject *score_draw()
 {
   view *sorted_players[16],*local=NULL;
   int tp=0;
@@ -1025,7 +1027,7 @@ void *score_draw()
 extern void fade_in(AImage *im, int steps);
 extern void fade_out(int steps);
 
-void *show_kills()
+LObject *show_kills()
 {
   fade_out(8);
   wm->SetMousePos(ivec2(0, 0));

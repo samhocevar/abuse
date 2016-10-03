@@ -80,7 +80,7 @@ void DarkWidget(ivec2 aa, ivec2 bb, int br, int dr, int amount)
     TintArea(aa + ivec2(1), bb, u8vec3::zero, amount);
 }
 
-char *men_str(void *arg)
+char *men_str(LObject *arg)
 {
   switch (item_type(arg))
   {
@@ -102,7 +102,7 @@ char *men_str(void *arg)
 // This method is only used by the (menu) Lisp method, which was
 // never tested.
 //
-int menu(void *args, JCFont *font)             // reurns -1 on esc
+int menu(LObject *args, JCFont *font)             // reurns -1 on esc
 {
   main_menu();
   char *title=NULL;
@@ -237,7 +237,7 @@ int menu(void *args, JCFont *font)             // reurns -1 on esc
 
   if (choice!=-1)
   {
-    void *val=lisp::nth(choice, args);
+    LObject *val=lisp::nth(choice, args);
     if (item_type(val)==L_CONS_CELL)   // is there another value that the user want us to return?
       return lnumber_value(lisp::cdr(val));
   }
@@ -507,7 +507,7 @@ void menu_handler(Event &ev, InputManager *inm)
   }
 }
 
-void *current_demo=NULL;
+LObject *current_demo = nullptr;
 
 static AIconButton *load_icon(int num, int id, ivec2 pos, int &h, char const *key)
 {

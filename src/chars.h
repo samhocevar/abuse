@@ -94,15 +94,15 @@ public:
   LSymbol **vars;  // symbol describing variable names    [0..tiv-1]
   short *var_index; // index into local var                [0..tiv-1]
 
-  void add_var(void *symbol, void *name);
+  void add_var(LObject *symbol, LObject *name);
   int add_state(LObject *symbol);           // returns index into seq to use
   int abil[TOTAL_ABILITIES];
-  void *fun_table[TOTAL_OFUNS];             // pointers to lisp function for this object
+  LObject *fun_table[TOTAL_OFUNS];             // pointers to lisp function for this object
   int logo,morph_mask,morph_power;
   long rangex,rangey,draw_rangex,draw_rangey;             // range off screen before character is skipped
 
   uint16_t cflags;
-  void *get_fun(int name) { return fun_table[name]; }
+  LObject *get_fun(int name) { return fun_table[name]; }
   int get_cflag(int name) { return cflags&(1<<name); }
   void set_cflag(int name, int x) { if (x) cflags|=(1<<name);  else cflags&=~(1<<name); }
   int total_fields;                         // used by game editor to replace field names
@@ -119,7 +119,7 @@ public:
 extern CharacterType **figures;
 int flinch_state(character_state state);
 
-void *def_char(void *args);
+LObject *def_char(LObject *args);
 
 extern int total_weapons;
 extern int *weapon_types;    // maps 0..total_weapons into 'real' weapon type

@@ -208,7 +208,7 @@ public :
   GameObject *find_object_in_area(int32_t x, int32_t y, int32_t x1, int32_t y1,
                    int32_t x2, int32_t y2, Cell *list, GameObject *exclude);
   GameObject *find_object_in_angle(int32_t x, int32_t y, int32_t start_angle, int32_t end_angle,
-                    void *list, GameObject *exclude);
+                    Cell *list, GameObject *exclude);
   object_node *make_not_list(object_node *list);
   int load_player_info(bFILE *fp, SpecDir *sd, object_node *save_list);
   void write_player_info(bFILE *fp, object_node *save_list);

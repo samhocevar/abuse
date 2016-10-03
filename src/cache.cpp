@@ -355,7 +355,7 @@ void CacheList::preload_cache_object(int type)
     if (!figures[type]->get_cflag(CFLAG_NEED_CACHE_IN))  // see if it's already marked
     {
       figures[type]->set_cflag(CFLAG_NEED_CACHE_IN,1);
-      void *cache_fun=figures[type]->get_fun(OFUN_GET_CACHE_LIST);
+      LObject *cache_fun=figures[type]->get_fun(OFUN_GET_CACHE_LIST);
 
       if (cache_fun)
       {
@@ -365,12 +365,12 @@ void CacheList::preload_cache_object(int type)
     LList *call_with = nullptr;
     push_onto_list(lisp::make_number(type),call_with);
 
-    void *CacheList = ((LSymbol *)cache_fun)->EvalFunction(call_with);
+    LObject *CacheList = ((LSymbol *)cache_fun)->EvalFunction(call_with);
     PtrRef r1(CacheList);
 
     if (CacheList && lisp::car(CacheList))
     {
-      void *obj_list=lisp::car(CacheList);
+      LObject *obj_list=lisp::car(CacheList);
       while (obj_list)
       {
         int t=lnumber_value(lisp::car(obj_list));
@@ -383,7 +383,7 @@ void CacheList::preload_cache_object(int type)
     }
     if (CacheList && lisp::cdr(CacheList))
     {
-      void *id_list=lisp::cadr(CacheList);
+      LObject *id_list=lisp::cadr(CacheList);
       while (id_list)
       {
         int id=lnumber_value(lisp::car(id_list));

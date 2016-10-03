@@ -72,3 +72,10 @@ button::area
 is this necessary before eval()?
   while(*s==' ' || *s=='\t' || *s=='\r' || *s=='\n') s++;
 
+all the functions returning void* in e.g. cop.cpp
+
+find mallocs that could be lol::array
+
+EvalFunction() could take a LList instead of LObject
+get rid of unnecessary LObject* casts
+

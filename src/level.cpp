@@ -3104,7 +3104,7 @@ GameObject *Level::find_object_in_area(int32_t x, int32_t y, int32_t x1, int32_t
 
 
 GameObject *Level::find_object_in_angle(int32_t x, int32_t y, int32_t start_angle, int32_t end_angle,
-                    void *list, GameObject *exclude)
+                    Cell *list, GameObject *exclude)
 {
   GameObject *closest=NULL;
   int32_t closest_distance=0xfffffff,distance;
@@ -3116,7 +3116,7 @@ GameObject *Level::find_object_in_angle(int32_t x, int32_t y, int32_t start_angl
     && o!=exclude)
     {
       // check to see if the type is in the list
-      Cell *v=(Cell *)list;
+      Cell *v = list;
       for (; !NILP(v) && lnumber_value(lisp::car(v))!=o->otype; v=lisp::cdr(v));
       if (!NILP(v))
       {

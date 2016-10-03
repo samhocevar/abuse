@@ -26,6 +26,6 @@ enum
     ANT_CEIL_SHOOT = 14
 };
 
-void *ant_ai();
+LObject *ant_ai();
 void show_stats();
 

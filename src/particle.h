@@ -15,7 +15,7 @@
 
 class view;
 
-int defun_pseq(void *args);
+int defun_pseq(LObject *args);
 void add_panim(int id, long x, long y, int dir);
 void delete_panims();      // called by ~Level
 void draw_panims(view *v);
@@ -45,7 +45,7 @@ class part_sequence
   public :
   int tframes;
   int *frames;  // array of id's
-  part_sequence(void *args);
+  part_sequence(LObject *args);
   ~part_sequence() { if (tframes) free(frames); }
 };
 

@@ -312,7 +312,7 @@ void view::get_input()
 //        file "input.lsp" to get our key mappings.
 /*    if( DEFINEDP( symbol_function( l_get_local_input ) ) )
     {
-        void *ret = ((LSymbol *)l_get_local_input->EvalFunction(NULL);
+        LObject *ret = ((LSymbol *)l_get_local_input->EvalFunction(NULL);
         sug_x = lnumber_value( lisp::car( ret ) );
         ret = lisp::cdr( ret );
         sug_y = lnumber_value( lisp::car( ret ) );

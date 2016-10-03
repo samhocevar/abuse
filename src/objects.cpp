@@ -252,7 +252,7 @@ int RC_type_size(int type)
 
 void GameObject::reload_notify()
 {
-  void *ns=figures[otype]->get_fun(OFUN_RELOAD);
+  LObject *ns=figures[otype]->get_fun(OFUN_RELOAD);
   if (ns)
   {
     GameObject *o=current_object;
@@ -268,7 +268,7 @@ void GameObject::reload_notify()
 
 void GameObject::next_sequence()
 {
-    void *ns = figures[otype]->get_fun( OFUN_NEXT_STATE );
+    LObject *ns = figures[otype]->get_fun( OFUN_NEXT_STATE );
     if( ns )
     {
         current_object = this;
@@ -468,7 +468,7 @@ void GameObject::do_damage(int amount, GameObject *from, int32_t hitx, int32_t h
   if((_team != -1) && (_team == from->get_team()))
     return;
 
-  void *d=figures[otype]->get_fun(OFUN_DAMAGE);
+  LObject *d=figures[otype]->get_fun(OFUN_DAMAGE);
   if (d)
   {
     LList *am, *frm, *hx, *hy, *px, *py;
@@ -766,7 +766,7 @@ GameObject *GameObject::try_move(int32_t x, int32_t y, int32_t &xv, int32_t &yv,
   else return NULL;
 }
 
-void *GameObject::float_tick()  // returns 1 if you hit something, 0 otherwise
+LObject *GameObject::float_tick()  // returns 1 if you hit something, 0 otherwise
 {
   int32_t ret=0;
   if (hp()<=0)
@@ -1499,7 +1499,7 @@ void GameObject::change_aitype(int new_type)
   set_aitype(new_type);
   if (otype<0xffff)
   {
-    void *f=figures[otype]->get_fun(OFUN_CHANGE_TYPE);
+    LObject *f=figures[otype]->get_fun(OFUN_CHANGE_TYPE);
     if (f)
     {
       GameObject *o=current_object;

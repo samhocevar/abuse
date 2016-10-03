@@ -375,7 +375,7 @@ void show_end2()
   for (i=0; i<32; i++)
     cmap[i] = g_palette->FindClosest(u8vec3(i * 256 / 32, i * 256 / 32, i * 256 / 32));
 
-  void *end_plot = lisp::make_sym("plot_end")->GetValue();
+  LObject *end_plot = lisp::make_sym("plot_end")->GetValue();
 
 
   t.Get();
@@ -431,10 +431,10 @@ void share_end()
 
   AImage *im=cache.img(cache.reg("art/fore/endgame.spe","tbc",SPEC_IMAGE,1));
 
-  void *to_be = lisp::make_sym("to_be_continued")->GetValue();
+  LObject *to_be = lisp::make_sym("to_be_continued")->GetValue();
   PtrRef r1(to_be);
 
-  void *mid_plot = lisp::make_sym("plot_middle")->GetValue();
+  LObject *mid_plot = lisp::make_sym("plot_middle")->GetValue();
   PtrRef r2(mid_plot);
 
   int dx=(xres+1)/2-im->Size().x/2,dy=(yres+1)/2-im->Size().y/2;
@@ -490,7 +490,7 @@ void show_end()
 
   int dx=(xres+1)/2-320/2,dy=(yres+1)/2-200/2;
 
-  void *end_plot = lisp::make_sym("plot_end")->GetValue();
+  LObject *end_plot = lisp::make_sym("plot_end")->GetValue();
   PtrRef r2(end_plot);
 
 

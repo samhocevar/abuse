@@ -390,7 +390,7 @@ void load_data(int argc, char **argv)
 
   if (DEFINEDP(symbol_value(l_help_screens)))
   {
-    void *v=symbol_value(l_help_screens);
+    LObject *v=symbol_value(l_help_screens);
     char *ff=lstring_value(lisp::car(v));  v=lisp::cdr(v);
     total_help_screens=0;
     while (v) { total_help_screens++; v=lisp::cdr(v); }

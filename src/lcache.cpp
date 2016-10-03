@@ -34,7 +34,7 @@ size_t block_size(LObject *level)  // return size needed to recreate this block
     case L_CONS_CELL:
         {
             size_t ret = sizeof(uint8_t) + sizeof(uint32_t);
-            void *b = level;
+            LObject *b = level;
             for (; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 ;
             if (b)
@@ -71,7 +71,7 @@ void write_level(bFILE *fp, LObject *level)
         else
         {
             size_t count = 0;
-            void *b = level;
+            LObject *b = level;
             for (; b && item_type(b) == L_CONS_CELL; b = lisp::cdr(b))
                 count++;
             /* If last element is not the empty list, it's a dotted list

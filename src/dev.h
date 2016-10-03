@@ -37,7 +37,7 @@ public :
   void open_window();
   char *name;
   void handle_event(Event &ev);
-  pal_win(void *args);
+  pal_win(Cell *args);
   void resize(int xa, int ya);
   int get_pat(ivec2 pos) { return pat[pos.y * w + pos.x]; }
   int width() { return w; }
@@ -76,7 +76,7 @@ public :
   int fg_w, bg_w, fg_scale, bg_scale, yellow;
   void save();
   void fg_fill(int color, int x, int y, pal_win *p);
-  void add_palette(void *args);
+  void add_palette(Cell *args);
   void search_forward();
   void search_backward();
   void toggle_toolbar();

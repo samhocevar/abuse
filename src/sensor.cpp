@@ -26,7 +26,7 @@
 
 enum { un_offable };     // vars
 
-void *sensor_ai()
+LObject *sensor_ai()
 {
   GameObject *o=current_object,*b;
   if (o->aistate()==0)                     // turned off, what for player to enter

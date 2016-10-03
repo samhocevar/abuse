@@ -1100,7 +1100,7 @@ void do_title()
         current_song->play(music_volume);
     }
 
-    void *logo_snd = lisp::make_sym("LOGO_SND")->GetValue();
+    LObject *logo_snd = lisp::make_sym("LOGO_SND")->GetValue();
 
     if(DEFINEDP(logo_snd) && (sound_avail & SFX_INITIALIZED))
         cache.sfx(lnumber_value(logo_snd))->play(sfx_volume);
@@ -1117,7 +1117,7 @@ void do_title()
     Timer tmp; tmp.Wait(0.4f);
     fade_out(32);
 
-    void *space_snd = lisp::make_sym("SPACE_SND")->GetValue();
+    LObject *space_snd = lisp::make_sym("SPACE_SND")->GetValue();
     char *str = lstring_value(lisp::eval(lisp::make_sym("plot_start")));
 
     bFILE *fp = open_file("art/smoke.spe", "rb");
@@ -1885,12 +1885,10 @@ void Game::step()
     finished = true;
 }
 
-extern void *current_demo;
-
 Game::~Game()
 {
-  current_demo = NULL;
-  if(first_view == player_list) first_view = NULL;
+  current_demo = nullptr;
+  if(first_view == player_list) first_view = nullptr;
   while(player_list)
   {
     view *p = player_list;

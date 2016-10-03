@@ -167,7 +167,7 @@ void CharacterType::add_sequence(character_state which, sequence *new_seq)
     seq[which] = new_seq;
 }
 
-void *l_obj_get(long number) // exten lisp function switches on number
+LObject *l_obj_get(long number) // exten lisp function switches on number
 {
     CharacterType *t = figures[current_object->otype];
     if (t->tiv <= number || !t->vars[number])
@@ -178,7 +178,7 @@ void *l_obj_get(long number) // exten lisp function switches on number
     return lisp::make_number(current_object->lvars[t->var_index[number]]);
 }
 
-void l_obj_set(long number, void *arg)  // exten lisp function switches on number
+void l_obj_set(long number, LObject *arg)  // exten lisp function switches on number
 {
   CharacterType *t=figures[current_object->otype];
   if (t->tiv<=number || !t->vars[number])
@@ -200,7 +200,7 @@ void l_obj_print(long number)  // exten lisp function switches on number
   dprintf("%d",current_object->lvars[t->var_index[number]]);
 }
 
-void CharacterType::add_var(void *symbol, void *name)
+void CharacterType::add_var(LObject *symbol, LObject *name)
 {
   /* First see if the variable has been defined for another object
      if so report a conflict if any occur */
@@ -379,14 +379,14 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             draw_rangey = lnumber_value(lisp::eval(lisp::caddar(field)));
         } else if (f==l_states)
         {
-            LObject *l=lisp::cdar(field);
+            LObject *l = lisp::cdar(field);
             PtrRef r4(l);
             char fn[100];
             strcpy(fn,lstring_value(lisp::eval(lisp::car(l)))); l=lisp::cdr(l);
             while (l)
             {
                 int index;
-                void *e;
+                LObject *e;
                 sequence *mem;
                 index = add_state(lisp::caar(l));
                 e = lisp::eval(lisp::cadar(l));
@@ -396,7 +396,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             }
         } else if (f==l_fields)
         {
-            void *mf=lisp::cdar(field);
+            LObject *mf = lisp::cdar(field);
             PtrRef r4(mf);
             while (!NILP(mf))
             {
@@ -404,7 +404,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
                 char *fake = lstring_value(lisp::eval(lisp::cadar(mf)));
                 if (!isa_var_name(real))
                 {
-                    lisp::print((LObject *)field);
+                    lisp::print(field);
                     lbreak("fields : no such var name \"%s\"\n",name);
                     exit(0);
                 }
@@ -421,7 +421,7 @@ CharacterType::CharacterType(LList *args, LSymbol *name)
             logo=cache.reg(fn,o,SPEC_IMAGE,1);
         } else if (f==l_vars)
         {
-            void *l=lisp::cdar(field);
+            LObject *l = lisp::cdar(field);
             PtrRef r8(l);
             while (l)
             {

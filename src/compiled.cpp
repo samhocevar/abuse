@@ -45,15 +45,14 @@ int compile_error=0;
 
 static int32_t c_state(char const *name)
 {
-  void *sym = lisp::find_sym(name);
-  if (sym)
-  {
-    if (item_type(((LSymbol *)sym)->m_value)!=L_NUMBER)
-      compile_error=1;
-    else
-      return lnumber_value(((LSymbol *)sym)->m_value);
-  } else compile_error=1;
-  return 0;
+    LSymbol *sym = lisp::find_sym(name);
+    if (!sym || item_type(sym->m_value) != L_NUMBER)
+    {
+        compile_error = 1;
+        return 0;
+    }
+
+    return lnumber_value(sym->m_value);
 }
 
 extern int last_save_game_number;
@@ -125,7 +124,7 @@ void compiled_init()
   S_LINK_SND=    c_state("LINK_OBJECT_SND");
   S_DELETE_SND=  c_state("DEL_OBJECT_SND");
 
-  void *b = lisp::make_sym("bad_guy_list");
+  LObject *b = lisp::make_sym("bad_guy_list");
   if (b && DEFINEDP(symbol_value(b)))
   {
     b=symbol_value(b);
@@ -141,7 +140,7 @@ void compiled_init()
     }
   }
 
-  void *v = lisp::make_sym("last_save_game")->GetValue();
+  LObject *v = lisp::make_sym("last_save_game")->GetValue();
   if (DEFINEDP(v))
     last_save_game_number=lnumber_value(v);
   else last_save_game_number=0;

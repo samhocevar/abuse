@@ -13,7 +13,7 @@
 #include <cstdlib>
 #include <stdint.h>
 
-#define Cell void
+#define Cell LObject // FIXME: more type checks here
 #define MAX_LISP_TOKEN_LEN 200
 
 #define NILP(x) ((x) == nullptr)
@@ -110,7 +110,7 @@ private:
 struct LSymbol : LObject
 {
     /* Methods */
-    LObject *EvalFunction(void *arg_list);
+    LObject *EvalFunction(LObject *arg_list);
     LObject *EvalUserFunction(LList *arg_list);
 
     LString *GetName();
@@ -180,9 +180,9 @@ struct LFixedPoint : LObject
     int32_t m_fixed;
 };
 
-static inline ltype item_type(void const *x)
+static inline ltype item_type(LObject const *x)
 {
-    return x ? *static_cast<ltype const *>(x) : ltype(L_CONS_CELL);
+    return x ? x->m_type : ltype(L_CONS_CELL);
 }
 
 struct lisp
@@ -194,7 +194,7 @@ struct lisp
     static LSymbol *make_sym(char const *name);
     static LSymbol *find_sym(char const *name, bool create = false);
     static LList *make_list();
-    static LArray *make_array(size_t len, void *rest);
+    static LArray *make_array(size_t len, LObject *rest);
     static LNumber *make_number(long num);
     static LString *make_str(char const *string);
     static LString *make_str(char const *string, int length);
@@ -209,6 +209,10 @@ struct lisp
     static LObject *eval(LObject *);
     static void print(LObject *);
 
+    static LObject *atom(LObject const *i);
+    static LObject *eq(LObject const *n1, LObject const *n2);
+    static LObject *equal(LObject *n1, LObject *n2);
+
     // Maths functions
     static int32_t atan2(int32_t dy, int32_t dx);
     static int32_t sin(int32_t x);
@@ -222,52 +226,52 @@ struct lisp
     static LObject *null;
 
     // List getters
-    static LObject *nth(int num, void *list);
+    static LObject *nth(int num, LObject *list);
 
-    static inline LObject *&cdr(void *c)
+    static inline LObject *&cdr(LObject *c)
     {
         if (!c || item_type(c) != ltype(L_CONS_CELL))
             return lisp::null;
         return ((LList *)c)->m_cdr;
     }
 
-    static inline LObject *&car(void *c)
+    static inline LObject *&car(LObject *c)
     {
         if (!c || item_type(c) != ltype(L_CONS_CELL))
             return lisp::null;
         return ((LList *)c)->m_car;
     }
 
-    static inline LObject *&caar(void *c) { return car(car(c)); }
-    static inline LObject *&cadr(void *c) { return car(cdr(c)); }
-    static inline LObject *&cdar(void *c) { return cdr(car(c)); }
-    static inline LObject *&cddr(void *c) { return cdr(cdr(c)); }
+    static inline LObject *&caar(LObject *c) { return car(car(c)); }
+    static inline LObject *&cadr(LObject *c) { return car(cdr(c)); }
+    static inline LObject *&cdar(LObject *c) { return cdr(car(c)); }
+    static inline LObject *&cddr(LObject *c) { return cdr(cdr(c)); }
 
-    static inline LObject *&caaar(void *c) { return car(caar(c)); }
-    static inline LObject *&caadr(void *c) { return car(cadr(c)); }
-    static inline LObject *&cadar(void *c) { return car(cdar(c)); }
-    static inline LObject *&caddr(void *c) { return car(cddr(c)); }
-    static inline LObject *&cdaar(void *c) { return cdr(caar(c)); }
-    static inline LObject *&cdadr(void *c) { return cdr(cadr(c)); }
-    static inline LObject *&cddar(void *c) { return cdr(cdar(c)); }
-    static inline LObject *&cdddr(void *c) { return cdr(cddr(c)); }
+    static inline LObject *&caaar(LObject *c) { return car(caar(c)); }
+    static inline LObject *&caadr(LObject *c) { return car(cadr(c)); }
+    static inline LObject *&cadar(LObject *c) { return car(cdar(c)); }
+    static inline LObject *&caddr(LObject *c) { return car(cddr(c)); }
+    static inline LObject *&cdaar(LObject *c) { return cdr(caar(c)); }
+    static inline LObject *&cdadr(LObject *c) { return cdr(cadr(c)); }
+    static inline LObject *&cddar(LObject *c) { return cdr(cdar(c)); }
+    static inline LObject *&cdddr(LObject *c) { return cdr(cddr(c)); }
 
-    static inline LObject *&caaaar(void *c) { return car(caaar(c)); }
-    static inline LObject *&caaadr(void *c) { return car(caadr(c)); }
-    static inline LObject *&caadar(void *c) { return car(cadar(c)); }
-    static inline LObject *&caaddr(void *c) { return car(caddr(c)); }
-    static inline LObject *&cadaar(void *c) { return car(cdaar(c)); }
-    static inline LObject *&cadadr(void *c) { return car(cdadr(c)); }
-    static inline LObject *&caddar(void *c) { return car(cddar(c)); }
-    static inline LObject *&cadddr(void *c) { return car(cdddr(c)); }
-    static inline LObject *&cdaaar(void *c) { return cdr(caaar(c)); }
-    static inline LObject *&cdaadr(void *c) { return cdr(caadr(c)); }
-    static inline LObject *&cdadar(void *c) { return cdr(cadar(c)); }
-    static inline LObject *&cdaddr(void *c) { return cdr(caddr(c)); }
-    static inline LObject *&cddaar(void *c) { return cdr(cdaar(c)); }
-    static inline LObject *&cddadr(void *c) { return cdr(cdadr(c)); }
-    static inline LObject *&cdddar(void *c) { return cdr(cddar(c)); }
-    static inline LObject *&cddddr(void *c) { return cdr(cdddr(c)); }
+    static inline LObject *&caaaar(LObject *c) { return car(caaar(c)); }
+    static inline LObject *&caaadr(LObject *c) { return car(caadr(c)); }
+    static inline LObject *&caadar(LObject *c) { return car(cadar(c)); }
+    static inline LObject *&caaddr(LObject *c) { return car(caddr(c)); }
+    static inline LObject *&cadaar(LObject *c) { return car(cdaar(c)); }
+    static inline LObject *&cadadr(LObject *c) { return car(cdadr(c)); }
+    static inline LObject *&caddar(LObject *c) { return car(cddar(c)); }
+    static inline LObject *&cadddr(LObject *c) { return car(cdddr(c)); }
+    static inline LObject *&cdaaar(LObject *c) { return cdr(caaar(c)); }
+    static inline LObject *&cdaadr(LObject *c) { return cdr(caadr(c)); }
+    static inline LObject *&cdadar(LObject *c) { return cdr(cadar(c)); }
+    static inline LObject *&cdaddr(LObject *c) { return cdr(caddr(c)); }
+    static inline LObject *&cddaar(LObject *c) { return cdr(cdaar(c)); }
+    static inline LObject *&cddadr(LObject *c) { return cdr(cdadr(c)); }
+    static inline LObject *&cdddar(LObject *c) { return cdr(cddar(c)); }
+    static inline LObject *&cddddr(LObject *c) { return cdr(cdddr(c)); }
 
     // Predefined objects
     struct obj
@@ -317,18 +321,15 @@ private:
 
 void perm_space();
 void tmp_space();
-void *lpointer_value(void *lpointer);
-int32_t lnumber_value(void *lnumber);
-long lfixed_point_value(void *c);
-void *lisp_atom(void *i);
-void *lisp_eq(void *n1, void *n2);
-void *lisp_equal(void *n1, void *n2);
-void *eval_block(void *list);
+void *lpointer_value(LObject *lpointer);
+int32_t lnumber_value(LObject *lnumber);
+long lfixed_point_value(LObject *c);
+LObject *eval_block(LObject *list);
 void resize_tmp(size_t new_size);
 void resize_perm(size_t new_size);
 
 void push_onto_list(LObject *object, LList *&list);
-LSymbol *add_c_object(void *symbol, int index);
+LSymbol *add_c_object(LObject *symbol, int index);
 LSymbol *add_c_function(char const *name, short min_args, short max_args, short number);
 LSymbol *add_c_bool_fun(char const *name, short min_args, short max_args, short number);
 LSymbol *add_lisp_function(char const *name, short min_args, short max_args, short number);
@@ -351,14 +352,14 @@ void lbreak(const char *format, ...);
 };
 
 extern void clisp_init();                      // external initalizer call by lisp_init()
-extern long c_caller(long number, void *arg);  // exten c function switches on number
-extern void *l_caller(long number, void *arg);  // exten lisp function switches on number
+extern long c_caller(long number, LObject *arg);  // exten c function switches on number
+extern LObject *l_caller(long number, LObject *arg);  // exten lisp function switches on number
 
-extern void *l_obj_get(long number);  // exten lisp function switches on number
-extern void l_obj_set(long number, void *arg);  // exten lisp function switches on number
+extern LObject *l_obj_get(long number);  // exten lisp function switches on number
+extern void l_obj_set(long number, LObject *arg);  // exten lisp function switches on number
 extern void l_obj_print(long number);  // exten lisp function switches on number
 
 // FIXME: get rid of this later
-static inline LObject *symbol_value(void *sym) { return ((LSymbol *)sym)->GetValue(); }
-static inline char *lstring_value(void *str) { return ((LString *)str)->GetString(); }
+static inline LObject *symbol_value(LObject *sym) { return ((LSymbol *)sym)->GetValue(); }
+static inline char *lstring_value(LObject *str) { return ((LString *)str)->GetString(); }
 

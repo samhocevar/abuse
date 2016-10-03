@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -32,8 +32,6 @@
 #include "id.h"
 #include "demo.h"
 
-extern void *save_order;         // load from "saveordr.lsp", contains a list ordering the save games
-
 extern JCFont *console_font;
 
 #define MAX_SAVE_GAMES 15
@@ -52,7 +50,6 @@ void load_number_icons()
         save_buts[i] = cache.reg("art/icons.spe", name, SPEC_IMAGE, 1);
     }
 }
-
 
 void last_savegame_name(char *buf)
 {

@@ -92,7 +92,7 @@ static int ant_dodge(GameObject *o)
 
 static int alien_wait_time()
 {
-  void *v=symbol_value(l_difficulty);
+  LObject *v=symbol_value(l_difficulty);
   if (v==l_easy)
     return 6;
   else if (v==l_medium)
@@ -129,7 +129,7 @@ static void fire_at_player(GameObject *o, GameObject *b)
   }
 }
 
-void *ant_ai()
+LObject *ant_ai()
 {
   GameObject *o=current_object,*b;
 
@@ -251,7 +251,7 @@ void *ant_ai()
     {
       o->set_state(stopped);
       o->set_aistate(ANT_RUNNING);
-      return (void *)ant_ai;
+      return ant_ai();
     }
       }
     } break;

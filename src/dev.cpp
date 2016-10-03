@@ -2853,7 +2853,7 @@ void dev_controll::handle_event(Event &ev)
 }
 
 
-void dev_controll::add_palette(void *args)
+void dev_controll::add_palette(Cell *args)
 {
   total_pals++;
   pal_wins=(pal_win **)realloc(pal_wins, sizeof(pal_win *)*total_pals);
@@ -2861,7 +2861,7 @@ void dev_controll::add_palette(void *args)
 }
 
 
-pal_win::pal_win(void *args)
+pal_win::pal_win(Cell *args)
 {
   int i=0;
   Cell *ao=(Cell *)args;

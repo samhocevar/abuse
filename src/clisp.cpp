@@ -76,7 +76,7 @@ LSymbol *l_main_menu, *l_logo, *l_state_art, *l_abilities, *l_state_sfx,
 
 
 char game_name[50];
-void *sensor_ai();
+LObject *sensor_ai();
 
 // variables for the status bar
 LSymbol *l_statbar_ammo_x, *l_statbar_ammo_y,
@@ -91,7 +91,7 @@ uint8_t chatting_enabled = 0;
 
 extern void show_end();
 
-static view *lget_view(void *arg, char const *msg)
+static view *lget_view(LObject *arg, char const *msg)
 {
   GameObject *o = (GameObject *)lpointer_value(arg);
   view *c = o->m_controller;
@@ -571,7 +571,7 @@ void clisp_init() // called by lisp_init, defines symbols and functions
 
 
 // Note: args for l_caller have not been evaluated yet!
-void *l_caller(long number, void *args)
+LObject *l_caller(long number, LObject *args)
 {
     // Shortcut to evaluate nth argument
     auto get_nth = [=](int n) { return lisp::nth(n, args); };
@@ -583,7 +583,7 @@ void *l_caller(long number, void *args)
         case 0: {
             current_object->set_aistate(lnumber_value(eval_nth(0)));
             current_object->set_aistate_time(0);
-            void *ai = figures[current_object->otype]->get_fun(OFUN_AI);
+            LObject *ai = figures[current_object->otype]->get_fun(OFUN_AI);
             if (!ai)
             {
                 lbreak("hrump... call to go_state, and no ai function defined?\n"
@@ -596,7 +596,7 @@ void *l_caller(long number, void *args)
         case 1: {
             GameObject *old_cur = current_object;
             current_object = (GameObject *)lpointer_value(lisp::eval(lisp::car(args)));
-            void *ret = eval_block(lisp::cdr(args));
+            LObject *ret = eval_block(lisp::cdr(args));
             current_object = old_cur;
             return ret;
         }
@@ -671,7 +671,7 @@ void *l_caller(long number, void *args)
 
         case 13: {
             GameObject *old_cur = current_object;
-            void *ret = nullptr;
+            LObject *ret = nullptr;
             for (int i = 0; i < old_cur->total_objects(); ++i)
             {
                 current_object = old_cur->get_object(i);
@@ -696,7 +696,7 @@ void *l_caller(long number, void *args)
 
         case 16:
         {
-            void *f = figures[current_object->otype]->get_fun(OFUN_USER_FUN);
+            LObject *f = figures[current_object->otype]->get_fun(OFUN_USER_FUN);
             if (!f) return NULL;
             return ((LSymbol *)f)->EvalFunction(args);
         } break;
@@ -723,12 +723,11 @@ void *l_caller(long number, void *args)
             long x2 = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             long y2 = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
 
-            void *list = lisp::eval(lisp::car(args));
+            LObject *list = lisp::eval(lisp::car(args));
             GameObject *find = g_current_level->find_object_in_area(current_object->m_pos.x,
                                                     current_object->m_pos.y,
                                                     x1, y1, x2, y2, list, current_object);
-            if (find) return lisp::make_ptr(find);
-            else return NULL;
+            return find ? lisp::make_ptr(find) : nullptr;
         } break;
 
         case 21:
@@ -736,13 +735,12 @@ void *l_caller(long number, void *args)
             long a1 = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
             long a2 = lnumber_value(lisp::eval(lisp::car(args))); args = lisp::cdr(args);
 
-            void *list = lisp::eval(lisp::car(args));
+            LObject *list = lisp::eval(lisp::car(args));
             PtrRef r2(list);
             GameObject *find = g_current_level->find_object_in_angle(current_object->m_pos.x,
                                                         current_object->m_pos.y,
                                                         a1, a2, list, current_object);
-            if (find) return lisp::make_ptr(find);
-            else return NULL;
+            return find ? lisp::make_ptr(find) : nullptr;
         } break;
         case 23:         // def_character
         {
@@ -823,7 +821,7 @@ void *l_caller(long number, void *args)
         {
             GameObject *old_cur = current_object;
             current_object = current_object->get_object(0);
-            void *ret = eval_block(args);
+            LObject *ret = eval_block(args);
             current_object = old_cur;
             return ret;
         }  break;
@@ -942,7 +940,7 @@ void *l_caller(long number, void *args)
             break;
         case 56:
         {
-            void *fn = lisp::eval(lisp::car(args)); args = lisp::cdr(args);
+            LObject *fn = lisp::eval(lisp::car(args)); args = lisp::cdr(args);
             char tmp[200];
             {
                 PtrRef r2(fn);
@@ -1025,7 +1023,7 @@ void *l_caller(long number, void *args)
 //extern bFILE *rcheck, *rcheck_lp;
 
 // arguments have already been evaled..
-long c_caller(long number, void *args)
+long c_caller(long number, LObject *args)
 {
     PtrRef r1(args);
     switch (number)
@@ -1375,7 +1373,7 @@ long c_caller(long number, void *args)
         } break;
         case 134:  // play_sound
         {
-            void *a = args;
+            LObject *a = args;
             PtrRef r2(a);
             int id = lnumber_value(lisp::car(a));
             if (id<0) return 0;
@@ -1564,7 +1562,7 @@ long c_caller(long number, void *args)
         } break;
         case 172:
         {
-            void *a = args;
+            LObject *a = args;
             int r = lnumber_value(lisp::car(a)); a = lisp::cdr(a);
             int g = lnumber_value(lisp::car(a)); a = lisp::cdr(a);
             int b = lnumber_value(lisp::car(a));
@@ -1753,7 +1751,7 @@ long c_caller(long number, void *args)
             int32_t y1 = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
             int32_t x2 = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
             int32_t y2 = lnumber_value(lisp::car(args)); args = lisp::cdr(args);
-            void *block_all = lisp::car(args);
+            LObject *block_all = lisp::car(args);
             int32_t nx2 = x2, ny2 = y2;
             g_current_level->foreground_intersect(x1, y1, x2, y2);
             if (x2!=nx2 || y2!=ny2) return 0;

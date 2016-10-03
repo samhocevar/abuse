@@ -13,19 +13,19 @@
 // functions defined for the main player,  these were translated because they
 // are called every tick and they were getting slow/complicated
 
-void *top_ai();
-void *laser_ufun(void *args);
-void *top_ufun(void *args);
-void *plaser_ufun(void *args);
-void *player_rocket_ufun(void *args);
-void *lsaber_ufun(void *args);
-void *cop_mover(int xm, int ym, int but);
-void *sgun_ai();
-void *ladder_ai();
-void *top_draw();
-void *bottom_draw();
-void *mover_ai();
-void *respawn_ai();
-void *score_draw();
-void *show_kills();
+LObject *top_ai();
+LObject *laser_ufun(LObject *args);
+LObject *top_ufun(LObject *args);
+LObject *plaser_ufun(LObject *args);
+LObject *player_rocket_ufun(LObject *args);
+LObject *lsaber_ufun(LObject *args);
+LObject *cop_mover(int xm, int ym, int but);
+LObject *sgun_ai();
+LObject *ladder_ai();
+LObject *top_draw();
+LObject *bottom_draw();
+LObject *mover_ai();
+LObject *respawn_ai();
+LObject *score_draw();
+LObject *show_kills();
 
