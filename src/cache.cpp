@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -51,9 +51,9 @@ int crc_man_write_crc_file(char const *filename)
 
 int CrcManager::write_crc_file(char const *filename)  // return 0 on failure
 {
-    String msg = String::format("%s", symbol_str("calc_crc"));
+    std::string msg = lol::format("%s", symbol_str("calc_crc"));
     if (stat_man)
-        stat_man->push(msg.C(), NULL);
+        stat_man->push(msg.c_str(), NULL);
 
     int total = 0;
     for (int i = 0; i < m_files.count(); ++i)
@@ -63,7 +63,7 @@ int CrcManager::write_crc_file(char const *filename)  // return 0 on failure
 
         if (failed)
         {
-            jFILE fp(GetFileName(i).C(), "rb");
+            jFILE fp(GetFileName(i).c_str(), "rb");
             if (!fp.open_failure())
             {
                 set_crc(i, Crc::FromFile(&fp));
@@ -92,9 +92,9 @@ int CrcManager::write_crc_file(char const *filename)  // return 0 on failure
         if (!failed)
         {
             fp.write_uint32(crc);
-            String const &name = GetFileName(i);
-            fp.write_uint8(name.count() + 1);
-            fp.write(name.C(), name.count() + 1);
+            std::string const &name = GetFileName(i);
+            fp.write_uint8(name.length() + 1);
+            fp.write(name.c_str(), name.length() + 1);
         }
     }
     return 1;
@@ -109,11 +109,11 @@ int CrcManager::load_crc_file(char const *filename)
     uint16_t count = fp.read_uint16();
     for (int i = 0; i < count; i++)
     {
-        String name;
+        std::string name;
         uint32_t crc = fp.read_uint32();
         uint8_t len = fp.read_uint8();
         name.resize(len);
-        fp.read(name.C(), len);
+        fp.read(&name[0], len);
         set_crc(GetFileNumber(name), crc);
     }
 
@@ -142,17 +142,17 @@ CrcManager::CrcManager()
 {
 }
 
-int CrcManager::GetFileNumber(String const &name)
+int CrcManager::GetFileNumber(std::string const &name)
 {
     for (int i = 0; i < m_files.count(); ++i)
         if (name == m_files[i]->m_name)
             return i;
 
-    m_files.push(new CrcedFile(name.C()));
+    m_files.push(new CrcedFile(name.c_str()));
     return m_files.count() - 1;
 }
 
-String const &CrcManager::GetFileName(int filenumber)
+std::string const &CrcManager::GetFileName(int filenumber)
 {
     return m_files[filenumber]->m_name;
 }
@@ -217,7 +217,7 @@ int CacheList::prof_size()
     int size = 0;     // count up the size for a spec entry
     size += 2;        // total filenames
     for (int i = 0; i < crc_manager.total_filenames(); i++)
-        size += crc_manager.GetFileName(i).count() + 2;    // filename + 0 + size of string
+        size += crc_manager.GetFileName(i).length() + 2;    // filename + 0 + size of string
 
     size += 4;       // number of entries saved
 
@@ -243,9 +243,9 @@ void CacheList::prof_write(bFILE *fp)
       fp->write_uint16(crc_manager.total_filenames());
       for (i=0; i<crc_manager.total_filenames(); i++)
       {
-        String const &name = crc_manager.GetFileName(i);
-        fp->write_uint8(name.count() + 1);
-        fp->write(name.C(), name.count() + 1);
+        std::string const &name = crc_manager.GetFileName(i);
+        fp->write_uint8(name.length() + 1);
+        fp->write(name.c_str(), name.length() + 1);
       }
 
       int tsaved=0;
@@ -450,7 +450,7 @@ void CacheList::preload_cache(Level *lev)
   load_chars();
 }
 
-void CacheList::load_cache_prof_info(String const &filename, Level *lev)
+void CacheList::load_cache_prof_info(std::string const &filename, Level *lev)
 {
   for (int i = 0; i < this->total; i++)
     if (list[i].last_access>=0)      // reset all loaded cache items to 0, all non-load to -1
@@ -459,7 +459,7 @@ void CacheList::load_cache_prof_info(String const &filename, Level *lev)
   preload_cache(lev);                // preliminary guesses at stuff to load
 
   int load_fail=1;
-  bFILE *fp = open_file(filename.C(), "rb");
+  bFILE *fp = open_file(filename.c_str(), "rb");
   if (!fp->open_failure())
   {
     SpecDir sd(fp);
@@ -691,13 +691,13 @@ void CacheList::locate(CacheItem *i, int local_only)
         delete fp;
         delete last_dir;
         if (local_only)
-            fp = new jFILE(crc_manager.GetFileName(i->file_number).C(), "rb");
+            fp = new jFILE(crc_manager.GetFileName(i->file_number).c_str(), "rb");
         else
-            fp = open_file(crc_manager.GetFileName(i->file_number).C(), "rb");
+            fp = open_file(crc_manager.GetFileName(i->file_number).c_str(), "rb");
 
         if (fp->open_failure())
         {
-            msg::error("Could not open file %s\n", crc_manager.GetFileName(i->file_number).C());
+            msg::error("Could not open file %s\n", crc_manager.GetFileName(i->file_number).c_str());
             delete fp;
             exit(0);
         }
@@ -980,8 +980,8 @@ sound_effect *CacheList::sfx(int id)
   else
   {
     touch(me);                                           // hold me, feel me, be me!
-    String const &name = crc_manager.GetFileName(me->file_number);
-    me->data = (void *)new sound_effect(name.C());
+    std::string const &name = crc_manager.GetFileName(me->file_number);
+    me->data = (void *)new sound_effect(name.c_str());
     return (sound_effect *)me->data;
   }
 }
@@ -1071,7 +1071,7 @@ void CacheList::show_accessed()
       ci=new_old;
       old=ci->last_access;
       printf("type=(%20s) file=(%20s) access=(%6ld)\n",spec_types[ci->type],
-         crc_manager.GetFileName(ci->file_number).C(),
+         crc_manager.GetFileName(ci->file_number).c_str(),
          (long int)ci->last_access);
     }
   } while (new_old);

@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -844,9 +844,9 @@ void Level::set_size(int w, int h)
   bg_height=nbh;
   bg_width=nbw;
 
-  String msg = String::format("Level %s size now %d %d\n", GetName().C(),
-                              foreground_width(), foreground_height());
-  the_game->show_help(msg.C());
+  std::string msg = lol::format("Level %s size now %d %d\n", GetName().c_str(),
+                                foreground_width(), foreground_height());
+  the_game->show_help(msg.c_str());
 }
 
 
@@ -1267,7 +1267,7 @@ Level::Level(SpecDir *sd, bFILE *fp, char const *lev_name)
     fp->seek(e->offset, 0);
     int len = fp->read_uint8(); // read the length of the string
     m_first_name.resize(len);
-    fp->read(m_first_name.C(), len); // read the string
+    fp->read(&m_first_name[0], len); // read the string
   }
   else
   {
@@ -1422,16 +1422,16 @@ Level::Level(SpecDir *sd, bFILE *fp, char const *lev_name)
 */
 
 
-String get_prof_assoc_filename(String const &filename)
+std::string get_prof_assoc_filename(std::string const &filename)
 {
-    int dot = filename.last_index_of('.');
-    return (dot == -1 ? filename : filename.sub(0, dot)) + ".cpf";
+    auto dot = filename.rfind('.');
+    return (dot == std::string::npos ? filename : filename.substr(0, dot)) + ".cpf";
 }
 
 void Level::level_loaded_notify()
 {
-  String n = m_first_name.count() ? m_first_name : m_name;
-  if (n.sub(0, 12) == "levels/level")
+  std::string n = m_first_name.length() ? m_first_name : m_name;
+  if (starts_with(n, "levels/level"))
   {
     char nm[100];
     sprintf(nm, "music/abuse%c%c.hmi", n[12], n[13]);
@@ -1470,9 +1470,9 @@ bFILE *Level::create_dir(char *filename, int save_all,
 {
   SpecDir sd;
   sd.add_by_hand(new SpecEntry(SPEC_DATA_ARRAY, "Copyright 1995 Crack dot Com, All Rights reserved", NULL, 0, 0));
-  if (m_first_name.count())
+  if (m_first_name.length())
     sd.add_by_hand(new SpecEntry(SPEC_DATA_ARRAY, "first name",
-                                 NULL, m_first_name.count() + 2, 0));
+                                 NULL, (int)m_first_name.length() + 2, 0));
 
 
   sd.add_by_hand(new SpecEntry(SPEC_GRUE_FGMAP,"fgmap",NULL,4+4+fg_width*fg_height*2,0));
@@ -1547,7 +1547,7 @@ bFILE *Level::create_dir(char *filename, int save_all,
     sd.add_by_hand(new SpecEntry(SPEC_DATA_ARRAY,object_descriptions[i].name,NULL,1+
               RC_type_size(object_descriptions[i].type)*t,0));
 
-  add_light_spec(&sd, m_name.C());
+  add_light_spec(&sd, m_name.c_str());
 
 
   sd.add_by_hand(new SpecEntry(SPEC_DATA_ARRAY,"object_links",NULL,1+4+total_object_links(save_list)*8,0));
@@ -1587,8 +1587,8 @@ void Level::write_thumb_nail(bFILE *fp, AImage *im)
   AImage *i = new AImage(ivec2(160, 100 + wm->font()->Size().y * 2));
   i->clear();
   scale_put(im,i,0,0,160,100);
-  if (m_first_name.count())
-    wm->font()->PutString(i, ivec2(80 - m_first_name.count() * wm->font()->Size().x / 2, 100), m_first_name.C());
+  if (m_first_name.length())
+    wm->font()->PutString(i, ivec2(80 - (int)m_first_name.length() * wm->font()->Size().x / 2, 100), m_first_name.c_str());
 
   time_t t;
   t=time(NULL);
@@ -2093,13 +2093,14 @@ void Level::write_cache_prof_info()
 {
   if (cache.prof_is_on())
   {
-    String pf_name = get_prof_assoc_filename(m_first_name.count()
-                                              ? m_name : m_first_name);
+    // FIXME: is the logic correct here?
+    std::string pf_name = get_prof_assoc_filename(m_first_name.length()
+                                              ? m_first_name : m_name);
 
     SpecDir sd;
     sd.add_by_hand(new SpecEntry(SPEC_DATA_ARRAY,"cache profile info",NULL,cache.prof_size(),0));
     sd.calc_offsets();
-    jFILE *fp2 = sd.write(pf_name.C());
+    jFILE *fp2 = sd.write(pf_name.c_str());
     if (!fp2)
       the_game->show_help("Unable to open cache profile output file");
     else
@@ -2117,10 +2118,10 @@ void Level::load_cache_info(SpecDir *sd, bFILE *fp)
   if (!DEFINEDP(symbol_value(l_empty_cache)) || !symbol_value(l_empty_cache))
   {
     // get cache info from orignal filename if this is a savegame
-    String pf_name = get_prof_assoc_filename(m_first_name.count()
-                                              ? m_name : m_first_name);
+    std::string pf_name = get_prof_assoc_filename(m_first_name.length()
+                                              ? m_first_name : m_name);
 
-    cache.load_cache_prof_info(pf_name.C(), this);
+    cache.load_cache_prof_info(pf_name.c_str(), this);
   }
 }
 
@@ -2181,10 +2182,10 @@ int Level::save(char const *filename, int save_all)
     {
         if( !fp->open_failure() )
         {
-            if( m_first_name.count() )
+            if( m_first_name.length() )
             {
-                fp->write_uint8(m_first_name.count() + 1);
-                fp->write(m_first_name.C(), m_first_name.count() + 1);
+                fp->write_uint8(m_first_name.length() + 1);
+                fp->write(m_first_name.c_str(), m_first_name.length() + 1);
             }
             else
             {

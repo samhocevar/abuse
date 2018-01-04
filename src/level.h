@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -10,13 +10,15 @@
 
 #pragma once
 
+#include <cstdlib>
+#include <string>
+
 #include "imlib/specs.h"
 
 #include "objects.h"
 #include "view.h"
 #include "id.h"
 
-#include <stdlib.h>
 #define ASPECT 4             // foreground scrolls 4 times faster than background
 
 
@@ -49,7 +51,7 @@ class Level        // contain map info and objects
            *map_bg,
        bg_width,bg_height,
        fg_width,fg_height;
-  String m_name, m_first_name;
+  std::string m_name, m_first_name;
   int32_t total_objs;
   GameObject *first,*first_active,*last;
 
@@ -74,19 +76,19 @@ class Level        // contain map info and objects
   uint32_t ctick;
 
 public :
-    String const & GetOriginalName() const
+    std::string const & GetOriginalName() const
     {
-        if (m_first_name.count())
+        if (m_first_name.length())
             return m_first_name;
         return m_name;
     }
 
-    String const &GetName() const
+    std::string const &GetName() const
     {
         return m_name;
     }
 
-    void SetName(String const &name)
+    void SetName(std::string const &name)
     {
         m_name = name;
     }

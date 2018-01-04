@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -25,8 +25,8 @@
 class AProperty
 {
 public:
-    String m_name;
-    String m_string;
+    std::string m_name;
+    std::string m_string;
     int m_num;
 
     AProperty(char const *name, int def)
@@ -43,9 +43,7 @@ public:
 
     void Set(int x)
     {
-        // FIXME: would empty() work here?
-        if (m_string.count())
-            m_string.resize(0);
+        m_string.empty();
         m_num = x;
     }
 
@@ -77,7 +75,7 @@ AProperty *APropertyManager::find(char const *name)
 int APropertyManager::get(char const *name, int def)
 {
     AProperty *f = find(name);
-    if (!f || f->m_string.count())
+    if (!f || f->m_string.length())
         return def;
     return f->m_num;
 }
@@ -85,9 +83,9 @@ int APropertyManager::get(char const *name, int def)
 char const *APropertyManager::get(char const *name, char const *def)
 {
     AProperty *f = find(name);
-    if (!f || !f->m_string.count())
+    if (!f || !f->m_string.length())
         return def;
-    return f->m_string.C();
+    return f->m_string.c_str();
 }
 
 void APropertyManager::set(char const *name, double def)
@@ -119,9 +117,9 @@ void APropertyManager::save(char const *filename)
 
     for (int i = 0; i < m_props.count(); ++i)
     {
-        fprintf(fp, "%s = ", m_props[i]->m_name.C());
-        if (m_props[i]->m_string.count())
-            fprintf(fp, "\"%s\"\n", m_props[i]->m_string.C());
+        fprintf(fp, "%s = ", m_props[i]->m_name.c_str());
+        if (m_props[i]->m_string.length())
+            fprintf(fp, "\"%s\"\n", m_props[i]->m_string.c_str());
         else
             fprintf(fp, "%d\n", m_props[i]->m_num);
     }

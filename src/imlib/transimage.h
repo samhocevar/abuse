@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -63,7 +63,7 @@ private:
                          int nframes, uint8_t *tint,
                          ColorFilter *f, Palette *pal);
 
-    String m_name;
+    std::string m_name;
     ivec2 m_size;
     uint8_t *m_data;
 };

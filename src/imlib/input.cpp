@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -191,8 +191,8 @@ ibox2 AButton::GetArea()
     if (pressed)
         return ibox2(m_pos, m_pos + pressed->Size() - ivec2(1));
 
-    if (m_text.count())
-        return ibox2(m_pos, m_pos + wm->font()->Size() * ivec2(m_text.count(), 1) + ivec2(6));
+    if (m_text.length())
+        return ibox2(m_pos, m_pos + wm->font()->Size() * ivec2((int)m_text.length(), 1) + ivec2(6));
 
     return ibox2(m_pos, m_pos + visual->Size() + ivec2(6));
 }
@@ -406,7 +406,7 @@ void AButton::draw_first(AImage *screen)
         screen->Bar(area.aa + ivec2(1), area.bb - ivec2(1), wm->medium_color());
     }
 
-    if ((up && m_text.count()) || (!up && !visual))
+    if ((up && m_text.length()) || (!up && !visual))
     {
         wm->font()->PutString(screen, m_pos + ivec2(4, 5), m_text, wm->black());
         wm->font()->PutString(screen, m_pos + ivec2(3, 4), m_text);
@@ -488,9 +488,9 @@ void AInfoField::put_para(AImage *screen, char const *st, int dx, int dy,
 
 void AInfoField::draw_first(AImage *screen)
 {
-    put_para(screen, m_text.C(), m_pos.x+1, m_pos.y+1, wm->font()->Size().x,
+    put_para(screen, m_text.c_str(), m_pos.x+1, m_pos.y+1, wm->font()->Size().x,
              wm->font()->Size().y, wm->font(), wm->black());
-    put_para(screen, m_text.C(), m_pos.x, m_pos.y, wm->font()->Size().x,
+    put_para(screen, m_text.c_str(), m_pos.x, m_pos.y, wm->font()->Size().x,
              wm->font()->Size().y, wm->font(), wm->bright_color());
 }
 

@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -16,7 +16,7 @@ class director        // the director controlls the scene
       pan_xv,pan_yv,pan_steps,
       frame_speed,scroll_speed,pan_speed,scene_abort;
   char *text;
-  Timer *pan_time, *text_time;
+  timer *pan_time, *text_time;
 public :
   void set_text_region(int left, int top, int right, int bottom)
   { tleft=left; ttop=top; tright=right; tbottom=bottom; }

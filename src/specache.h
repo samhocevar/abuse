@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -21,7 +21,7 @@ class SpecDirCache
         friend class SpecDirCache;
 
     public:
-        FileNode(String const filename, SpecDir *dir)
+        FileNode(std::string const &filename, SpecDir *dir)
         {
             m_name = filename;
             m_sd = dir;
@@ -31,16 +31,16 @@ class SpecDirCache
     private:
         FileNode *m_left, *m_right, *m_next;
         SpecDir *m_sd;
-        String m_name;
+        std::string m_name;
         uint16_t m_size;
     }
-    *m_root, *m_list;
+    *m_root = nullptr, *m_list = nullptr;
 
 public:
-    SpecDirCache() : m_root(nullptr), m_size(0) { }
+    inline SpecDirCache() {}
     ~SpecDirCache();
 
-    SpecDir *GetSpecDir(String const filename, bFILE *fp = nullptr);
+    SpecDir *GetSpecDir(std::string const &filename, bFILE *fp = nullptr);
     void Load(bFILE *fp);
     void Save(bFILE *fp);
     void Clear();
@@ -48,7 +48,7 @@ public:
 private:
     void ClearNode(FileNode *f);
 
-    uint16_t m_size;
+    uint16_t m_size = 0;
 };
 
 extern SpecDirCache g_sd_cache;

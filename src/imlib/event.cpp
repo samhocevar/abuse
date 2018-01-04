@@ -1,7 +1,7 @@
 /*
  *  Abuse - dark 2D side-scrolling platform game
  *  Copyright (c) 2001 Anthony Kruize <trandor@labyrinth.net.au>
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Copyright (c) 2005-2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ EventHandler::~EventHandler()
 void EventHandler::Get(Event &ev)
 {
     // Sleep until there are events available
-    for (Timer t; !m_pending; t.Wait(0.001))
+    for (timer t; !m_pending; t.wait(0.001))
         IsPending();
 
     // Return first queued event if applicable

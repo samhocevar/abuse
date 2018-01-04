@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -224,17 +224,17 @@ void show_end2()
   AImage *tcopy=cache.img(planet)->copy();
   fade_in(NULL,32);
 
-  Timer t;
+  timer t;
 
 
   for (i=0; i<80; )
   {
-    if (t.Poll() > 0.1)
+    if (t.poll() > 0.1)
     {
       if ((i%10)==0 && (sound_avail&SFX_INITIALIZED))
         cache.sfx(space_snd)->play(64);
 
-      t.Get();
+      t.get();
       main_screen->clear();
       int j;
       for (si=sinfo,j=0; j<800; j++,si+=3)
@@ -280,12 +280,12 @@ void show_end2()
   ex_char *clist=NULL;
   for (i=0; i<200; )
   {
-    if (t.Poll() > 0.1)
+    if (t.poll() > 0.1)
     {
       if ((i%10)==0 && (sound_avail&SFX_INITIALIZED))
         cache.sfx(space_snd)->play(64);
 
-      t.Get();
+      t.get();
       main_screen->clear();
       int j;
       for (si=sinfo,j=0; j<800; j++,si+=3)
@@ -349,12 +349,12 @@ void show_end2()
   i=0;
   do
   {
-    if (t.Poll() > 0.1)
+    if (t.poll() > 0.1)
     {
       if ((i%10)==0 && (sound_avail&SFX_INITIALIZED))
         cache.sfx(space_snd)->play(64);
 
-      t.Get();
+      t.get();
       scan_map(main_screen,ex,ey,cache.img(planet),
            cache.img(planet2),
            256,paddr,
@@ -378,7 +378,7 @@ void show_end2()
   LObject *end_plot = lisp::make_sym("plot_end")->GetValue();
 
 
-  t.Get();
+  t.get();
   ev.type=EV_SPURIOUS;
   for (i=0; i<320 && ev.type!=EV_KEY; i++)
   {
@@ -393,8 +393,8 @@ void show_end2()
          p,cache.img(mask)->Size().y,eoff,coff);
     text_draw(205-i,dx+10,dy,dx+319-10,dy+199,lstring_value(end_plot),wm->font(),cmap,wm->bright_color());
     wm->flush_screen();
-    t.Wait(0.18);
-    t.Get();
+    t.wait(0.18);
+    t.get();
 
     while (wm->IsPending() && ev.type!=EV_KEY) wm->get_event(ev);
   }
@@ -449,7 +449,7 @@ void share_end()
     cmap[i] = g_palette->FindClosest(u8vec3(i * 256 / 32, i * 256 / 32, i * 256 / 32));
 
   Event ev; ev.type=EV_SPURIOUS;
-  Timer t;
+  timer t;
   for (i=0; i<320 && ev.type!=EV_KEY; i++)
   {
     main_screen->PutImage(im, ivec2(dx, dy));
@@ -458,8 +458,8 @@ void share_end()
 
     text_draw(205-i,dx+10,dy,dx+319-10,dy+199,lstring_value(mid_plot),wm->font(),cmap,wm->bright_color());
     wm->flush_screen();
-    t.Wait(0.18);
-    t.Get();
+    t.wait(0.18);
+    t.get();
     while (wm->IsPending() && ev.type!=EV_KEY) wm->get_event(ev);
   }
 
@@ -502,15 +502,15 @@ void show_end()
     cmap[i] = g_palette->FindClosest(u8vec3(i * 256 / 32, i * 256 / 32, i * 256 / 32));
 
   Event ev; ev.type=EV_SPURIOUS;
-  Timer t;
+  timer t;
   for (i=0; i<320 && ev.type!=EV_KEY; i++)
   {
     main_screen->PutImage(im, ivec2(dx, dy));
 
     text_draw(205-i,dx+10,dy,dx+319-10,dy+199,lstring_value(end_plot),wm->font(),cmap,wm->bright_color());
     wm->flush_screen();
-    t.Wait(0.18);
-    t.Get();
+    t.wait(0.18);
+    t.get();
     while (wm->IsPending() && ev.type!=EV_KEY) wm->get_event(ev);
   }
 

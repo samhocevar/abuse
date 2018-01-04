@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -156,7 +156,7 @@ int menu(LObject *args, JCFont *font)             // reurns -1 on esc
   AImage *save = new AImage(ivec2(mw - 2, bh));
   int color=128, cdir=50;
 
-  Timer *last_color_time = nullptr;
+  timer *last_color_time = nullptr;
   if (!NILP(def))
     choice=lnumber_value(def);
   do
@@ -199,11 +199,11 @@ int menu(LObject *args, JCFont *font)             // reurns -1 on esc
       }
     }
 
-    if (!last_color_time || last_color_time->Poll() * 1000.0 > 120.0)
+    if (!last_color_time || last_color_time->poll() * 1000.0 > 120.0)
     {
       if (!last_color_time)
-        last_color_time = new Timer;
-      last_color_time->Get();
+        last_color_time = new timer;
+      last_color_time->get();
 
       int by1=(font->Size().y+1)*choice+my+5-2;
       int by2=by1+bh-1;
@@ -227,7 +227,7 @@ int menu(LObject *args, JCFont *font)             // reurns -1 on esc
       }
       wm->flush_screen();
       main_screen->PutImage(save, ivec2(mx + 1, by1));
-    } else { Timer tmp; tmp.Wait(0.01f); }
+    } else { timer tmp; tmp.wait(0.01f); }
 
   } while (!done);
   if (last_color_time)
@@ -618,7 +618,7 @@ void main_menu()
     Event ev;
 
     int stop_menu=0;
-    Timer t;
+    timer t;
     wm->flush_screen();
     do
     {
@@ -633,20 +633,20 @@ void main_menu()
                 wm->Push(Event(ID_QUIT, NULL));
 
             menu_handler(ev, inm);
-            t.Get();
+            t.get();
 
             wm->flush_screen();
         }
         else
         {
             // ECS - Added so that main menu doesn't grab 100% of CPU
-            Timer tmp; tmp.Wait(0.03f);
+            timer tmp; tmp.wait(0.03f);
         }
 
-        if (t.Poll() > 10.0)
+        if (t.poll() > 10.0)
         {
             if (volume_window)
-                t.Get();
+                t.get();
             else
             {
                 if (!current_demo)
@@ -678,7 +678,7 @@ void main_menu()
                 else
                 {
                     ev.type=EV_SPURIOUS;
-                    t.Get();
+                    t.get();
                 }
             }
         }

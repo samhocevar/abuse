@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 2001 Anthony Kruize <trandor@labyrinth.net.au>
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 2001 Anthony Kruize <trandor@labyrinth.net.au>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
 #include "setup.h"
 
 flags_struct flags;
-keys_struct keys;
+keys_struct current_keys;
 
 extern int xres, yres;
 
@@ -147,42 +147,42 @@ void readRCFile()
             else if( strcasecmp( result, "left" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.left = key_value( result );
+                current_keys.left = key_value( result );
             }
             else if( strcasecmp( result, "right" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.right = key_value( result );
+                current_keys.right = key_value( result );
             }
             else if( strcasecmp( result, "up" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.up = key_value( result );
+                current_keys.up = key_value( result );
             }
             else if( strcasecmp( result, "down" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.down = key_value( result );
+                current_keys.down = key_value( result );
             }
             else if( strcasecmp( result, "fire" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.b2 = key_value( result );
+                current_keys.b2 = key_value( result );
             }
             else if( strcasecmp( result, "special" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.b1 = key_value( result );
+                current_keys.b1 = key_value( result );
             }
             else if( strcasecmp( result, "weapprev" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.b3 = key_value( result );
+                current_keys.b3 = key_value( result );
             }
             else if( strcasecmp( result, "weapnext" ) == 0 )
             {
                 result = strtok( NULL,"\n" );
-                keys.b4 = key_value( result );
+                current_keys.b4 = key_value( result );
             }
         }
         fclose( fd );
@@ -254,12 +254,12 @@ void setup( int argc, char **argv )
     flags.nosdlparachute    = 0;            // SDL error handling
     flags.xres = xres        = 320;            // Default window width
     flags.yres = yres        = 200;            // Default window height
-    keys.up                    = key_value( "UP" );
-    keys.down                = key_value( "DOWN" );
-    keys.left                = key_value( "LEFT" );
-    keys.right                = key_value( "RIGHT" );
-    keys.b3                    = key_value( "CTRL_R" );
-    keys.b4                    = key_value( "INSERT" );
+    current_keys.up    = key_value( "UP" );
+    current_keys.down  = key_value( "DOWN" );
+    current_keys.left  = key_value( "LEFT" );
+    current_keys.right = key_value( "RIGHT" );
+    current_keys.b3    = key_value( "CTRL_R" );
+    current_keys.b4    = key_value( "INSERT" );
 
     // Display our name and version
     printf( "%s %s\n", PACKAGE_NAME, PACKAGE_VERSION );
@@ -351,21 +351,21 @@ void setup( int argc, char **argv )
 int get_key_binding(char const *dir, int i)
 {
     if( strcasecmp( dir, "left" ) == 0 )
-        return keys.left;
+        return current_keys.left;
     else if( strcasecmp( dir, "right" ) == 0 )
-        return keys.right;
+        return current_keys.right;
     else if( strcasecmp( dir, "up" ) == 0 )
-        return keys.up;
+        return current_keys.up;
     else if( strcasecmp( dir, "down" ) == 0 )
-        return keys.down;
+        return current_keys.down;
     else if( strcasecmp( dir, "b1" ) == 0 )
-        return keys.b1;
+        return current_keys.b1;
     else if( strcasecmp( dir, "b2" ) == 0 )
-        return keys.b2;
+        return current_keys.b2;
     else if( strcasecmp( dir, "b3" ) == 0 )
-        return keys.b3;
+        return current_keys.b3;
     else if( strcasecmp( dir, "b4" ) == 0 )
-        return keys.b4;
+        return current_keys.b4;
 
     return 0;
 }

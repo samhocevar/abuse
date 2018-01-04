@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -38,19 +38,19 @@ void SpecDirCache::Save(bFILE *fp)
     fp->write_uint16(total);
     for (FileNode *f = m_list; f; f = f->m_next)
     {
-        uint8_t len = f->m_name.count() + 1;
+        uint8_t len = f->m_name.length() + 1;
         fp->write(&len, 1);
-        fp->write(f->m_name.C(), len);
+        fp->write(f->m_name.c_str(), len);
         f->m_sd->write(fp);
     }
 }
 
-SpecDir *SpecDirCache::GetSpecDir(String const filename, bFILE *fp)
+SpecDir *SpecDirCache::GetSpecDir(std::string const &filename, bFILE *fp)
 {
     FileNode **parent = 0, *p = m_root;
     while (p)
     {
-        int cmp = strcmp(p->m_name.C(), filename.C());
+        int cmp = strcmp(p->m_name.c_str(), filename.c_str());
         if (cmp == 0)
             return p->m_sd;
         parent = cmp < 0 ? &p->m_left : &p->m_right;
@@ -60,7 +60,7 @@ SpecDir *SpecDirCache::GetSpecDir(String const filename, bFILE *fp)
     bool need_close = false;
     if (!fp)
     {
-        fp = open_file(filename.C(), "rb");
+        fp = open_file(filename.c_str(), "rb");
         if (fp->open_failure())
         {
             delete fp;

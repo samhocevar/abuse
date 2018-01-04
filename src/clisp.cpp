@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -704,13 +704,13 @@ LObject *l_caller(long number, LObject *args)
         {
             long trials = lnumber_value(lisp::eval(lisp::car(args)));
             args = lisp::cdr(args);
-            Timer t;
+            timer t;
             for (int x = 0; x < trials; x++)
             {
                 LSpace::Tmp.Clear();
                 lisp::eval(lisp::car(args));
             }
-            return lisp::make_fp((long)(t.Get() * (1 << 16)));
+            return lisp::make_fp((long)(t.get() * (1 << 16)));
         } break;
         case 18:
         { return lisp::make_str(object_names[current_object->otype]); } break;
@@ -796,7 +796,7 @@ LObject *l_caller(long number, LObject *args)
         } break;
         case 26:
         {
-            return lisp::make_str(g_current_level->GetName().C());
+            return lisp::make_str(g_current_level->GetName().c_str());
         } break;
         case 27: return ant_ai(); break;
         case 28: return sensor_ai(); break;

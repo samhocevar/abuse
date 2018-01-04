@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -631,7 +631,7 @@ int get_inputs_from_server(unsigned char *buf)
 {
   if (prot && base->input_state!=INPUT_PROCESSING)      // if input is not here, wait on it
   {
-    Timer t;
+    timer t;
 
     int total_retry=0;
     AWindow *abort=NULL;
@@ -645,14 +645,14 @@ int get_inputs_from_server(unsigned char *buf)
       }
       service_net_request();
 
-      if (t.Poll() > 0.05)
+      if (t.poll() > 0.05)
       {
     if (prot->debug_level(net_protocol::DB_IMPORTANT_EVENT))
       fprintf(stderr,"(missed packet)");
 
 
     game_face->input_missing();
-    t.Get();
+    t.get();
 
     total_retry++;
     if (total_retry==12000)    // 2 minutes and nothing

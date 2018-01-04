@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -459,12 +459,12 @@ void show_stats()
     int x1=im->Size().x+1,y1=0,x2=xres,y2=main_screen->Size().y;
     fade_in(NULL,16);
 
-    String const &name = g_current_level->GetOriginalName();
-    ASSERT(name.count() > (int)strlen(".spe") + 2,
-           "invalid level name %s", name.C());
-    String digits = name.sub(name.count() - strlen(".spe") - 2, 2);
+    std::string const &name = g_current_level->GetOriginalName();
+    ASSERT(name.length() > strlen(".spe") + 2,
+           "invalid level name %s", name.c_str());
+    std::string digits = name.substr(name.length() - strlen(".spe") - 2, 2);
 
-    String msg = symbol_str("lev_complete");
+    std::string msg = symbol_str("lev_complete");
     msg += " : ";
     if (isdigit(digits[0]) && isdigit(digits[1]))
     {
@@ -475,7 +475,7 @@ void show_stats()
     else
         msg += name;
 
-    int w = wm->font()->Size().x * msg.count(),
+    int w = wm->font()->Size().x * msg.length(),
         h = wm->font()->Size().y;
     int x=(x1+x2)/2-w/2,y=(y1+y2)/2-h/2;
     main_screen->Bar(ivec2(x - 10, y - 10), ivec2(x + w + 10, y + h + 10),
@@ -483,10 +483,10 @@ void show_stats()
     main_screen->Bar(ivec2(x - 9, y - 9), ivec2(x + w + 9, y + h + 9),
                      wm->medium_color());
 
-    wm->font()->PutString(main_screen, ivec2(x + 1, y + 1), msg.C(), wm->dark_color());
-    wm->font()->PutString(main_screen, ivec2(x, y), msg.C(), wm->bright_color());
+    wm->font()->PutString(main_screen, ivec2(x + 1, y + 1), msg, wm->dark_color());
+    wm->font()->PutString(main_screen, ivec2(x, y), msg, wm->bright_color());
     wm->flush_screen();
-    Timer now; now.Wait(0.5);
+    timer now; now.wait(0.5);
   }
 }
 

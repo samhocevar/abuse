@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -1048,10 +1048,10 @@ template<int N> static void Fade(AImage *im, int steps)
                                    - im->Size() / 2);
     }
 
-    for (Timer total; total.Poll() < duration * steps; )
+    for (timer total; total.poll() < duration * steps; )
     {
-        Timer frame;
-        int i = (int)(total.Poll() / duration);
+        timer frame;
+        int i = (int)(total.poll() / duration);
         int v = (N ? i + 1 : steps - i) * 256 / steps;
 
         for (int j = 0; j < 256; j++)
@@ -1059,7 +1059,7 @@ template<int N> static void Fade(AImage *im, int steps)
 
         g_palette->Load();
         wm->flush_screen();
-        frame.Wait(duration);
+        frame.wait(duration);
     }
 
     if (N == 0)
@@ -1114,7 +1114,7 @@ void do_title()
     wm->SetMouseShape(blank->copy(), ivec2(0, 0)); // hide mouse
     delete blank;
     fade_in(cache.img(cdc_logo), 32);
-    Timer tmp; tmp.Wait(0.4f);
+    timer tmp; tmp.wait(0.4f);
     fade_out(32);
 
     LObject *space_snd = lisp::make_sym("SPACE_SND")->GetValue();
@@ -1152,14 +1152,14 @@ void do_title()
 
         Event ev;
         ev.type = EV_SPURIOUS;
-        Timer total;
+        timer total;
 
         while (ev.type != EV_KEY && ev.type != EV_MOUSE_BUTTON)
         {
-            Timer frame;
+            timer frame;
 
             // 120 ms per step
-            int i = (int)(total.Poll() / 0.120f);
+            int i = (int)(total.poll() / 0.120f);
             if (i >= 400)
                 break;
 
@@ -1174,8 +1174,8 @@ void do_title()
             if((i % 5) == 0 && DEFINEDP(space_snd) && (sound_avail & SFX_INITIALIZED))
                 cache.sfx(lnumber_value(space_snd))->play(sfx_volume * 90 / 127);
 
-            frame.Wait(0.025f);
-            frame.Get();
+            frame.wait(0.025f);
+            frame.get();
         }
 
         the_game->reset_keymap();
@@ -1447,7 +1447,7 @@ void Game::do_intro()
 // FIXME: refactor this to use the Lol Engine main fixed-framerate loop?
 int Game::calc_speed()
 {
-    static Timer frame_timer;
+    static timer frame_timer;
     static int first = 1;
 
     if (first)
@@ -1457,7 +1457,7 @@ int Game::calc_speed()
     }
 
     // Find average fps for last 10 frames
-    float deltatime = lol::max(0.001f, frame_timer.Poll());
+    float deltatime = lol::max(0.001f, frame_timer.poll());
 
     avg_time = 0.9f * avg_time + 0.1f * deltatime;
     possible_time = 0.9f * possible_time + 0.1f * deltatime;
@@ -1471,14 +1471,14 @@ int Game::calc_speed()
     {
         // ECS - Added this case and the wait.  It's a cheap hack to ensure
         // that we don't exceed 30FPS in edit mode and hog the CPU.
-        frame_timer.Wait(0.033f);
+        frame_timer.wait(0.033f);
     }
     else if (avg_time < 1.0f / 15 && need_delay)
     {
         frame_panic = 0;
         if (!no_delay)
         {
-            frame_timer.Wait(1.0f / 15);
+            frame_timer.wait(1.0f / 15);
             avg_time -= 0.1f * deltatime;
             avg_time += 0.1f * 1.0f / 15;
         }
@@ -1493,7 +1493,7 @@ int Game::calc_speed()
     }
 
     // Ignore our wait time, we're more interested in the frame time
-    frame_timer.Get();
+    frame_timer.get();
     return ret;
 }
 
@@ -2459,7 +2459,7 @@ private:
 
         delete chat;
 
-        Timer tmp; tmp.Wait(0.5f);
+        timer tmp; tmp.wait(0.5f);
 
         if (current_song)
             current_song->stop();

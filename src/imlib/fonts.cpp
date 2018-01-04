@@ -1,7 +1,7 @@
 /*
  *  Abuse - dark 2D side-scrolling platform game
  *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Copyright (c) 2005-2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -18,9 +18,9 @@
 
 #include "imlib/fonts.h"
 
-void JCFont::PutString(AImage *screen, ivec2 pos, String const &st, int color)
+void JCFont::PutString(AImage *screen, ivec2 pos, std::string const &st, int color)
 {
-    for (int i = 0; i < st.count(); ++i, pos.x += m_size.x)
+    for (int i = 0; i < (int)st.length(); ++i, pos.x += m_size.x)
         PutChar(screen, pos, st[i], color);
 }
 

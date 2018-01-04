@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -70,12 +70,12 @@ int demo_manager::start_recording(char const *filename)
   record_file=open_file(filename,"wb");
   if (record_file->open_failure()) { delete record_file; return 0; }
 
-  String const name = g_current_level->GetName();
+  std::string const name = g_current_level->GetName();
 
-  the_game->load_level(name.C());
+  the_game->load_level(name.c_str());
   record_file->write((void const *)"DEMO,VERSION:2", 14);
-  record_file->write_uint8(name.count() + 1);
-  record_file->write(name.C(), name.count() + 1);
+  record_file->write_uint8(name.length() + 1);
+  record_file->write(name.c_str(), name.length() + 1);
 
   uint8_t difficulty = 3;
   if (DEFINEDP(symbol_value(l_difficulty)))

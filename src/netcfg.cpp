@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -470,7 +470,7 @@ int net_configuration::input()   // pulls up dialog box and input fileds
     net_address *game_addr[MAX_GAMES+1];
     int join_game=-1;
 
-    Timer t;
+    timer t;
 
     do
     {
@@ -502,16 +502,16 @@ int net_configuration::input()   // pulls up dialog box and input fileds
             // No event waiting...  We can't wait for long, because we are
             // pretending to broadcast.
             // ECS - Added so waiting in dialog doesn't use 100% of CPU
-            Timer tmp; tmp.Wait(0.005f);
+            timer tmp; tmp.wait(0.005f);
         }
     }
 
       wm->flush_screen();
       char name[256];
 
-      if (total_games<MAX_GAMES && t.Poll() > 0.5)
+      if (total_games<MAX_GAMES && t.poll() > 0.5)
       {
-        t.Get();
+        t.get();
         net_address *find=prot->find_address(0x9090,name);    // was server_port
         if (find)
         {
@@ -537,7 +537,7 @@ int net_configuration::input()   // pulls up dialog box and input fileds
       if (get_options(0))
       {
         int still_there=1;  // change this back to 0, to check if games are stil alive
-        Timer t2;
+        timer t2;
         do
         {
           char name[256];
@@ -549,7 +549,7 @@ int net_configuration::input()   // pulls up dialog box and input fileds
             delete find;
           }
 
-        } while (t.Poll() < 3.0 && !still_there);
+        } while (t2.poll() < 3.0 && !still_there);
 
         if (still_there)
         {

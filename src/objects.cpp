@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -410,10 +410,10 @@ int GameObject::decide()
     current_object=this;
     void *m = LSpace::Tmp.Mark();
 
-    Timer t;
+    timer t;
     LObject *ret = ((LSymbol *)figures[otype]->get_fun(OFUN_AI))->EvalFunction(NULL);
     if (profiling())
-      profile_add_time(this->otype, t.Get());
+      profile_add_time(this->otype, t.get());
 
     LSpace::Tmp.Restore(m);
 
@@ -507,10 +507,10 @@ void GameObject::do_damage(int amount, GameObject *from, int32_t hitx, int32_t h
     frm->m_cdr = hx;
     am->m_cdr = frm;
 
-    Timer t;
+    timer t;
     ((LSymbol *)d)->EvalUserFunction(am);
     if (profiling())
-      profile_add_time(this->otype, t.Get());
+      profile_add_time(this->otype, t.get());
 
     LSpace::Tmp.Restore(m);
 
@@ -611,10 +611,10 @@ void GameObject::draw()
 
     void *m = LSpace::Tmp.Mark();
 
-    Timer t;
+    timer t;
     ((LSymbol *)figures[otype]->get_fun(OFUN_DRAW))->EvalFunction(NULL);
     if (profiling())
-      profile_add_time(this->otype, t.Get());
+      profile_add_time(this->otype, t.get());
 
     LSpace::Tmp.Restore(m);
 
@@ -630,10 +630,10 @@ void GameObject::map_draw()
 
     void *m = LSpace::Tmp.Mark();
 
-    Timer t;
+    timer t;
     ((LSymbol *)figures[otype]->get_fun(OFUN_MAP_DRAW))->EvalFunction(NULL);
     if (profiling())
-      profile_add_time(this->otype, t.Get());
+      profile_add_time(this->otype, t.get());
 
     LSpace::Tmp.Restore(m);
   }
@@ -1120,10 +1120,10 @@ GameObject *create(int type, int32_t x, int32_t y, int skip_constructor, int ait
 
     void *m = LSpace::Tmp.Mark();
 
-    Timer t;
+    timer t;
     ((LSymbol *)figures[type]->get_fun(OFUN_CONSTRUCTOR))->EvalFunction(NULL);
     if (profiling())
-      profile_add_time(type, t.Get());
+      profile_add_time(type, t.get());
 
     LSpace::Tmp.Restore(m);
     current_object = o;
@@ -1175,10 +1175,10 @@ int GameObject::move(int cx, int cy, int button)
 
     void *m = LSpace::Tmp.Mark();
 
-    Timer t;
+    timer t;
     LObject *r = ((LSymbol *)figures[otype]->get_fun(OFUN_MOVER))->EvalFunction(lcx);
     if (profiling())
-      profile_add_time(this->otype, t.Get());
+      profile_add_time(this->otype, t.get());
 
     LSpace::Tmp.Restore(m);
 
@@ -1505,10 +1505,10 @@ void GameObject::change_aitype(int new_type)
       GameObject *o=current_object;
       current_object=(GameObject *)this;
 
-      Timer t;
+      timer t;
       ((LSymbol *)f)->EvalUserFunction(NULL);
       if (profiling())
-          profile_add_time(this->otype, t.Get());
+          profile_add_time(this->otype, t.get());
 
       current_object=o;
     }
@@ -1540,10 +1540,10 @@ void GameObject::change_type(int new_type)
 
     void *m = LSpace::Tmp.Mark();
 
-    Timer t;
+    timer t;
     ((LSymbol *)figures[new_type]->get_fun(OFUN_CONSTRUCTOR))->EvalFunction(NULL);
     if (profiling())
-      profile_add_time(otype, t.Get());
+      profile_add_time(otype, t.get());
 
     LSpace::Tmp.Restore(m);
     current_object = o;

@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2013 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -303,7 +303,7 @@ void WindowManager::remove_window(AWindow *win)
 }
 
 AWindow * WindowManager::CreateWindow(ivec2 pos, ivec2 size,
-                                      String const &name,
+                                      std::string const &name,
                                       AWidgetList const &widgets)
 {
     if(pos.x > m_surf->Size().x - 4)
@@ -361,14 +361,15 @@ void WindowManager::flush_screen()
     }
 }
 
-AWindow::AWindow(String const &name)
+AWindow::AWindow(std::string const &name)
+  : m_name(name),
+    m_hidden(true),
+    m_moveable(true)
 {
     _x1 = left_border();
     _y1 = jw_top + 5;
     _x2 = _y2 = 0;
 
-    _hidden = true;
-    _moveable = true;
     // property.flags = JWINDOW_NOAUTOHIDE_FLAG;
 
     inm = new InputManager(this);
@@ -377,18 +378,18 @@ AWindow::AWindow(String const &name)
     m_surf = nullptr;
     next = nullptr;
 
-    _name = strdup(name.C());
     wm->add_window(this);
 }
 
-AWindow::AWindow(ivec2 pos, ivec2 size, String const &name, AWidgetList const &widgets)
+AWindow::AWindow(ivec2 pos, ivec2 size, std::string const &name, AWidgetList const &widgets)
+  : m_name(name),
+    m_hidden(false),
+    m_moveable(true)
 {
     m_size = ivec2::zero;
-    _hidden = false;
-    _moveable = true;
 
     _x1 = left_border();
-    _y1 = name.count() ? top_border() : jw_top + 5;
+    _y1 = name.length() ? top_border() : jw_top + 5;
 
     m_surf = nullptr;
     inm = new InputManager(m_surf, widgets);
@@ -417,8 +418,6 @@ AWindow::AWindow(ivec2 pos, ivec2 size, String const &name, AWidgetList const &w
 
     next = nullptr;
 
-    _name = strdup(name.C());
-
     wm->add_window(this);
     if(!wm->frame_suppress)
         redraw();
@@ -430,8 +429,6 @@ AWindow::~AWindow()
     local_close();
     delete m_surf;
     delete inm;
-    if(_name)
-        free(_name);
 }
 
 void AWindow::reconfigure()
@@ -458,7 +455,7 @@ void AWindow::redraw()
     int low = wm->dark_color();
     JCFont * fnt = wm->frame_font();
 
-    if(_name)
+    if(m_name.length())
     {
         if (right_border() >= 1)
         {
@@ -495,13 +492,13 @@ void AWindow::redraw()
       m_surf->Rectangle(ivec2(1, 1), ivec2(4, 4), wm->black ());
       m_surf->WidgetBar(ivec2(2, 2), ivec2(3, 3), hi, med, low);
     }
-  if (_name && _name[0])
+  if (m_name.length())
     {
       m_surf->Bar(ivec2(top_border(), 1),
-                  ivec2(top_border() + fnt->Size().x * strlen (_name) + 1,
+                  ivec2(top_border() + fnt->Size().x * (int)m_name.length() + 1,
                         top_border() - 2),
                   med);
-      fnt->PutString(m_surf, ivec2(top_border() + 1, 1), _name, low);
+      fnt->PutString(m_surf, ivec2(top_border() + 1, 1), m_name.c_str(), low);
     }
   // clear 'client' region
   m_surf->Bar(ivec2(x1(), y1()), ivec2(x2(), y2()), backg);

@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -10,7 +10,8 @@
 
 #pragma once
 
-#include <stdlib.h>
+#include <string>
+#include <cstdlib>
 
 #include "lisp/lisp.h"
 
@@ -31,7 +32,7 @@ protected:
     CrcedFile(char const *name);
     ~CrcedFile();
 
-    String m_name;
+    std::string m_name;
     uint32_t m_crc;
     int m_calculated;
 };
@@ -42,8 +43,8 @@ class CrcManager
 public:
     CrcManager();
 
-    int GetFileNumber(String const &filename);
-    String const &GetFileName(int filenumber);
+    int GetFileNumber(std::string const &filename);
+    std::string const &GetFileName(int filenumber);
 
     uint32_t get_crc(int filenumber, int &failed);
     void set_crc(int filenumber, uint32_t crc);
@@ -133,7 +134,7 @@ public:
     int compare(int a, int b); // compares usage count (used by qsort)
     int offset_compare(int a, int b);
 
-    void load_cache_prof_info(String const &filename, Level *lev);
+    void load_cache_prof_info(std::string const &filename, Level *lev);
     // sarray is a index table sorted by offset/filenum
     int search(int *sarray, uint16_t filenum, int32_t offset);
 

@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -141,16 +141,16 @@ void director::wait(void *arg)
     {
       if (pan_time)
       {
-    if ((int)(pan_time->Poll() * 1000) > pan_speed)
+    if ((int)(pan_time->poll() * 1000) > pan_speed)
     {
       the_game->pan(pan_xv,pan_yv);
       pan_steps--;
       delete pan_time;
       if (pan_steps)
-          pan_time = new Timer;
+          pan_time = new timer;
       else pan_time=NULL;
     }
-      } else pan_time=new Timer;
+      } else pan_time=new timer;
     } else if (arg==pan_symbol) done=1;
 
     if (text)
@@ -166,16 +166,16 @@ void director::wait(void *arg)
         text=NULL;
       if (text_time)
       {
-    if ((int)(text_time->Poll() * 1000) > scroll_speed)
+    if ((int)(text_time->poll() * 1000) > scroll_speed)
     {
       text_y+=text_step;
       delete text_time;
       if (text)
-        text_time=new Timer;
+        text_time=new timer;
       else
         text_time=NULL;
     }
-      } else text_time=new Timer;
+      } else text_time=new timer;
     } else if (arg==text_symbol) done=1;
 
     wm->flush_screen();

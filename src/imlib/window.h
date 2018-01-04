@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -100,9 +100,9 @@ public:
     InputManager *inm;
     void *local_info;  // pointer to info block for local system (may support windows)
 
-    AWindow(String const &name = "");
+    AWindow(std::string const &name = "");
     AWindow(ivec2 pos, ivec2 size,
-            String const &name = "",
+            std::string const &name = "",
             AWidgetList const &widgets = AWidgetList());
     virtual ~AWindow();
 
@@ -110,12 +110,12 @@ public:
     void Resize(ivec2 size);
     void clear(int color = 0) { m_surf->Bar(ivec2(x1(), y1()),
                                             ivec2(x2(), y2()), color); }
-    void show() { _hidden = false; }
-    void hide() { _hidden = true; }
-    bool is_hidden() { return _hidden; }
-    void freeze() { _moveable = false; }
-    void thaw() { _moveable = true; }
-    bool is_moveable() { return _moveable; }
+    void show() { m_hidden = false; }
+    void hide() { m_hidden = true; }
+    bool is_hidden() { return m_hidden; }
+    void freeze() { m_moveable = false; }
+    void thaw() { m_moveable = true; }
+    bool is_moveable() { return m_moveable; }
     int x1() { return _x1; }
     int y1() { return _y1; }
     int x2() { return _x2; }
@@ -136,9 +136,9 @@ protected:
     int _x1, _y1, _x2, _y2;
 
 private:
-    char *_name;
-    bool _hidden;
-    bool _moveable;
+    std::string m_name;
+    bool m_hidden;
+    bool m_moveable;
 
     void reconfigure();
 };
@@ -165,7 +165,7 @@ public:
     JCFont *fnt, *wframe_fnt;
 
     AWindow *CreateWindow(ivec2 pos, ivec2 size,
-                          String const &name = "",
+                          std::string const &name = "",
                           AWidgetList const &widgets = AWidgetList());
 
     JCFont *frame_font() { return wframe_fnt; }

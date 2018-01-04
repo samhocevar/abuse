@@ -1,7 +1,7 @@
 /*
- *  Abuse - dark 2D side-scrolling platform game
- *  Copyright (c) 1995 Crack dot Com
- *  Copyright (c) 2005-2011 Sam Hocevar <sam@hocevar.net>
+ *  Abuse — dark 2D side-scrolling platform game
+ *  Copyright © 1995 Crack dot Com
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -54,7 +54,7 @@ int game_client::process_server_command()
     net_packet *pack=&base->packet;
     game_sock->write(pack->data,pack->packet_size()+pack->packet_prefix_size(),server_data_port);
 
-    { Timer t; t.Wait(3.0); }
+    { timer t; t.wait(3.0); }
       }
       return 1;
     } break;
@@ -127,7 +127,7 @@ int game_client::input_missing()
   net_packet *pack=&base->packet;
   game_sock->write(pack->data,pack->packet_size()+pack->packet_prefix_size(),server_data_port);
 //  fprintf(stderr,"2");
-//  { Timer t; t.Wait(3.0); }
+//  { timer t; t.wait(3.0); }
 
 /*
   unsigned char pk[2]={ CLCMD_REQUEST_RESEND,base->packet.tick_received()};
@@ -147,7 +147,7 @@ void game_client::add_engine_input()
 //  data_sock->write(pack->data,pack->packet_size()+pack->packet_prefix_size());
 /*  fprintf(stderr,"(sending %d)\n",base->packet.tick_received());
 
-    { Timer t; t.Wait(5.0); } */
+    { wimer t; t.wait(5.0); } */
 }
 
 

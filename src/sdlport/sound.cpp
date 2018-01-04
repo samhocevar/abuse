@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -177,7 +177,7 @@ void sound_effect::play(int volume, int pitch, int panpot)
 
 // Play music using SDL_Mixer
 
-song::song(String const &filename)
+song::song(std::string const &filename)
 {
 #if defined LOL_USE_SDL_MIXER
     data = NULL;
@@ -187,14 +187,14 @@ song::song(String const &filename)
     rw = NULL;
     music = NULL;
 
-    String realname = String::format("%s%s", get_filename_prefix(), m_name.C());
+    std::string realname = get_filename_prefix() + m_name;
 
     uint32_t data_size;
-    data = load_hmi(realname.C(), data_size);
+    data = load_hmi(realname.c_str(), data_size);
 
     if (!data)
     {
-        printf("Sound: ERROR - could not load %s\n", realname.C());
+        printf("Sound: ERROR - could not load %s\n", realname.c_str());
         return;
     }
 
@@ -212,7 +212,7 @@ song::song(String const &filename)
     if (!music)
     {
         printf("Sound: ERROR - %s while loading %s\n",
-               Mix_GetError(), realname.C());
+               Mix_GetError(), realname.c_str());
         return;
     }
 #endif

@@ -1,7 +1,7 @@
 /*
  *  Abuse — dark 2D side-scrolling platform game
  *  Copyright © 1995 Crack dot Com
- *  Copyright © 2005—2016 Sam Hocevar <sam@hocevar.net>
+ *  Copyright © 2005—2018 Sam Hocevar <sam@hocevar.net>
  *
  *  This software was released into the Public Domain. As with most public
  *  domain software, no warranty is made or implied by Crack dot Com, by
@@ -153,7 +153,7 @@ public:
     virtual void scroll_event(int newx, AImage *screen)
     {
         screen->Bar(m_pos, m_pos + m_size - ivec2(1), wm->dark_color());
-        String st = String::format("%d", newx);
+        std::string st = lol::format("%d", newx);
         wm->font()->PutString(screen, m_pos + ivec2(30, 1), st, wm->bright_color());
         if (player_list)
             player_list->ambient = newx;
@@ -997,8 +997,8 @@ void dev_controll::do_command(char const *command, Event &ev)
       int32_t *w=(int32_t *)malloc(total_weapons*sizeof(int32_t));
       memcpy(w, player_list->weapons, total_weapons*sizeof(int32_t));
 
-      String const name = g_current_level->GetName();
-      the_game->load_level(name.C());
+      std::string const name = g_current_level->GetName();
+      the_game->load_level(name.c_str());
       g_current_level->unactivate_all();
 
       if (main_screen)  // don't draw if graphics haven't been setup yet.
@@ -1059,7 +1059,7 @@ void dev_controll::do_command(char const *command, Event &ev)
       command++;
     if (*command)
       g_current_level->SetName(command + 1);
-    dprintf(symbol_str("name_now"), g_current_level->GetName().C());
+    dprintf(symbol_str("name_now"), g_current_level->GetName().c_str());
   }
   if (!strcmp(fword, "set_first_level"))
   {
@@ -1344,10 +1344,10 @@ void dev_controll::make_ai_window(GameObject *o)
         int er, owh = wh;
         for (int i = 0; i < figures[o->otype]->total_fields; i++)
         {
-            String tmp = figures[o->otype]->fields[i]->descript_name;
-            while (tmp.count() < maxl)
+            std::string tmp = figures[o->otype]->fields[i]->descript_name;
+            while ((int)tmp.length() < maxl)
                 tmp += ' ';
-            widgets << new ATextField(ivec2(wl, wh), DEV_AI_FIGURES + i, tmp.C(), "######",
+            widgets << new ATextField(ivec2(wl, wh), DEV_AI_FIGURES + i, tmp.c_str(), "######",
                                       (double)o->get_var_by_name(figures[o->otype]->fields[i]->real_name, er));
             wh += th;
         }
@@ -1517,8 +1517,8 @@ void dev_controll::pick_handle_input(Event &ev)
       { find = a; find_top = 0; }
     }
 
-    int dc = last_area_click.Poll() < 0.5;
-    last_area_click.Get();
+    int dc = last_area_click.poll() < 0.5;
+    last_area_click.get();
     if (find && current_area && dc)
     {
       if (area_win) close_area_win(0);
@@ -1967,7 +1967,7 @@ void dev_controll::handle_event(Event &ev)
       if (!mess_win)
       {
         mess_win = file_dialog(symbol_str("level_name"),
-                               g_current_level ? g_current_level->GetName().C()
+                               g_current_level ? g_current_level->GetName().c_str()
                                                : "",
                                ID_LEVEL_LOAD_OK, symbol_str("ok_button"),
                                ID_CANCEL, symbol_str("cancel_button"),
@@ -1991,11 +1991,11 @@ void dev_controll::handle_event(Event &ev)
     case ID_LEVEL_SAVE :
     { if (g_current_level)
       {
-        if (g_current_level->save(g_current_level->GetName().C(), 0))
+        if (g_current_level->save(g_current_level->GetName().c_str(), 0))
         {
-          String msg = String::format(symbol_str("saved_level"),
-                                      g_current_level->GetName().C());
-          the_game->show_help(msg.C());
+          std::string msg = lol::format(symbol_str("saved_level"),
+                                        g_current_level->GetName().c_str());
+          the_game->show_help(msg.c_str());
           the_game->need_refresh();
         }
       }
@@ -2006,7 +2006,7 @@ void dev_controll::handle_event(Event &ev)
       if (!mess_win)
       {
         mess_win = file_dialog(symbol_str("saveas_name"),
-                               g_current_level ? g_current_level->GetName().C()
+                               g_current_level ? g_current_level->GetName().c_str()
                                                : "untitled.spe",
                                ID_LEVEL_SAVEAS_OK, symbol_str("ok_button"),
                                ID_CANCEL, symbol_str("cancel_button"),
